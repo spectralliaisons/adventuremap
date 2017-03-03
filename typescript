@@ -1,0 +1,75 @@
+Script started on Thu Mar  2 08:31:35 2017
+Unable to find any JVMs matching version "1.6".
+--> 57 ms
+[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson]2;wesjackson@wesj: ~/Sites/wesmjackson]1;..s/wesmjackson[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[1m[31mc[0m[39m[0m[32mc[32md[39m [4ms[24m[4ms[4mc[24m[4mc[4mr[24m[4mr[4mi[24m[4mi[4mp[24m[4mp[4mt[24m[4mt[4m/[24m[?1l>[?2004l
+]0;wesjackson@wesj <cd script/> ~/Sites/wesmjackson]2;cd script/]1;cd[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson/script]2;wesjackson@wesj: ~/Sites/wesmjackson/script]1;..ackson/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson/script [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[32ml[39m[32ml[32ms[39m[?1l>[?2004l
+]0;wesjackson@wesj <ls -G> ~/Sites/wesmjackson/script]2;ls -G]1;lsgpstracker.js       jquery-1.6.4.min.js underscore-min.js
+[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson/script]2;wesjackson@wesj: ~/Sites/wesmjackson/script]1;..ackson/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson/script [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[4mj[24m[24m[1m[31mj[1m[31mu[0m[39m[1m[31mj[1m[31mu[1m[31mp[0m[39m[1m[31mp[1m[31my[0m[39m[1m[31my[1m[31mr[0m[39m[1m[31mr[1m[31mt[0m[39m[1m[31mr[0m[39m[0m[39m [1m[31my[0m[39m[0m[39m [1m[31my[1m[31mt[0m[39m[1m[31mt[1m[31me[0m[39m[0m[32mj[0m[32mu[0m[32mp[0m[32my[0m[32mt[0m[32me[32mr[39m notebook[?1l>[?2004l
+]0;wesjackson@wesj <jupyter notebook> ~/Sites/wesmjackson/script]2;jupyter notebook]1;jupyter[32m[I 08:31:48.869 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
+[32m[I 08:31:49.336 NotebookApp](B[m [nb_conda] enabled
+[32m[I 08:31:49.454 NotebookApp](B[m [nb_anacondacloud] enabled
+[32m[I 08:31:49.535 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
+[33m[W 08:31:49.535 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
+[32m[I 08:31:49.544 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson/script
+[32m[I 08:31:49.544 NotebookApp](B[m 0 active kernels 
+[32m[I 08:31:49.544 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
+[32m[I 08:31:49.544 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+^C[32m[I 08:32:12.530 NotebookApp](B[m interrupted
+Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson/script
+0 active kernels 
+The Jupyter Notebook is running at: http://localhost:8888/
+Shutdown this notebook server (y/[n])? y
+[C 08:32:14.474 NotebookApp] Shutdown confirmed
+[32m[I 08:32:14.475 NotebookApp](B[m Shutting down kernels
+[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson/script]2;wesjackson@wesj: ~/Sites/wesmjackson/script]1;..ackson/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson/script [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[32ml[39m[32ml[32ms[39m[?1l>[?2004l
+]0;wesjackson@wesj <ls -G> ~/Sites/wesmjackson/script]2;ls -G]1;lsgpstracker.js       jquery-1.6.4.min.js underscore-min.js
+[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson/script]2;wesjackson@wesj: ~/Sites/wesmjackson/script]1;..ackson/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson/script [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[32m.[39m[39m[4m.[4m.[24m[4m.[4m.[4m/[24m[?1l>[?2004l
+]0;wesjackson@wesj <../> ~/Sites/wesmjackson/script]2;../]1;../[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson]2;wesjackson@wesj: ~/Sites/wesmjackson]1;..s/wesmjackson[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[1m[31mj[0m[39m[1m[31mj[1m[31mu[0m[39m[1m[31mj[1m[31mu[1m[31mp[0m[39m[1m[31mp[1m[31my[0m[39m[1m[31my[1m[31mt[0m[39m[1m[31mt[1m[31me[0m[39m[0m[32mj[0m[32mu[0m[32mp[0m[32my[0m[32mt[0m[32me[32mr[39m notebook[?1l>[?2004l
+]0;wesjackson@wesj <jupyter notebook> ~/Sites/wesmjackson]2;jupyter notebook]1;jupyter[32m[I 08:32:27.115 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
+[32m[I 08:32:27.433 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
+[33m[W 08:32:27.433 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
+[32m[I 08:32:27.436 NotebookApp](B[m [nb_conda] enabled
+[32m[I 08:32:27.477 NotebookApp](B[m [nb_anacondacloud] enabled
+[32m[I 08:32:27.482 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson
+[32m[I 08:32:27.483 NotebookApp](B[m 0 active kernels 
+[32m[I 08:32:27.483 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
+[32m[I 08:32:27.483 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[32m[I 08:32:34.864 NotebookApp](B[m Kernel started: 4d6182be-5c0d-4e7d-aa02-402c5c77f0a6
+[32m[I 08:32:41.039 NotebookApp](B[m Saving file at /gps/Untitled.ipynb
+[32m[I 08:33:11.961 NotebookApp](B[m Kernel started: 25e73e0d-5f06-4cd7-a848-1395fbca2550
+[32m[I 08:39:12.116 NotebookApp](B[m Saving file at /gps/python/create gps info.ipynb
+[32m[I 08:41:11.956 NotebookApp](B[m Saving file at /gps/python/create gps info.ipynb
+[32m[I 08:41:18.214 NotebookApp](B[m Saving file at /gps/python/create gps info.ipynb
+[32m[I 08:42:28.339 NotebookApp](B[m Kernel restarted: 25e73e0d-5f06-4cd7-a848-1395fbca2550
+[32m[I 08:44:21.194 NotebookApp](B[m Saving file at /gps/python/create gps info.ipynb
+^C[32m[I 08:52:08.764 NotebookApp](B[m interrupted
+Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson
+2 active kernels 
+The Jupyter Notebook is running at: http://localhost:8888/
+Shutdown this notebook server (y/[n])? y
+[C 08:52:09.405 NotebookApp] Shutdown confirmed
+[32m[I 08:52:09.405 NotebookApp](B[m Shutting down kernels
+[32m[I 08:52:09.924 NotebookApp](B[m Kernel shutdown: 25e73e0d-5f06-4cd7-a848-1395fbca2550
+[32m[I 08:52:09.925 NotebookApp](B[m Kernel shutdown: 4d6182be-5c0d-4e7d-aa02-402c5c77f0a6
+[1m[7m%[27m[1m[0m                                                                                                               ]0;wesjackson@wesj ~/Sites/wesmjackson]2;wesjackson@wesj: ~/Sites/wesmjackson]1;..s/wesmjackson[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[32mjupyter[39m notebook[?1l>[?2004l
+]0;wesjackson@wesj <jupyter notebook> ~/Sites/wesmjackson]2;jupyter notebook]1;jupyter[32m[I 08:52:13.205 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
+[32m[I 08:52:13.517 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
+[33m[W 08:52:13.517 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
+[32m[I 08:52:13.561 NotebookApp](B[m [nb_anacondacloud] enabled
+[32m[I 08:52:13.564 NotebookApp](B[m [nb_conda] enabled
+[32m[I 08:52:13.570 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson
+[32m[I 08:52:13.570 NotebookApp](B[m 0 active kernels 
+[32m[I 08:52:13.570 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
+[32m[I 08:52:13.570 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[32m[I 08:52:21.541 NotebookApp](B[m Kernel started: d8f56197-701b-4659-822a-48fba24414fa
+                                                          ]0;wesjackson@wesj ~/Sites/wesmjackson]2;wesjackson@wesj: ~/Sites/wesmjackson]1;..s/wesmjackson[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wesj [44m[30m[30m ~/Sites/wesmjackson [43m[34m[30m  master [49m[33m[39m [K[?1h=[?2004h[32mjupyter[39m notebook[?1l>[?2004l
+]0;wesjackson@wesj <jupyter notebook> ~/Sites/wesmjackson]2;jupyter notebook]1;jupyter[32m[I 08:52:13.205 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
+[32m[I 08:52:13.517 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
+[33m[W 08:52:13.517 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
+[32m[I 08:52:13.561 NotebookApp](B[m [nb_anacondacloud] enabled
+[32m[I 08:52:13.564 NotebookApp](B[m [nb_conda] enabled
+[32m[I 08:52:13.570 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/wesmjackson
+[32m[I 08:52:13.570 NotebookApp](B[m 0 active kernels 
+[32m[I 08:52:13.570 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
+[32m[I 08:52:13.570 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[32m[I 08:52:21.541 NotebookApp](B[m Kernel started: d8f56197-701b-4659-822a-48fba24414fa
