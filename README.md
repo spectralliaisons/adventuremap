@@ -1,4 +1,4 @@
-# wesmjackson
+# multimap
 Display KML, images, audio on Google Maps.
 
 How to add a map:
