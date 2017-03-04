@@ -4,8 +4,8 @@
 	<name>track.kml</name>
 	<Style id="path0Style">
 		<LineStyle>
-			<color>327800F0</color>
-			<width>2</width>
+			<color>5f7800F0</color>
+			<width>4</width>
 		</LineStyle>
 	</Style>
 	<Placemark>
