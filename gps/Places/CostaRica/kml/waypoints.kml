@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Folder>
+	<name>Waypoints</name>
+	<Placemark>
+		<name>416 LOS DELFINES</name>
+		<description>Latitude: 9.745591963 Longitude : -85.01293802</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.012938017,9.745591962700001,26.034</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Alajuela</name>
+		<description>Latitude: 10.0160120241 Longitude : -84.2154410016</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.2154410016,10.0160120241,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ALOE CACTUS FLDS HNG VINES</name>
+		<description>Latitude: 9.7048539855 Longitude : -84.9960609712</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9960609712,9.7048539855,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ARBOL JESUS</name>
+		<description>Latitude: 9.7002300248 Longitude : -84.9984029587</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9984029587,9.7002300248,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Bagaces</name>
+		<description>Latitude: 10.5257390253 Longitude : -85.2556869853</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.2556869853,10.5257390253,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Bijagua de Upala</name>
+		<description>Latitude: 10.7301660161 Longitude : -85.0581690297</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0581690297,10.7301660161,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BLK BSLT BEACH</name>
+		<description>Latitude: 9.6400339622 Longitude : -85.0736209843</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.07362098430001,9.6400339622,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BOAT TUR B</name>
+		<description>Latitude: 10.3416320309 Longitude : -85.3659800068</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.3659800068,10.3416320309,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BOAT TUR E</name>
+		<description>Latitude: 10.3455379978 Longitude : -85.4077150114</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.4077150114,10.3455379978,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BREWERY MARIPOSA</name>
+		<description>Latitude: 9.6499550343 Longitude : -85.0754719600</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.07547196,9.6499550343,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CABO BLANCO</name>
+		<description>Latitude: 9.5859789848 Longitude : -85.0944540370</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.09445403700001,9.585978984800001,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CABUYA</name>
+		<description>Latitude: 9.6039139945 Longitude : -85.0875559822</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0875559822,9.603913994499999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CASCADAS</name>
+		<description>Latitude: 9.7050539777 Longitude : -85.0628590398</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0628590398,9.7050539777,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CEVICHERIA LAS VEGAS</name>
+		<description>Latitude: 9.8274069652 Longitude : -84.9253120087</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9253120087,9.8274069652,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CLUBHAUS</name>
+		<description>Latitude: 9.7468110267 Longitude : -85.0127709657</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0127709657,9.7468110267,30.640478</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>COBANO</name>
+		<description>Latitude: 9.6885520220 Longitude : -85.1041620411</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.1041620411,9.688552022,137.015701</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CURU TRL</name>
+		<description>Latitude: 9.7851240356 Longitude : -84.9336779863</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9336779863,9.785124035600001,7.204552</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FERRY PAQUERA</name>
+		<description>Latitude: 9.8303330038 Longitude : -84.9037130177</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9037130177,9.8303330038,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FERRY PUNTARENAS</name>
+		<description>Latitude: 9.9775339756 Longitude : -84.8486940376</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.8486940376,9.9775339756,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FINCA PARAISO</name>
+		<description>Latitude: 9.7277069930 Longitude : -85.0466470141</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0466470141,9.727706993,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FISH</name>
+		<description>Latitude: 9.7136930376 Longitude : -85.0106690358</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.01066903580001,9.713693037600001,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GASOLINERA COBANO</name>
+		<description>Latitude: 9.6940900292 Longitude : -85.0956529845</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.09565298450001,9.6940900292,149.635605</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Hanging Bridges Arenal</name>
+		<description>Latitude: 10.4880809784 Longitude : -84.7542859800</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.75428598000001,10.4880809784,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Hotel Aeropuerto</name>
+		<description>Latitude: 9.9949189648 Longitude : -84.2416829802</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.2416829802,9.9949189648,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Isla Tortuga</name>
+		<description>Latitude: 9.7696350329 Longitude : -84.8927090038</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.89270900379999,9.7696350329,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>La Fortuna de San Carlos</name>
+		<description>Latitude: 10.4707219731 Longitude : -84.6465040091</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.6465040091,10.4707219731,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LIMESTONE CAVERN/BARRA HONDA</name>
+		<description>Latitude: 10.1661250368 Longitude : -85.3582470305</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.3582470305,10.1661250368,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Llanos de Cortés Waterfa</name>
+		<description>Latitude: 10.5242160335 Longitude : -85.2978519816</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.2978519816,10.5242160335,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MARISCOS</name>
+		<description>Latitude: 9.7488640063 Longitude : -84.9885610119</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9885610119,9.7488640063,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Monteverde Cloud Forest</name>
+		<description>Latitude: 10.3026649822 Longitude : -84.7951839678</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.7951839678,10.3026649822,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MONTEZUMA</name>
+		<description>Latitude: 9.6549310349 Longitude : -85.0686849654</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.0686849654,9.654931034900001,2.378193</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PAQUERA</name>
+		<description>Latitude: 9.8205029592 Longitude : -84.9330609944</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.93306099439999,9.820502959200001,3.317204</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Parque Nacional Palo Ver</name>
+		<description>Latitude: 10.3477260098 Longitude : -85.3192020301</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.3192020301,10.3477260098,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Playa Organos</name>
+		<description>Latitude: 9.8131940234 Longitude : -84.8971509933</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.8971509933,9.813194023399999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>POCHOTE</name>
+		<description>Latitude: 9.7498610336 Longitude : -84.9922290165</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.9922290165,9.7498610336,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>San Jose</name>
+		<description>Latitude: 9.9316409603 Longitude : -84.0756229777</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.07562297769999,9.931640960299999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>San Ramón</name>
+		<description>Latitude: 10.0867370144 Longitude : -84.4702289812</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.47022898119999,10.0867370144,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Sjo (Juan Santamaria Int</name>
+		<description>Latitude: 9.9980520364 Longitude : -84.2043690104</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.2043690104,9.998052036400001,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SML SRF BEACH</name>
+		<description>Latitude: 9.6301889978 Longitude : -85.0772060081</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.07720600810001,9.630188997799999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Tabacón</name>
+		<description>Latitude: 10.4877590295 Longitude : -84.7223569639</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.7223569639,10.4877590295,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>VOLCAN ARENAL</name>
+		<description>Latitude: 10.4637359921 Longitude : -84.7027400415</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.70274004149999,10.4637359921,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Volcan Poas</name>
+		<description>Latitude: 10.1853989717 Longitude : -84.2359540332</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.2359540332,10.1853989717,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>VOLCAN TENORIO</name>
+		<description>Latitude: 10.6992839836 Longitude : -84.9998309836</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-84.99983098360001,10.6992839836,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>WATERFALL CANOPY</name>
+		<description>Latitude: 9.6540540364 Longitude : -85.0777339842</description>
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Point>
+			<coordinates>-85.07773398419999,9.6540540364,0</coordinates>
+		</Point>
+	</Placemark>
+</Folder>
+</kml>
