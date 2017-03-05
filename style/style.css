@@ -4,7 +4,7 @@
 body {
 	font: 100%/1.4 Avenir,Menlo,Helvetica Neue,Helvetica,Arial,sans-serif;
 	background-color: #42413C;
-	background-image: url("rsc/topography.png");
+	background-image: url("../rsc/topography.png");
 	margin: 0;
 	padding: 0;
 }
