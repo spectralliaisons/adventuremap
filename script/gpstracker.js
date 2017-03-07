@@ -39,9 +39,10 @@ function initTracker(place){
             });
         
         // add kml layers
+        // param to kml url prevents caching by Google
         _.each(json.layers, function(layer) {
             trackLayer = new google.maps.KmlLayer({
-                url: basePath + /kml/ + layer,
+                url: basePath + /kml/ + layer + "?rev=" + (new Date()).getTime(),
                 map: gmap
             });
         });

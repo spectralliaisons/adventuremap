@@ -4,8 +4,8 @@
 	<name>russian_river.kml</name>
 	<Style id="path1Style">
 		<LineStyle>
-			<color>64F07814</color>
-			<width>5</width>
+			<color>64F0AA14</color>
+			<width>4</width>
 		</LineStyle>
 	</Style>
 	<Placemark>
