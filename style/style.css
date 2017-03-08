@@ -52,7 +52,8 @@ body {
 }
 
 #map-item-content-img {
-    width:500px;
+    height:400px;
+    width:auto;
 }
 
 .footer {

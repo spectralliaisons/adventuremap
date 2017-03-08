@@ -50,20 +50,21 @@ function initTracker(place){
         // add interactive marker for each location
         _.each(json.locations, function(location){
             
-            var imgSrc = basePath + /img/ + location.img;
+            var imgLgSrc = basePath + /img/ + location.img;
+            var imgSmSrc = basePath + /imgSm/ + location.img;
             var audSrc = basePath + /aud/ + location.aud;
             
             // html contents of marker window
             var contentString = '<div id="map-item-content">'+
             "<h2>" + location.label + "</h2>"+
-            "<a href='" + imgSrc + "' target='_blank'><img src='" + imgSrc + "' id='map-item-content-img' ></img></a>"+
+            "<a href='" + imgLgSrc + "' target='_blank'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
             (location.aud ? "<audio controls style='width: 100%'><source src='" + audSrc + "' type='audio/mpeg'>Your browser does not support audio. Good job!</audio>" : "")+
             '</p>'+
             '</div>'+
             '</div>';
 
             //  only one info window at a time
-            window.currInfoWindow = new google.maps.InfoWindow({
+            var currInfoWindow = new google.maps.InfoWindow({
                 content: contentString
             });
 
@@ -73,7 +74,14 @@ function initTracker(place){
             });
 
             marker.addListener('click', function() {
+                
+                if (window.lastInfoWindow) {
+                    window.lastInfoWindow.close();
+                }
+                
                 currInfoWindow.open(gmap, marker);
+                
+                window.lastInfoWindow = currInfoWindow;
             });
         });
     });

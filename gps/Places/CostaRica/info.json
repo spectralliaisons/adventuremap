@@ -16,33 +16,6 @@
         },
         {
             "aud":null,
-            "img":"2016-12-24 10.12.57.jpg",
-            "label":"2016-12-24 10.12.57",
-            "loc":{
-                "lat":9.713702777777778,
-                "lng":-85.01062777777778
-            }
-        },
-        {
-            "aud":null,
-            "img":"2016-12-24 10.22.04.jpg",
-            "label":"2016-12-24 10.22.04",
-            "loc":{
-                "lat":9.71375,
-                "lng":-85.01043055555556
-            }
-        },
-        {
-            "aud":null,
-            "img":"2016-12-26 09.55.44.jpg",
-            "label":"2016-12-26 09.55.44",
-            "loc":{
-                "lat":9.598658333333335,
-                "lng":-85.08536666666666
-            }
-        },
-        {
-            "aud":null,
             "img":"2016-12-26 11.45.53.jpg",
             "label":"2016-12-26 11.45.53",
             "loc":{
@@ -1002,6 +975,15 @@
             "loc":null
         },
         {
+            "aud":null,
+            "img":"cabuya island cemetery 0.jpg",
+            "label":"cabuya island cemetery 0",
+            "loc":{
+                "lat":9.598658333333335,
+                "lng":-85.08536666666666
+            }
+        },
+        {
             "aud":"curu 0.mp3",
             "img":"curu 0.jpg",
             "label":"curu 0",
@@ -1081,6 +1063,24 @@
             "img":"llanos de cortes 0.jpg",
             "label":"llanos de cortes 0",
             "loc":null
+        },
+        {
+            "aud":null,
+            "img":"mariscos tambor 0.jpg",
+            "label":"mariscos tambor 0",
+            "loc":{
+                "lat":9.713702777777778,
+                "lng":-85.01062777777778
+            }
+        },
+        {
+            "aud":null,
+            "img":"mariscos tambor 1.jpg",
+            "label":"mariscos tambor 1",
+            "loc":{
+                "lat":9.71375,
+                "lng":-85.01043055555556
+            }
         },
         {
             "aud":null,
