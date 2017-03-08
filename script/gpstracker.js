@@ -5,7 +5,9 @@ function initTracker(place){
     
     var basePath = origin + "/gps/Places/" + place
     
-    $.getJSON(basePath + "/info.json", function(json){
+    function cacheBuster(){return "?rev=" + (new Date()).getTime()};
+    
+    $.getJSON(basePath + "/info.json" + cacheBuster(), function(json){
 
         var cen = _.findWhere(json.locations, {"label":json.center}).loc
         
@@ -42,7 +44,7 @@ function initTracker(place){
         // param to kml url prevents caching by Google
         _.each(json.layers, function(layer) {
             trackLayer = new google.maps.KmlLayer({
-                url: basePath + /kml/ + layer + "?rev=" + (new Date()).getTime(),
+                url: basePath + /kml/ + layer + cacheBuster(),
                 map: gmap
             });
         });
@@ -50,14 +52,14 @@ function initTracker(place){
         // add interactive marker for each location
         _.each(json.locations, function(location){
             
-            var imgLgSrc = basePath + /img/ + location.img;
-            var imgSmSrc = basePath + /imgSm/ + location.img;
-            var audSrc = basePath + /aud/ + location.aud;
+            var imgLgSrc = basePath + /img/ + location.img + cacheBuster();
+            var imgSmSrc = basePath + /imgSm/ + location.img + cacheBuster();
+            var audSrc = basePath + /aud/ + location.aud + cacheBuster();
             
             // html contents of marker window
             var contentString = '<div id="map-item-content">'+
             "<h2>" + location.label + "</h2>"+
-            "<a href='" + imgLgSrc + "' target='_blank'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
+            "<a href='" + imgLgSrc + "' target='_blank' id='map-item-content-img'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
             (location.aud ? "<audio controls style='width: 100%'><source src='" + audSrc + "' type='audio/mpeg'>Your browser does not support audio. Good job!</audio>" : "")+
             '</p>'+
             '</div>'+
