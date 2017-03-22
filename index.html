@@ -11,15 +11,32 @@
     <html>
       <body>
           
-          <ul class="map-container" id="map-container">
-              <li id="map-CostaRica" class="map-item"><a href="#CostaRica" id="CostaRica">Costa Rica</a></li>
-              <li id="map-RussianRiver" class="map-item"><a href="#RussianRiver" id="RussianRiver">Russian River</a></li>
+          <!-- list of map locations -->
+          <ul class="navbar">
+              <li id="map-CostaRica" class="nav-item"><a href="#CostaRica" id="CostaRica">Costa Rica</a></li>
+              <li id="map-RussianRiver" class="nav-item"><a href="#RussianRiver" id="RussianRiver">Russian River</a></li>
           </ul>
           
+          <div class="map-container">
+              <!-- spins while gmap loading -->
+              <div id="loader"></div>
+
+              <!-- gmap content -->
+              <div id="map" class="map-item"></div>
+              
+              <div class="footer">
+                &copy; wes jackson 2017; all rights reserved.
+            </div>
+          </div>
+          
+          
+          
+          <!-- 3rd party js -->
           <script type="text/javascript" src="script/3rdparty/jquery-1.6.4.min.js"></script>
           <script type="text/javascript" src="script/3rdparty/jquery.address-1.5.min.js"></script>
           <script type="text/javascript" src="script/3rdparty/underscore-min.js"></script>
           
+          <!-- my scripts -->
           <script type="text/javascript" src="script/gpstracker.js"></script>
           
           <!-- JQuery navigation -->
@@ -27,11 +44,15 @@
           
           <script type="text/javascript">
               
+              // google maps api is ready
               function initMap() {
                   
-                  _.delay(function(){
-                      initTracker("CostaRica");
-                  }, 250);
+                  console.clear();
+                  
+                  // track map loading history; don't load the same map twice
+                  window.maps = [];
+                  
+//                  _.delay(function(){ initTracker("CostaRica");}, 250);
               };
         
           </script>
@@ -39,10 +60,6 @@
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuY9A0oLwzD2mi3NhoJ-LUujtvxJ3vck8&callback=initMap">
         </script>
-        
-        <div class="footer">
-            &copy; wes jackson 2017; all rights reserved.
-        </div>
           
       </body>
     </html>

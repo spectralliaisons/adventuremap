@@ -7,6 +7,50 @@ body {
 	background-image: url("../rsc/topography.png");
 	margin: 0;
 	padding: 0;
+    height: 100%;
+    font-size:28px;
+}
+
+@media (max-width: 1000px) {
+  body { font-size: 22px; }
+}
+
+@media (max-width: 500px) {
+  body { font-size: 16px; }
+}
+
+html {
+    height: 100%;
+}
+
+.navbar {
+    list-style: none;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+    justify-content: flex-end;
+}
+
+.navbar a {
+    text-decoration: none;
+    display: block;
+    color: #6a6a6a;
+    transition: background 0.1s linear;
+}
+
+.navbar a:hover {
+    color:#acacac;
+}
+
+.nav-item {
+    width: 7em;
+/*    font-weight: bold;*/
+    text-align: center;
 }
 
 .map-container {
@@ -18,31 +62,21 @@ body {
     display: -webkit-flex;
     display: flex;
 
-    -webkit-flex-flow: row wrap;
-    justify-content: space-around;
+    -webkit-flex-flow: column;
+    justify-content: flex-start;
+    align-content: space-between;
 }
-
-.map-container a {
-    text-decoration: none;
-    display: block;
-    padding: 1em;
-    color: whitesmoke;
-    transition: background 0.1s linear;
-}
-
-.map-container a:hover {
-  background: whitesmoke;
-}
-
 
 .map-item {
-    background: rgba(80, 80, 80, 0.24);
-    width: 900px;
-    height: 670px;
-    margin: 25px;
-    line-height: 575px;
+    position:absolute;
+/*    background: rgba(80, 80, 80, 0.24);*/
+    background-image: url(/gps/Places/RussianRiver/img/becomes%20the%20russian%20river%200.jpg);
+    background-size: cover;
+    width: 100%;
+    height:89%;
+    margin: 0 auto;
     font-weight: bold;
-    font-size: 3em;
+    font-size: 2em;
     text-align: center;
 }
 
@@ -57,7 +91,58 @@ body {
 }
 
 .footer {
+    position: absolute;
     color:rgba(159, 159, 159, 0.57);
-    padding: 25px;
+    padding-left: 1em;
+    font-size: 0.65em;
     font-weight:100;
+    bottom: 1em;
+    margin: 0 auto;
+    height:1em;
+}
+
+/* Center the loader */
+#loader {
+ display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  margin: -75px 0 0 -75px;
+  border: 1em solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  border-top: 1em solid #6a6a6a;
+  width: 5em;
+  height: 5em;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 } 
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+  from{ bottom:-100px; opacity:0 } 
+  to{ bottom:0; opacity:1 }
 }
