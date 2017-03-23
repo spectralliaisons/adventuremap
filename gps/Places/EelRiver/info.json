@@ -1,0 +1,22 @@
+{
+    "center":"van arsdale dam",
+    "layers":[
+        "EelRiver.kml",
+        "EelRiverMiddleFork.kml",
+        "EelRiverNorthFork.kml",
+        "EelRiverSouthFork.kml"
+    ],
+    "locations":[
+        {
+            "aud":null,
+            "img":null,
+            "label":"van arsdale dam",
+            "loc":{
+                "lat":39.3856789,
+                "lng":-123.115058
+            }
+        }
+    ],
+    "mapType":"hybrid",
+    "zoom":10
+}

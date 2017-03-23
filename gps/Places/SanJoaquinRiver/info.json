@@ -1,0 +1,19 @@
+{
+    "center":"thousand island lake",
+    "layers":[
+        "SanJoaquinRiver.kml"
+    ],
+    "locations":[
+        {
+            "aud":null,
+            "img":null,
+            "label":"thousand island lake",
+            "loc":{
+                "lat":37.7197701,
+                "lng":-119.1900971
+            }
+        }
+    ],
+    "mapType":"hybrid",
+    "zoom":8
+}

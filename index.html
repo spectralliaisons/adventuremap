@@ -11,10 +11,18 @@
     <html>
       <body>
           
+          <!-- 3rd party js -->
+          <script type="text/javascript" src="script/3rdparty/jquery-1.6.4.min.js"></script>
+          <script type="text/javascript" src="script/3rdparty/jquery.address-1.5.min.js"></script>
+          <script type="text/javascript" src="script/3rdparty/underscore-min.js"></script>
+          
           <!-- list of map locations -->
           <ul class="navbar">
-              <li id="map-CostaRica" class="nav-item"><a href="#CostaRica" id="CostaRica">Costa Rica</a></li>
-              <li id="map-RussianRiver" class="nav-item"><a href="#RussianRiver" id="RussianRiver">Russian River</a></li>
+              <li class="nav-item bold"><a href="#RussianRiver">Russian River</a></li>
+              <li class="nav-item bold"><a href="#CostaRica">Costa Rica</a></li>
+              <li class="nav-item bold"><a href="#SFWatershed">SF Watershed</a></li>
+              <li class="nav-item"><a href="#SanJoaquinRiver">San Joaquin River</a></li>
+              <li class="nav-item"><a href="#EelRiver">Eel River</a></li>
           </ul>
           
           <div class="map-container">
@@ -24,17 +32,12 @@
               <!-- gmap content -->
               <div id="map" class="map-item"></div>
               
+              <div id="error" style="display:none">that place does not exist</div>
+              
               <div class="footer">
-                &copy; wes jackson 2017; all rights reserved.
+                &copy; wes jackson 2017
             </div>
           </div>
-          
-          
-          
-          <!-- 3rd party js -->
-          <script type="text/javascript" src="script/3rdparty/jquery-1.6.4.min.js"></script>
-          <script type="text/javascript" src="script/3rdparty/jquery.address-1.5.min.js"></script>
-          <script type="text/javascript" src="script/3rdparty/underscore-min.js"></script>
           
           <!-- my scripts -->
           <script type="text/javascript" src="script/gpstracker.js"></script>
@@ -47,10 +50,8 @@
               // google maps api is ready
               function initMap() {
                   
-                  console.clear();
-                  
                   // track map loading history; don't load the same map twice
-                  window.maps = [];
+                  window.maps = {};
                   
 //                  _.delay(function(){ initTracker("CostaRica");}, 250);
               };
