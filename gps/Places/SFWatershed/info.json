@@ -1,6 +1,7 @@
 {
     "center":"lago pilarcitos",
     "layers":[
+        "SantaCruz.kml",
         "SFWatershed.kml"
     ],
     "locations":[

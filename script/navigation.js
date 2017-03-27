@@ -7,6 +7,8 @@ if (!window.loadContent) {
         $( ".navbar li a" ).unbind('click');
         $( ".navbar li a" ).click(function( event ) {
             
+            console.log("CLICK .navbar li a");
+            
             event.preventDefault();
             href = $(this).attr('href');
             window.loadContent(href);
@@ -84,6 +86,8 @@ if (!window.loadContent) {
     
         if (event.value != "") {
             window.loadContent('#' + event.value);
+        } else {
+            window.loadContent('#RussianRiver');
         }
     });
 }

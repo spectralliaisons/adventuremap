@@ -14,17 +14,57 @@ body {
     font-size:24px;
 }
 
-@media (max-width: 1000px) {
-  body { font-size: 18px; }
-}
-
-@media (max-width: 500px) {
-  body { font-size: 16px; }
-}
-
 html {
     height: 100%;
 }
+
+.footer {
+    position: absolute;
+    color:rgba(159, 159, 159, 0.57);
+    padding-left: 1em;
+    font-size: 0.6em;
+    font-weight:100;
+    bottom: 1em;
+    margin: 0 auto;
+    height:1em;
+}
+
+/** If a place fails to load show error msg **/
+
+#error {
+    position: relative;
+    left:0%;
+/*    padding-top: 1.5em;*/
+    color: white;
+    font-size: 1.5em;
+    background-color: #fc194d;
+    padding:2.5%;
+}
+
+/** Match google map kml, marker colors **/
+
+.water { 
+    color : rgb(0, 142, 255);
+    font-weight: bold;
+}
+
+.track {
+    color : rgb(255, 0, 130);
+    font-weight: bold;
+}
+
+.marker {
+    color : rgb(247, 88, 80);
+    font-weight: bold;
+}
+
+/** Extra text crap **/
+
+.bold { 
+    font-weight: bold; 
+}
+
+/** Navigation bar **/
 
 .navbar {
     list-style: none;
@@ -58,9 +98,7 @@ html {
     text-align: center;
 }
 
-.bold {
-    font-weight: bold;
-}
+/** Map display **/
 
 .map-container {
     list-style: none;
@@ -76,18 +114,67 @@ html {
     align-content: space-between;
 }
 
+/** Little story about the current place **/
+
+#map-description {
+    font-size: 0.85em;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    padding-right: 1em;
+    height:10%;
+    overflow: auto;
+    background-color: rgba(215, 214, 226, 0.37);
+}
+
+.map-description-ul {
+    list-style: none;
+}
+
+.map-description-txt-container {
+    overflow: auto;
+    width:50%;
+    float:left;
+}
+
+.map-description-img-container {
+    list-style: none;
+/*    width:50%;*/
+    float:right;
+    
+    list-style: none;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row wrap;
+    justify-content: flex-end;
+}
+
+.map-description-img {
+    height:15em;
+    padding:0.3em;
+}
+
+/** Google map loads into this space **/
+
 .map-item {
     position:absolute;
 /*    background: rgba(80, 80, 80, 0.24);*/
     background-image: url(https://s3-us-west-1.amazonaws.com/wesmjackson.com/gps/Places/RussianRiver/img/becomes%20the%20russian%20river%200.jpg);
     background-size: cover;
     width: 100%;
+/*    height:73%;*/
     height:89%;
     margin: 0 auto;
     font-weight: bold;
     font-size: 2em;
     text-align: center;
 }
+
+/** Click a map marker to display a window **/
 
 #map-item-content {
     width:550px;
@@ -97,27 +184,6 @@ html {
 #map-item-content-img {
     height:400px;
     width:auto;
-}
-
-.footer {
-    position: absolute;
-    color:rgba(159, 159, 159, 0.57);
-    padding-left: 1em;
-    font-size: 0.6em;
-    font-weight:100;
-    bottom: 1em;
-    margin: 0 auto;
-    height:1em;
-}
-
-#error {
-    position: relative;
-    left:0%;
-/*    padding-top: 1.5em;*/
-    color: white;
-    font-size: 1.5em;
-    background-color: #fc194d;
-    padding:2.5%;
 }
 
 /* Center the loader */
@@ -164,4 +230,18 @@ html {
 @keyframes animatebottom { 
   from{ bottom:-100px; opacity:0 } 
   to{ bottom:0; opacity:1 }
+}
+
+/** Different styles for different window sizes **/
+
+@media (max-width: 1000px) {
+  body { font-size: 22px; }
+  #map-description { font-size: 0.6em; }
+/*  .map-item { height:80%; }*/
+}
+
+@media (max-width: 500px) {
+  body { font-size: 16px; }
+/*  .map-item { height:82%; }*/
+    .map-description-img { width: 10em; }
 }

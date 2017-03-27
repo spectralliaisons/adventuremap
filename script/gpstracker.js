@@ -5,6 +5,15 @@ var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://gi
 
 function moveMapToExistingPlace(place) {
     
+    // load description
+    $("#map-description").load("/gps/Places/" + place + "/desc.html");
+    
+    $( ".map-description-img-container li a" ).unbind("click");
+        $( ".map-description-img-container li a" ).click(function( event ) {
+            
+            console.log("CLICK .map-description-img-container li a");
+        });
+    
     var json = window.maps[place];
     if (json) {
         
