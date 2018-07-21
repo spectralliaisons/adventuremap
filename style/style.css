@@ -3,10 +3,6 @@ http://stackoverflow.com/questions/14144426/remove-outline-from-active-jquery-ui
 */
 *:focus { outline:none }
 
-@media screen and (max-width: 980px) {
-  .dispensablse {
-    display: none !important; } }
-
 /* Page */
 body {
 	font: 100%/1.4 Avenir,Menlo,Helvetica Neue,Helvetica,Arial,sans-serif;
@@ -15,7 +11,9 @@ body {
 	margin: 0;
 	padding: 0;
     height: 100%;
-    font-size:24px;
+    font-size:44px;
+    -webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 html {
@@ -24,9 +22,9 @@ html {
 
 .footer {
     position: absolute;
-    color:rgba(159, 159, 159, 0.57);
+    color:#ffffff;
     padding-left: 1em;
-    font-size: 0.6em;
+    font-size: 0.75em;
     font-weight:100;
     bottom: 1em;
     margin: 0 auto;
@@ -38,28 +36,10 @@ html {
 #error {
     position: relative;
     left:0%;
-/*    padding-top: 1.5em;*/
     color: white;
     font-size: 1.5em;
     background-color: #fc194d;
     padding:2.5%;
-}
-
-/** Match google map kml, marker colors **/
-
-.water { 
-    color : rgb(0, 142, 255);
-    font-weight: bold;
-}
-
-.track {
-    color : rgb(255, 0, 130);
-    font-weight: bold;
-}
-
-.marker {
-    color : rgb(247, 88, 80);
-    font-weight: bold;
 }
 
 /** Extra text crap **/
@@ -68,38 +48,63 @@ html {
     font-weight: bold; 
 }
 
-/** Navigation bar **/
-
-.navbar {
-    list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: row wrap;
-    justify-content: flex-end;
+.hamburger{
+  background:none;
+  position:absolute;
+  top:30px;
+  right:50px;
+  line-height:45px;
+  padding:15px 15px 0px 15px;
+  color:#ffffff;
+  border:0;
+  font-size:2.4em;
+  font-weight:bold;
+  cursor:pointer;
+  outline:none;
+  z-index:10000000000000;
+  transition: 0.1s linear;
+}
+.cross{
+  background:none;
+  position:absolute;
+  top:110px;
+  right:50px;
+  padding:7px 15px 0px 15px;
+  color:#343434;
+  border:0;
+  font-size:5em;
+  line-height:65px;
+  font-weight:bold;
+  cursor:pointer;
+  outline:none;
+  z-index:10000000000000;
+  transition: 0.1s linear;
 }
 
-.navbar a {
+/** Dropdown menu **/
+
+.menu {
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    text-decoration: none;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.menu a {
     text-decoration: none;
     display: block;
     color: #6a6a6a;
-    transition: background 0.1s linear;
+    padding-bottom: 20px;
 }
 
-.navbar a:hover, a:active, a:focus {
+.menu a:hover, a:active, a:focus {
     color: #f22493;
-/*    font-weight: bold;*/
 }
 
 .nav-item {
     padding-right:2em;
-/*    width: 8em;*/
-/*    font-weight: bold;*/
-    text-align: center;
 }
 
 /** Map display **/
@@ -166,12 +171,10 @@ html {
 
 .map-item {
     position:absolute;
-/*    background: rgba(80, 80, 80, 0.24);*/
     background-image: url(https://s3-us-west-1.amazonaws.com/wesmjackson.com/gps/Places/RussianRiver/img/becomes%20the%20russian%20river%200.jpg);
     background-size: cover;
     width: 100%;
-/*    height:73%;*/
-    height:89%;
+    height:100%;
     margin: 0 auto;
     font-weight: bold;
     font-size: 2em;

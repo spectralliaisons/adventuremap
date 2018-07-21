@@ -1,3 +1,4 @@
+// prevent caching
 function cacheBuster(){return "?rev=" + (new Date()).getTime()};
 
 // TODO: not this? google needs kml to be hosted from publicly-visible location
@@ -103,13 +104,14 @@ function initTracker(place) {
                 });
                 
                 var label = location.aud ? 'movie-theater' : 'point-of-interest'
+                var color = location.aud ? '#ea492c' : '#ea2c75'
 
                 var marker = new mapIcons.Marker({
                     map: gmap,
                     position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
                     icon: {
                         path: mapIcons.shapes.SQUARE_PIN,
-                        fillColor: '#ea2cd4',
+                        fillColor: color,
                         fillOpacity: 1,
                         strokeColor: '',
                         strokeWeight: 0

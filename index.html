@@ -12,22 +12,28 @@
     <html>
       <body>
           
-          <!-- 3rd party js -->
+          <!-- jquery -->
           <script type="text/javascript" src="script/3rdparty/jquery-1.6.4.min.js"></script>
           <script type="text/javascript" src="script/3rdparty/jquery.address-1.5.min.js"></script>
+          <!-- underscore -->
           <script type="text/javascript" src="script/3rdparty/underscore-min.js"></script>
           <!-- custom map icons -->
           <script type="text/javascript" src="map-icons-master/dist/js/map-icons.js"></script>
           
-          <!-- list of map locations -->
-          <ul class="navbar">
-              <li class="nav-item bold"><a href="#RussianRiver">Russian River</a></li>
-              <li class="nav-item bold"><a href="#EelRiver">Eel River</a></li>
-              <li class="nav-item bold"><a href="#FeatherRiver">Feather River</a></li>
-              <li class="nav-item bold"><a href="#SFWatershed">SF Watershed</a></li>
-              <li class="nav-item bold"><a href="#CostaRica">Costa Rica</a></li>
-              <li class="nav-item"><a href="#SanJoaquinRiver">San Joaquin River</a></li>
-          </ul>
+          <!-- hamburger menu -->
+          <button class="hamburger">&#9776;</button>
+          <button class="cross">&#735;</button>
+          <!-- dropdown menu of map locations -->
+          <div class="menu">
+              <ul>
+                  <a href="#RussianRiver">Russian River</a>
+                  <a href="#EelRiver">Eel River</a>
+                  <a href="#FeatherRiver">Feather River</a>
+                  <a href="#SFWatershed">SF Watershed</a>
+                  <a href="#CostaRica">Costa Rica</a>
+                  <a href="#SanJoaquinRiver">San Joaquin River</a>
+              </ul>
+          </div>
           
           <!--div id="map-description"></div-->
           
@@ -42,8 +48,8 @@
               <div id="error" style="display:none">that place does not exist</div>
               
               <div class="footer">
-                &copy; wes jackson 2017 :: "love and water are never wasted; they are the efflux of our inner nature"
-            </div>
+                  &copy; wes jackson 2017 :: "love and water are never wasted; they are the efflux of our inner nature"
+              </div>
           </div>
           
           <!-- my scripts -->
@@ -57,14 +63,24 @@
               // google maps api is ready
               function initMap() {
                   
+                  console.log("Google Maps API is ready!");
+                  
                   // track map loading history; don't load the same map twice
                   window.maps = {};
                   
-//                  _.delay(function(){ initTracker("CostaRica");}, 250);
+                  // load the current place in url if needed
+                  if (window.location.hash == "") {
+                      // default land at Russian River
+                      window.loadContent('#RussianRiver');
+                  }
+                  else {
+                      window.loadContent(window.location.hash);
+                  }
               };
         
           </script>
-          
+        
+        <!-- initMap() (above) will be called when Google Maps API is ready -->
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuY9A0oLwzD2mi3NhoJ-LUujtvxJ3vck8&callback=initMap">
         </script>

@@ -3,11 +3,26 @@ if (!window.loadContent) {
     
     $( document ).ready(function() {
         
+        // tapping hamburger button slides menu down
+        $( ".cross" ).hide();
+        $( ".menu" ).hide();
+        $( ".hamburger" ).click(function() {
+            $( ".menu" ).slideToggle( "slow", function() {
+                $( ".hamburger" ).hide();
+                $( ".cross" ).show();
+            });
+        });
+
+        $( ".cross" ).click(function() {
+            $( ".menu" ).slideToggle( "slow", function() {
+                $( ".cross" ).hide();
+                $( ".hamburger" ).show();
+            });
+        });
+        
         // prevent another click from registering if this script was already loaded
-        $( ".navbar li a" ).unbind('click');
-        $( ".navbar li a" ).click(function( event ) {
-            
-            console.log("CLICK .navbar li a");
+        $( ".menu li a" ).unbind('click');
+        $( ".menu li a" ).click(function( event ) {
             
             event.preventDefault();
             href = $(this).attr('href');
@@ -17,15 +32,8 @@ if (!window.loadContent) {
     
     window.loadContent = function(href) {
         
-        console.log("loadContent " + href);
-        
         item = $(href)
         place = item.selector.replace("#", "");
-        
-        // no need to reload same page
-//        if (location.hash == item.selector) { return; }
-        
-        console.log(place)
         
         // set the page title
         $.address.title($.address.title().split(' | ')[0] + ' | ' + place);
@@ -45,30 +53,8 @@ if (!window.loadContent) {
         }
     }
     
-    // The following code is based off jquery.address-1.5/samples/tabs/index.html
-    
-//    var tabs,
-//        tabEvent = false,
-//        initialTab = 'RussianRiver',
-//        navSelector = '#navbar li a',
-//        navFilter = function(el) {
-//            return $(el).attr('href').replace(/^#/, '');
-//        },
-//        panelSelector = '#page',
-//        panelFilter = function() {
-//            $(panelSelector + ' a').filter(function() {
-//                return $(navSelector + ' a[title=' + $(this).attr('title') + ']').size() != 0;
-//            }).each(function(event) {
-//                $(this).attr('href', '#' + $(this).attr('title').replace(/ /g, '_'));
-//            });
-//        };
-    
     // Initializes plugin features
     $.address.strict(false).wrap(true);
-    
-//    if ($.address.value() == '') {
-//        $.address.history(false).value(initialTab).history(true);
-//    }
     
     // enable back, fwd button history
     // http://stackoverflow.com/questions/824349/modify-the-url-without-reloading-the-page/3354511#3354511
@@ -87,7 +73,7 @@ if (!window.loadContent) {
         if (event.value != "") {
             window.loadContent('#' + event.value);
         } else {
-            window.loadContent('#RussianRiver');
+            console.log("address changed to nowhere!");
         }
     });
 }
