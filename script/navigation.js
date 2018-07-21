@@ -4,20 +4,11 @@ if (!window.loadContent) {
     $( document ).ready(function() {
         
         // tapping hamburger button slides menu down
-        $( ".cross" ).hide();
         $( ".menu" ).hide();
-        $( ".hamburger" ).click(function() {
-            $( ".menu" ).slideToggle( "slow", function() {
-                $( ".hamburger" ).hide();
-                $( ".cross" ).show();
-            });
-        });
-
-        $( ".cross" ).click(function() {
-            $( ".menu" ).slideToggle( "slow", function() {
-                $( ".cross" ).hide();
-                $( ".hamburger" ).show();
-            });
+        
+        $("#hamburger").click(function(){
+            $(this).toggleClass('open');
+             $( ".menu" ).slideToggle( "slow", function() {});
         });
         
         // prevent another click from registering if this script was already loaded

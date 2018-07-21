@@ -48,37 +48,89 @@ html {
     font-weight: bold; 
 }
 
-.hamburger{
-  background:none;
-  position:absolute;
-  top:30px;
-  right:50px;
-  line-height:45px;
-  padding:15px 15px 0px 15px;
-  color:#ffffff;
-  border:0;
-  font-size:2.4em;
-  font-weight:bold;
-  cursor:pointer;
-  outline:none;
-  z-index:10000000000000;
-  transition: 0.1s linear;
+#hamburger {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  margin: 50px auto;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .5s ease-in-out;
+  -moz-transition: .5s ease-in-out;
+  -o-transition: .5s ease-in-out;
+  transition: .5s ease-in-out;
+  cursor: pointer;
 }
-.cross{
-  background:none;
-  position:absolute;
-  top:110px;
-  right:50px;
-  padding:7px 15px 0px 15px;
-  color:#343434;
-  border:0;
-  font-size:5em;
-  line-height:65px;
-  font-weight:bold;
-  cursor:pointer;
-  outline:none;
-  z-index:10000000000000;
-  transition: 0.1s linear;
+#hamburger span {
+  display: block;
+  position: absolute;
+  height: 9px;
+  width: 50%;
+  background: #e8e8e8;
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .25s ease-in-out;
+  -moz-transition: .25s ease-in-out;
+  -o-transition: .25s ease-in-out;
+  transition: .25s ease-in-out;
+}
+/* Icon 3 */
+
+/* circle background */
+#hamburger span:nth-child(1) {
+    background: #f22493;
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+}
+
+/* the hamburger lines */
+#hamburger span:nth-child(2) {
+  top: 20px;
+  left: 25%;
+}
+
+#hamburger span:nth-child(3),#hamburger span:nth-child(4) {
+  top: 40px;
+  left: 25%;
+}
+
+#hamburger span:nth-child(5) {
+  top: 60px;
+  left: 25%;
+}
+
+#hamburger.open span:nth-child(2) {
+  top: 40px;
+  width: 0%;
+  left: 50%;
+}
+
+#hamburger.open span:nth-child(3) {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#hamburger.open span:nth-child(4) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+#hamburger.open span:nth-child(5) {
+  top: 60px;
+  width: 0%;
+  left: 50%;
 }
 
 /** Dropdown menu **/
