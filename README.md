@@ -3,9 +3,10 @@ https://spectralliaisons.github.io/multimap/
 
 Overlay gps tracks on Google Maps with pins for photos and audio taken.
 
+![an image examplar](./rsc/screenshot.png)
 
 ##
-How to add a track with images and optional audio:
+Adding a track with images and optional audio:
 
 1. Create a directory for the place in `gps/Places/`. You can copy an existing directory and clear out img/, imgErr/, imgSm/, aud/ and kml/.
 
