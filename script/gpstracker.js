@@ -10,8 +10,7 @@ function moveMapToExistingPlace(place) {
     
     $( ".map-description-img-container li a" ).unbind("click");
         $( ".map-description-img-container li a" ).click(function( event ) {
-            
-            console.log("CLICK .map-description-img-container li a");
+            // do anything here?
         });
     
     var json = window.maps[place];
@@ -52,8 +51,6 @@ function initTracker(place) {
             // setup map type
             if (!window.gmap) {
                 
-                console.log("new gmap for " + place);
-                
                 window.gmap = new google.maps.Map(document.getElementById('map'), {
                     zoom: json.zoom,
                     center: cen,
@@ -72,8 +69,6 @@ function initTracker(place) {
                 });
             }
             else {
-                console.log("set gmap for " + place);
-                
                 moveMapToExistingPlace(place);
             }
 
@@ -106,10 +101,20 @@ function initTracker(place) {
                 var currInfoWindow = new google.maps.InfoWindow({
                     content: contentString
                 });
+                
+                var label = location.aud ? 'movie-theater' : 'point-of-interest'
 
-                var marker = new google.maps.Marker({
-                    position: location.loc,
-                    map: gmap
+                var marker = new mapIcons.Marker({
+                    map: gmap,
+                    position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
+                    icon: {
+                        path: mapIcons.shapes.SQUARE_PIN,
+                        fillColor: '#ea2cd4',
+                        fillOpacity: 1,
+                        strokeColor: '',
+                        strokeWeight: 0
+                    },
+                    map_icon_label: '<span class="map-icon map-icon-' + label + '"></span>'
                 });
 
                 marker.addListener('click', function() {
