@@ -118,6 +118,7 @@ html {
   -moz-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
+  left: 40%;
 }
 
 #hamburger.open span:nth-child(4) {
@@ -125,6 +126,7 @@ html {
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
+  left: 10%;
 }
 
 #hamburger.open span:nth-child(5) {
