@@ -49,10 +49,10 @@ html {
 }
 
 #hamburger {
-  width: 100px;
-  height: 100px;
+  width: 2.5em;
+  height: 2.5em;
   position: relative;
-  margin: 50px auto;
+  margin: 10px auto;
   -webkit-transform: rotate(0deg);
   -moz-transform: rotate(0deg);
   -o-transform: rotate(0deg);
@@ -66,10 +66,10 @@ html {
 #hamburger span {
   display: block;
   position: absolute;
-  height: 9px;
+  height: 0.23em;
   width: 50%;
   background: #e8e8e8;
-  border-radius: 9px;
+  border-radius: 2.5em;
   opacity: 1;
   left: 0;
   -webkit-transform: rotate(0deg);
@@ -91,48 +91,48 @@ html {
     border-radius: 50%;
 }
 
-/* the hamburger lines */
+/* hamburger line 1 */
 #hamburger span:nth-child(2) {
-  top: 20px;
+  opacity: 1;
+  top: 25%;
   left: 25%;
 }
 
-#hamburger span:nth-child(3),#hamburger span:nth-child(4) {
-  top: 40px;
+/* hamburger line 2 */
+#hamburger span:nth-child(3) {
+  top: 45%;
   left: 25%;
 }
 
-#hamburger span:nth-child(5) {
-  top: 60px;
+/* hamburger line 3 */
+#hamburger span:nth-child(4) {
+  top: 65%;
   left: 25%;
 }
 
+/* hamburger line 1 open becomes invisible */
 #hamburger.open span:nth-child(2) {
-  top: 40px;
-  width: 0%;
-  left: 50%;
+    opacity: 0;
 }
 
+/* hamburger line 2 open rotates right */
 #hamburger.open span:nth-child(3) {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
+  top: 40%;
   left: 40%;
 }
 
+/* hamburger line 3 open rotates left */
 #hamburger.open span:nth-child(4) {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
+  top: 40%;
   left: 10%;
-}
-
-#hamburger.open span:nth-child(5) {
-  top: 60px;
-  width: 0%;
-  left: 50%;
 }
 
 /** Dropdown menu **/
@@ -294,15 +294,15 @@ html {
 }
 
 /** Different styles for different window sizes **/
-
+/*
 @media (max-width: 1000px) {
   body { font-size: 22px; }
   #map-description { font-size: 0.6em; }
-/*  .map-item { height:80%; }*/
 }
-
+*/
+/*
 @media (max-width: 500px) {
   body { font-size: 16px; }
-/*  .map-item { height:82%; }*/
     .map-description-img { width: 10em; }
 }
+*/
