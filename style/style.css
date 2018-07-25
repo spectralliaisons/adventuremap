@@ -110,14 +110,9 @@ html {
   left: 25%;
 }
 
-/* hamburger line 1 open becomes invisible */
+/* hamburger line 1 open rotates right */
 #hamburger.open span:nth-child(2) {
-    opacity: 0;
-}
-
-/* hamburger line 2 open rotates right */
-#hamburger.open span:nth-child(3) {
-  -webkit-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
@@ -125,7 +120,17 @@ html {
   left: 40%;
 }
 
-/* hamburger line 3 open rotates left */
+/* hamburger line 2 open rotates left */
+#hamburger.open span:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  top: 40%;
+  left: 10%;
+}
+
+/* hamburger line 3 rotates left (same position as line 2) */
 #hamburger.open span:nth-child(4) {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
