@@ -298,16 +298,33 @@ html {
   to{ bottom:0; opacity:1 }
 }
 
-/** Different styles for different window sizes **/
-/*
-@media (max-width: 1000px) {
-  body { font-size: 22px; }
-  #map-description { font-size: 0.6em; }
+/* Large phones */
+@media screen and (max-width: 900px) {
+    body {
+        font-size:16px;
+    }
+    .footer {
+        bottom: 2em;
+    }
+    #hamburger {
+        width: 5em;
+        height: 5em;
+    }
+    #hamburger span {
+        height: 0.5em;
+    }
 }
-*/
-/*
-@media (max-width: 500px) {
-  body { font-size: 16px; }
-    .map-description-img { width: 10em; }
+
+/* Small phones */
+@media screen and (max-width: 750px) {
+    .footer {
+        display:none;
+    }
+    #hamburger {
+        width: 3.5em;
+        height: 3.5em;
+    }
+    #hamburger span {
+        height: 0.3em;
+    }
 }
-*/
