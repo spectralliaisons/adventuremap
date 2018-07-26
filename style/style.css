@@ -43,9 +43,33 @@ html {
 }
 
 /** Extra text crap **/
-
 .bold { 
     font-weight: bold; 
+}
+
+/* Center the loader */
+#loader {
+  display: none;
+  position: relative;
+  z-index: 1;
+  margin: 10px auto;
+  border: 1em solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  border-top: 1em solid #f22493;
+  width: 2.5em;
+  height: 2.5em;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 #hamburger {
@@ -252,34 +276,8 @@ html {
     width:auto;
 }
 
-/* Center the loader */
-#loader {
- display: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  margin: -75px 0 0 -75px;
-  border: 1em solid rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  border-top: 1em solid #f22493;
-  width: 5em;
-  height: 5em;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 /* Add animation to "page content" */
+/*
 .animate-bottom {
   position: relative;
   -webkit-animation-name: animatebottom;
@@ -297,6 +295,7 @@ html {
   from{ bottom:-100px; opacity:0 } 
   to{ bottom:0; opacity:1 }
 }
+*/
 
 /* Large phones */
 @media screen and (max-width: 900px) {

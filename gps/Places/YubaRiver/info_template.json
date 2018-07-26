@@ -1,0 +1,13 @@
+{
+	"zoom":10,
+	"center":"head of the north yuba river",
+	"mapType":"hybrid",
+	"locations":[
+		{
+			"label":"head of the north yuba river",
+			"loc":{"lat": 39.6224372, "lng": -120.496933},
+			"img":null,
+			"aud":null
+		}
+	]
+}
