@@ -16,7 +16,7 @@ Adding a track with images and optional audio:
 
 4. Add any audio files you may have in aud/. File name sans extension must match an image with valid GPS coordinates or else will not appear.
 
-5. Modify `/info_template.json`, which specifies basic map style for this place:
+5. Modify `/info_template.json`, which specifies basic map style for this place: Add a `loc` at where you want to center the map with `label` and match `center` to `label`; e.g.:
 
 ```
 {
@@ -34,7 +34,7 @@ Adding a track with images and optional audio:
 }
 ```
 
-6. Run `gps/python/create gps info.ipynb`. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/Places/. Info.json is loaded in  `script/gpstracker.js `. 
+6. Run `gps/python/process_places.ipynb`. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/Places/. Info.json is loaded in  `script/gpstracker.js `. 
 
 7. Upload Places/ to Amazon AWS (the url of the variable `origin` in gpstracker) at gps/Places/ and make the new place directory publicly visible.
 Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible.
