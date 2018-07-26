@@ -1,5 +1,5 @@
 // prevent caching
-function cacheBuster(){return "?rev=" + (new Date()).getTime()};
+function cacheBust(url){return url + "?rev=" + (new Date()).getTime()};
 
 // TODO: not this? google needs kml to be hosted from publicly-visible location
 var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
@@ -10,26 +10,22 @@ function initTracker(place) {
     if (moveMapToExistingPlace(place))
         return;
     
-    // show loader
-    document.getElementById("loader").style.display = "block";
-    
-    // hide hamburger
-    document.getElementById("hamburger").style.display = "none";
+    setLoaderVisible(true);
     
     var basePath = origin + "/gps/Places/" + place;
     
     $.ajax({
-        url: basePath + "/info.json" + cacheBuster(),
+        url: cacheBust(basePath + "/info.json"),
         dataType: "json",
         success: function(json) {
             try {
                 handleJSON(basePath, json);
             }
             catch (err) {
-                showError()
+                setErrorVisible(true);
             }
         },
-        error: showError
+        error: function(){setErrorVisible(true);}
     });
 }
 
@@ -78,7 +74,7 @@ function handleJSON(basePath, json) {
             mapTypeId: json.mapType,
             mapTypeControlOptions : {
                 style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-                mapTypeIds: ['terrain', 'hybrid']
+                mapTypeIds: ['terrain', 'hybrid', 'satellite', 'roadmap']
             },
             fullscreenControl:true
         });
@@ -87,10 +83,7 @@ function handleJSON(basePath, json) {
             // do something only the first time the map is loaded
             // hide error
             document.getElementById("error").style.display = "none";
-            // hide loader
-            document.getElementById("loader").style.display = "none";
-            // show hamburger menu
-            document.getElementById("hamburger").style.display = "block";
+            setLoaderVisible(false);
         });
     }
     else {
@@ -101,7 +94,7 @@ function handleJSON(basePath, json) {
     // param to kml url prevents caching by Google
     _.each(json.layers, function(layer) {
         trackLayer = new google.maps.KmlLayer({
-            url: basePath + /kml/ + layer + cacheBuster(),
+            url: cacheBust(basePath + /kml/ + layer),
             map: gmap
         });
     });
@@ -110,9 +103,9 @@ function handleJSON(basePath, json) {
     var validLocations = _.filter(json.locations, validLocation);
     _.each(validLocations, function(location) {
         
-        var imgLgSrc = location.img ? (basePath + /img/ + location.img + cacheBuster()) : "";
-        var imgSmSrc = location.img ? (basePath + /imgSm/ + location.img + cacheBuster()) : "";
-        var audSrc = location.aud ? (basePath + /aud/ + location.aud + cacheBuster()) : "";
+        var imgLgSrc = location.img ? cacheBust(basePath + /img/ + location.img) : "";
+        var imgSmSrc = location.img ? cacheBust(basePath + /imgSm/ + location.img) : "";
+        var audSrc = location.aud ? cacheBust(basePath + /aud/ + location.aud) : "";
 
         // html contents of marker window
         var contentString = '<div id="map-item-content">'+
@@ -158,15 +151,18 @@ function handleJSON(basePath, json) {
     });
 }
 
-// failed to load json for this place...
-function showError() { 
+function setLoaderVisible(visible) {
+    // show loader
+    document.getElementById("loader").style.display = visible ? "block" : "none";
     
-    // hide loader
-    document.getElementById("loader").style.display = "none";
+    // hide hamburger
+    document.getElementById("hamburger").style.display = visible ? "none" : "block";
+}
+
+// failed to load json for a place
+function setErrorVisible(visible) { 
     
-    // show menu
-    document.getElementById("hamburger").style.display = "block";
+    document.getElementById("error").style.display = visible ? "block" : "none";
     
-    // show error
-    document.getElementById("error").style.display = "block";
+    setLoaderVisible(false);
 }

@@ -1,3 +1,9 @@
+/* do i really need all these fonts?? */
+@import url(../map-icons-master/dist/fonts/map-icons.eot);
+@import url(../map-icons-master/dist/fonts/map-icons.svg);
+@import url(../map-icons-master/dist/fonts/map-icons.ttf);
+@import url(../map-icons-master/dist/fonts/map-icons.woff);
+
 /* prevent blue outline when navigating by jquery 
 http://stackoverflow.com/questions/14144426/remove-outline-from-active-jquery-ui-tab
 */
