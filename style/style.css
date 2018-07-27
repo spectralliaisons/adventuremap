@@ -1,9 +1,3 @@
-/* do i really need all these fonts?? */
-@import url(../map-icons-master/dist/fonts/map-icons.eot);
-@import url(../map-icons-master/dist/fonts/map-icons.svg);
-@import url(../map-icons-master/dist/fonts/map-icons.ttf);
-@import url(../map-icons-master/dist/fonts/map-icons.woff);
-
 /* prevent blue outline when navigating by jquery 
 http://stackoverflow.com/questions/14144426/remove-outline-from-active-jquery-ui-tab
 */
@@ -26,7 +20,7 @@ html {
     height: 100%;
 }
 
-.footer {
+#footer {
     position: absolute;
     color:#ffffff;
     padding-left: 1em;
@@ -172,7 +166,7 @@ html {
 
 /** Dropdown menu **/
 
-.menu {
+#menu {
     display: block;
     color: #f2f2f2;
     text-align: center;
@@ -181,15 +175,19 @@ html {
     font-weight: 500;
 }
 
-.menu a {
+#menu a {
     text-decoration: none;
     display: block;
     color: #6a6a6a;
     padding-bottom: 0.55em;
 }
 
-.menu a:hover, a:active, a:focus {
+#menu a:hover {
     color: #f22493;
+}
+
+.active {
+    color: #f22493 !important;
 }
 
 .nav-item {
@@ -198,7 +196,7 @@ html {
 
 /** Map display **/
 
-.map-container {
+#map-container {
     list-style: none;
 
     display: -webkit-box;
@@ -210,50 +208,6 @@ html {
     -webkit-flex-flow: column;
     justify-content: flex-start;
     align-content: space-between;
-}
-
-/** Little story about the current place **/
-
-#map-description {
-    font-size: 0.85em;
-    padding-left: 1em;
-    padding-bottom: 1em;
-    padding-right: 1em;
-    height:10%;
-    overflow: auto;
-    background-color: rgba(215, 214, 226, 0.37);
-}
-
-.map-description-ul {
-    list-style: none;
-}
-
-.map-description-txt-container {
-    overflow: auto;
-    width:50%;
-    float:left;
-}
-
-.map-description-img-container {
-    list-style: none;
-/*    width:50%;*/
-    float:right;
-    
-    list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: row wrap;
-    justify-content: flex-end;
-}
-
-.map-description-img {
-    height:15em;
-    padding:0.3em;
 }
 
 /** Google map loads into this space **/
@@ -282,33 +236,12 @@ html {
     width:auto;
 }
 
-/* Add animation to "page content" */
-/*
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
-}
-
-@-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
-}
-
-@keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
-}
-*/
-
 /* Large phones */
 @media screen and (max-width: 900px) {
     body {
         font-size:16px;
     }
-    .footer {
+    #footer {
         bottom: 2em;
     }
     #hamburger {
@@ -322,7 +255,7 @@ html {
 
 /* Small phones */
 @media screen and (max-width: 750px) {
-    .footer {
+    #footer {
         display:none;
     }
     #hamburger {

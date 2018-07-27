@@ -1,43 +1,37 @@
 // prevent caching
-function cacheBust(url){return url + "?rev=" + (new Date()).getTime()};
+function cacheBust(url) { return url + "?rev=" + (new Date()).getTime(); }
 
 // TODO: not this? google needs kml to be hosted from publicly-visible location
 var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
 
 function initTracker(place) {
     
+    console.log("initTracker : " + place);
+    
     // is this place already loaded?
-    if (moveMapToExistingPlace(place))
+    if (moveMapToExistingPlace(place)) {
+        console.log("already loaded. bailing!");
         return;
+    }
     
     setLoaderVisible(true);
     
     var basePath = origin + "/gps/Places/" + place;
     
-    $.ajax({
-        url: cacheBust(basePath + "/info.json"),
-        dataType: "json",
-        success: function(json) {
-            try {
-                handleJSON(basePath, json);
+    return fetch(cacheBust(basePath + "/info.json"))
+        .then(res => {
+            if (res.ok) {
+                res.json().then(json => {
+                    handleJSON(basePath, json);
+                });
             }
-            catch (err) {
+            else {
                 setErrorVisible(true);
             }
-        },
-        error: function(){setErrorVisible(true);}
-    });
+        })
 }
 
 function moveMapToExistingPlace(place) {
-    
-    // load description
-    $("#map-description").load("/gps/Places/" + place + "/desc.html");
-    
-    $( ".map-description-img-container li a" ).unbind("click");
-        $( ".map-description-img-container li a" ).click(function( event ) {
-            // do anything here?
-        });
     
     var json = window.maps[place];
     if (json) {
@@ -52,11 +46,18 @@ function moveMapToExistingPlace(place) {
 }
 
 function validLocation(location) {
-    return (location.loc != undefined && location.loc.lat != undefined && location.loc.lng != undefined);
+    var valid = (location.loc != undefined && location.loc.lat != undefined && location.loc.lng != undefined);
+    if (!valid) {
+        console.log("INVALID LOCATION: " + JSON.stringify(location));
+    }
+    return valid;
 }
 
 function handleJSON(basePath, json) {
     
+    console.log("handleJSON");
+    
+    // TODO: use promise or something to prevent multiple loading of places
     window.maps[place] = json;
             
     // we may not know where to center the map
@@ -95,60 +96,86 @@ function handleJSON(basePath, json) {
     _.each(json.layers, function(layer) {
         trackLayer = new google.maps.KmlLayer({
             url: cacheBust(basePath + /kml/ + layer),
-            map: gmap
+            map: window.gmap
         });
     });
-
+    
     // add interactive marker for each location
     var validLocations = _.filter(json.locations, validLocation);
     _.each(validLocations, function(location) {
-        
-        var imgLgSrc = location.img ? cacheBust(basePath + /img/ + location.img) : "";
-        var imgSmSrc = location.img ? cacheBust(basePath + /imgSm/ + location.img) : "";
-        var audSrc = location.aud ? cacheBust(basePath + /aud/ + location.aud) : "";
-
-        // html contents of marker window
-        var contentString = '<div id="map-item-content">'+
-        "<h2>" + location.label + "</h2>"+
-        "<a href='" + imgLgSrc + "' target='_blank' id='map-item-content-img'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
-        (location.aud ? "<audio controls style='width: 100%'><source src='" + audSrc + "' type='audio/mpeg'>Your browser does not support audio. Good job!</audio>" : "")+
-        '</p>'+
-        '</div>'+
-        '</div>';
 
         //  only one info window at a time
         var currInfoWindow = new google.maps.InfoWindow({
-            content: contentString
+            content: createWindowHTML(location, basePath)
         });
-
-        // different colors for img only vs img+audio
-        var label = location.aud ? 'movie-theater' : 'point-of-interest'
-        var color = location.aud ? '#2e0a18' : '#ea2c75'
-
-        var marker = new mapIcons.Marker({
-            map: gmap,
-            position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
-            icon: {
-                path: mapIcons.shapes.SQUARE_PIN,
-                fillColor: color,
-                fillOpacity: 1,
-                strokeColor: '',
-                strokeWeight: 0
-            },
-            map_icon_label: '<span class="map-icon map-icon-' + label + '"></span>'
-        });
-
-        marker.addListener('click', function() {
-
-            if (window.lastInfoWindow) {
-                window.lastInfoWindow.close();
-            }
-
-            currInfoWindow.open(gmap, marker);
-
-            window.lastInfoWindow = currInfoWindow;
-        });
+        
+        createMarker(location, currInfoWindow, window.gmap);
     });
+}
+
+function createWindowHTML(location, basePath) {
+    
+    var imgLgSrc = location.img ? cacheBust(basePath + /img/ + location.img) : "";
+    var imgSmSrc = location.img ? cacheBust(basePath + /imgSm/ + location.img) : "";
+    var audSrc = location.aud ? cacheBust(basePath + /aud/ + location.aud) : "";
+
+    // html contents of marker window
+    return '<div id="map-item-content">'+
+    "<h2>" + location.label + "</h2>"+
+    "<a href='" + imgLgSrc + "' target='_blank' id='map-item-content-img'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
+    (location.aud ? "<audio controls style='width: 100%'><source src='" + audSrc + "' type='audio/mpeg'>Your browser does not support audio. Good job!</audio>" : "")+
+    '</p>'+
+    '</div>'+
+    '</div>';
+}
+
+function createMarker(location, currInfoWindow, map) {
+    
+    var markerOpts = {
+        map: map,
+        position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
+//            animation: google.maps.Animation.DROP,
+        title: location.aud ? 'photo + audio' : 'photo',
+        zIndex: location.aud ? 1 : 0, // make audio markers easier to see
+        label: location.aud ? " " : " "
+    }
+    
+    function onClick(marker) {
+        
+        if (window.lastInfoWindow) {
+            window.lastInfoWindow.close();
+        }
+
+        currInfoWindow.open(gmap, marker);
+
+        window.lastInfoWindow = currInfoWindow;
+    }
+    
+    // add marker
+    var markerPin = new google.maps.Marker(markerOpts);
+    markerPin.addListener('click', function(){onClick(markerPin)});
+    
+    // add marker label as svg
+    var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
+        icon: location.aud ? audioLabel() : photoLabel()
+    }));
+    markerLabel.addListener('click', function(){onClick(markerLabel)});
+}
+
+function audioLabel() {
+    
+    return {
+        anchor: new google.maps.Point(12, 40),
+        url: "./rsc/ic_volume_up_24px.svg"
+    }
+}
+
+function photoLabel() {
+    
+    return {
+        anchor: new google.maps.Point(12, 40),
+        url: "./rsc/ic_camera_alt_24px.svg"
+    }
 }
 
 function setLoaderVisible(visible) {

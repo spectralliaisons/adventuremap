@@ -1,6 +1,7 @@
 {
     "center":"head of the north yuba river",
     "layers":[
+        "minesandyuba_orig.kml",
         "yubariver.kml",
         "minesandyuba.kml",
         "yubarivertrip.kml"
@@ -152,24 +153,12 @@
         },
         {
             "aud":null,
-            "img":"IMG_7250.jpg",
-            "label":"IMG_7250",
-            "loc":null
-        },
-        {
-            "aud":null,
             "img":"IMG_7244.jpg",
             "label":"IMG_7244",
             "loc":{
                 "lat":39.783005555555555,
                 "lng":-120.8685611111111
             }
-        },
-        {
-            "aud":null,
-            "img":"IMG_7249.jpg",
-            "label":"IMG_7249",
-            "loc":null
         },
         {
             "aud":null,

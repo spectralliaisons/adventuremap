@@ -3,68 +3,62 @@ if (!window.loadContent) {
     
     $( document ).ready(function() {
         
-        // tapping hamburger button slides menu down
-        $( ".menu" ).hide();
+        // menu is initially retracted
+        $( "#menu" ).hide();
         
+        // tapping hamburger button slides menu down
         $("#hamburger").click(function(){
             $(this).toggleClass('open');
-             $( ".menu" ).slideToggle( "slow", function() {});
+            $( "#menu" ).slideToggle( "slow", function() {});
         });
         
         // prevent another click from registering if this script was already loaded
-        $( ".menu li a" ).unbind('click');
-        $( ".menu li a" ).click(function( event ) {
+        $( "#menu ul a" ).unbind('click');
+        $( "#menu ul a" ).click(function( event ) {
             
+            // close menu
+            $("#hamburger").click();
+            
+            // load the place clicked on in the menu
             event.preventDefault();
             href = $(this).attr('href');
+            
+            // update navigation history
+            place = href.replace("#", "");
+            window.history.pushState({id: place}, place, href);
+            
             window.loadContent(href);
         });
     });   
     
     window.loadContent = function(href) {
         
-        item = $(href)
-        place = item.selector.replace("#", "");
+        console.log("loadContent " + href);
+        
+        // remove hash for the place name
+        place = href.replace("#", "");
         
         // set the page title
-        $.address.title($.address.title().split(' | ')[0] + ' | ' + place);
-        
-        // update navigation history
-        history.pushState({id: place}, place, href)
-        
-        // show page nav tab as active
-        $(href).addClass('active')
+        document.title = document.title.split(' | ')[0] + ' | ' + place;
+
+        // show all nav pages as inactive
+        $("#menu ul a").each(function(i,a){$(a).removeClass('active')});
+        // show the loading page nav tab as active
+        $(href).addClass('active');
         
         // load the gmap with this place data
-        try {
-            initTracker(place)
-        }
-        catch (error) {
-            console.log("nope");
-        }
+        initTracker(place);
     }
     
-    // Initializes plugin features
-    $.address.strict(false).wrap(true);
-    
     // enable back, fwd button history
-    // http://stackoverflow.com/questions/824349/modify-the-url-without-reloading-the-page/3354511#3354511
-    window.onpopstate = function(e){
-        if(e.state){
-            
+    window.onpopstate = function(e) {
+        if (e.state) {
             window.loadContent('#' + e.state.id);
         }
     };
     
-    // Address handler
-    $.address.init(function(event) {
-        
-    }).change(function(event) {
-    
-        if (event.value != "") {
-            window.loadContent('#' + event.value);
-        } else {
-            console.log("address changed to nowhere!");
-        }
-    });
+    // handle change of address (url hash)
+    window.onhashchange = function() {
+        window.loadContent(window.location.hash);
+    }
 }
