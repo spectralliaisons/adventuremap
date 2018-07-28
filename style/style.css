@@ -42,9 +42,8 @@ html {
     padding:2.5%;
 }
 
-/** Extra text crap **/
-.bold { 
-    font-weight: bold; 
+.hidden {
+    display: none;
 }
 
 /* Center the loader */

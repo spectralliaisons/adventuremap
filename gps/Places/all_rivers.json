@@ -1,0 +1,40 @@
+{
+    "places":[
+        {
+            "disp":"All",
+            "id":"All"
+        },
+        {
+            "disp":"SF Watershed",
+            "id":"SFWatershed"
+        },
+        {
+            "disp":"Sacramento River",
+            "id":"SacramentoRiver"
+        },
+        {
+            "disp":"San Joaquin River",
+            "id":"SanJoaquinRiver"
+        },
+        {
+            "disp":"Feather River",
+            "id":"FeatherRiver"
+        },
+        {
+            "disp":"Russian River",
+            "id":"RussianRiver"
+        },
+        {
+            "disp":"Yuba River",
+            "id":"YubaRiver"
+        },
+        {
+            "disp":"Costa Rica",
+            "id":"CostaRica"
+        },
+        {
+            "disp":"Eel River",
+            "id":"EelRiver"
+        }
+    ]
+}

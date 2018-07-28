@@ -8,24 +8,27 @@
     <link rel="shortcut icon" href="rsc/ico.png"> 
 </head>
 <body>
-    <!-- jquery -->
+    <!-- THIRD PARTY BEGIN -->
     <script type="text/javascript" src="script/3rdparty/jquery-3.3.1.min.js"></script>
-    <!-- underscore -->
     <script type="text/javascript" src="script/3rdparty/underscore-min.js"></script>
+    <script type="text/javascript" src="script/3rdparty/mustache.min.js"></script>
+    <!-- Google Maps API (window.nav.ready() will be called when ready) -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuY9A0oLwzD2mi3NhoJ-LUujtvxJ3vck8&callback=window.nav.ready">
+    </script>
+    <!-- THIRD PARTY END -->
+    
+    <!-- MY SCRIPTS BEGIN -->
+    <!-- mustache templates -->
+    <script src="script/templates.js"></script>
+    <!-- script for parsing and displaying place json on map -->
+    <script type="text/javascript" src="script/gpstracker.js"></script>
+    <!-- JQuery navigation -->
+    <script src="script/navigation.js"></script>
+    <!-- MY SCRIPTS END -->
 
-    <!-- dropdown menu of map locations -->
-    <div id="menu">
-      <ul>
-          <a id="RussianRiver" href="#RussianRiver">Russian River</a>
-          <a id="EelRiver" href="#EelRiver">Eel River</a>
-          <a id="FeatherRiver" href="#FeatherRiver">Feather River</a>
-          <a id="YubaRiver" href="#YubaRiver">Yuba River</a>
-          <a id="SacramentoRiver" href="#SacramentoRiver">Sacramento River</a>
-          <a id="SFWatershed" href="#SFWatershed">SF Watershed</a>
-          <a id="CostaRica" href="#CostaRica">Costa Rica</a>
-          <a id="SanJoaquinRiver" href="#SanJoaquinRiver">San Joaquin River</a>
-      </ul>
-    </div>
+    <!-- dropdown menu of map locations (filled by mustache) -->
+    <div id="menu"></div>
 
     <div id="map-container">
 
@@ -36,13 +39,13 @@
       <div id="map" class="map-item"></div>
 
       <!-- display error banner if failed to load place -->
-      <div id="error" style="display:none">could not load that place.</div>
+      <div id="error" class="hidden">That place does not exist.</div>
 
       <div id="footer">
           &copy; wes jackson 2018 :: "love and water are never wasted; they are the efflux of our inner nature"
       </div>
     </div>
-
+    
     <!-- hamburger menu -->
     <div id="hamburger">
         <span></span> <!-- circle bg -->
@@ -50,36 +53,4 @@
         <span></span> <!-- hamburger line 2 -->
         <span></span> <!-- hamburger line 3 -->
     </div>
-
-    <!-- script for parsing and displaying place json on map -->
-    <script type="text/javascript" src="script/gpstracker.js"></script>
-
-    <!-- JQuery navigation -->
-    <script src="script/navigation.js"></script>
-
-    <script type="text/javascript">
-
-      // google maps api is ready
-      function initMap() {
-
-          // track map loading history; don't load the same map twice
-          window.maps = {};
-
-          // load the current place in url if needed
-          if (window.location.hash == "") {
-              
-              // make sure url has this hash (e.g. default landing hash)
-            window.location.hash = "#RussianRiver";
-          }
-          else {
-              window.loadContent(window.location.hash);
-          }
-      };
-
-    </script>
-
-    <!-- initMap() (above) will be called when Google Maps API is ready -->
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuY9A0oLwzD2mi3NhoJ-LUujtvxJ3vck8&callback=initMap">
-    </script>
 </body>

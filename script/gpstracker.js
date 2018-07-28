@@ -4,32 +4,33 @@ function cacheBust(url) { return url + "?rev=" + (new Date()).getTime(); }
 // TODO: not this? google needs kml to be hosted from publicly-visible location
 var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
 
-function initTracker(place) {
+window.gps = {
+    load : function(place) {
+        console.log("gps.load() :: " + place);
+        
+        setErrorVisible(false);
+        setLoaderVisible(true);
     
-    console.log("initTracker : " + place);
-    
-    // is this place already loaded?
-    if (moveMapToExistingPlace(place)) {
-        console.log("already loaded. bailing!");
-        return;
-    }
-    
-    setLoaderVisible(true);
-    
-    var basePath = origin + "/gps/Places/" + place;
-    
-    return fetch(cacheBust(basePath + "/info.json"))
-        .then(res => {
-            if (res.ok) {
-                res.json().then(json => {
-                    handleJSON(basePath, json);
-                });
-            }
-            else {
-                setErrorVisible(true);
-            }
+        // is this place already loaded?
+        if (moveMapToExistingPlace(place)) {
+            console.log("already loaded. bailing!");
+            return;
+        }
+
+        var basePath = origin + "/gps/Places/" + place;
+
+        fetch(cacheBust(basePath + "/info.json"))
+            .then(res => {
+                if (res.ok) {
+                    res.json().then(json => handleJSON(basePath, json));
+                }
+                else {
+                    setLoaderVisible(false);
+                    setErrorVisible(true);
+                }
         })
-}
+    }
+};
 
 function moveMapToExistingPlace(place) {
     
@@ -82,8 +83,6 @@ function handleJSON(basePath, json) {
 
         google.maps.event.addListener(window.gmap, 'idle', function(){
             // do something only the first time the map is loaded
-            // hide error
-            document.getElementById("error").style.display = "none";
             setLoaderVisible(false);
         });
     }
@@ -118,15 +117,15 @@ function createWindowHTML(location, basePath) {
     var imgLgSrc = location.img ? cacheBust(basePath + /img/ + location.img) : "";
     var imgSmSrc = location.img ? cacheBust(basePath + /imgSm/ + location.img) : "";
     var audSrc = location.aud ? cacheBust(basePath + /aud/ + location.aud) : "";
-
-    // html contents of marker window
-    return '<div id="map-item-content">'+
-    "<h2>" + location.label + "</h2>"+
-    "<a href='" + imgLgSrc + "' target='_blank' id='map-item-content-img'><img src='" + imgSmSrc + "' id='map-item-content-img' ></img></a>"+
-    (location.aud ? "<audio controls style='width: 100%'><source src='" + audSrc + "' type='audio/mpeg'>Your browser does not support audio. Good job!</audio>" : "")+
-    '</p>'+
-    '</div>'+
-    '</div>';
+    
+    var o = {
+        "title": location.label,
+        "imgLgSrc": imgLgSrc,
+        "imgSmSrc": imgSmSrc,
+        "audSrc": audSrc
+    };
+    
+    return Mustache.render(window.templates["map-item-content"], o);
 }
 
 function createMarker(location, currInfoWindow, map) {
@@ -179,17 +178,24 @@ function photoLabel() {
 }
 
 function setLoaderVisible(visible) {
-    // show loader
-    document.getElementById("loader").style.display = visible ? "block" : "none";
     
-    // hide hamburger
-    document.getElementById("hamburger").style.display = visible ? "none" : "block";
+    if (visible) {
+        $("#loader").removeClass("hidden");
+        $("#hamburger").addClass("hidden");
+    }
+    else {
+        $("#loader").addClass("hidden");
+        $("#hamburger").removeClass("hidden");
+    }
 }
 
 // failed to load json for a place
 function setErrorVisible(visible) { 
     
-    document.getElementById("error").style.display = visible ? "block" : "none";
-    
-    setLoaderVisible(false);
+    if (visible) {
+        $("#error").removeClass("hidden");      
+    }
+    else {
+        $("#error").addClass("hidden");
+    }
 }
