@@ -9,4 +9,7 @@ window.templates = {
     '<audio controls style="width: 100%"><source src="{{audSrc}}" type="audio/mpeg">Your browser does not support audio. Good job!</audio>' +
     '{{/audSrc}}' +
 '</div>'
-}
+};
+
+// prevent caching
+window.cacheBust = function(url) { return url + "?rev=" + (new Date()).getTime(); };

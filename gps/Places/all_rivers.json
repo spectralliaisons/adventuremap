@@ -6,35 +6,35 @@
         },
         {
             "disp":"SF Watershed",
-            "id":"SFWatershed"
+            "id":"SF_Watershed"
         },
         {
             "disp":"Sacramento River",
-            "id":"SacramentoRiver"
+            "id":"Sacramento_River"
         },
         {
             "disp":"San Joaquin River",
-            "id":"SanJoaquinRiver"
+            "id":"San_Joaquin_River"
         },
         {
             "disp":"Feather River",
-            "id":"FeatherRiver"
+            "id":"Feather_River"
         },
         {
             "disp":"Russian River",
-            "id":"RussianRiver"
+            "id":"Russian_River"
         },
         {
             "disp":"Yuba River",
-            "id":"YubaRiver"
+            "id":"Yuba_River"
         },
         {
             "disp":"Costa Rica",
-            "id":"CostaRica"
+            "id":"Costa_Rica"
         },
         {
             "disp":"Eel River",
-            "id":"EelRiver"
+            "id":"Eel_River"
         }
     ]
 }
