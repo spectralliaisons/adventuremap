@@ -12,6 +12,7 @@ body {
 	padding: 0;
     height: 100%;
     font-size:24px;
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -86,12 +87,14 @@ html {
   transition: .5s ease-in-out;
   cursor: pointer;
 }
+
 #hamburger span {
   display: block;
   position: absolute;
   height: 0.23em;
   width: 50%;
-  background: #e8e8e8;
+/*  background: #e8e8e8;*/
+  background: #8c8c8c;
   border-radius: 2.5em;
   opacity: 1;
   left: 0;
@@ -108,10 +111,16 @@ html {
 
 /* circle background */
 #hamburger span:nth-child(1) {
-    background: #f22493;
+    background: #f22876;
+    background-image: url("../rsc/topography.png");
     width:100%;
     height:100%;
     border-radius: 50%;
+}
+
+#hamburger span:nth-child(1):hover {
+/*    background: #e20000;*/
+    transform: scale(1.10);
 }
 
 /* hamburger line 1 */
@@ -119,18 +128,21 @@ html {
   opacity: 1;
   top: 25%;
   left: 25%;
+  pointer-events: none;
 }
 
 /* hamburger line 2 */
 #hamburger span:nth-child(3) {
   top: 45%;
   left: 25%;
+  pointer-events: none;
 }
 
 /* hamburger line 3 */
 #hamburger span:nth-child(4) {
   top: 65%;
   left: 25%;
+  pointer-events: none;
 }
 
 /* hamburger line 1 open rotates right */
@@ -166,6 +178,7 @@ html {
 /** Dropdown menu **/
 
 #menu {
+    padding-top: 0.55em;
     display: block;
     color: #f2f2f2;
     text-align: center;
@@ -187,6 +200,23 @@ html {
 
 .active {
     color: #f22493 !important;
+}
+
+.left {
+    float:left;
+    padding-top: 4px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+/** all places menu item is distinctive **/
+#All {
+    border-top: solid;
+    border-color: #d2d2d2;
+    border-width: 2px;
+    padding-top: 0.55em;
 }
 
 .nav-item {
@@ -226,8 +256,33 @@ html {
 /** Click a map marker to display a window **/
 
 #map-item-content {
+/*
     width:550px;
-    height:500px;
+    height:550px;
+*/
+}
+
+#gps {
+    list-style: none;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-flow: row;
+    justify-content: flex-start;
+    align-content: space-between;
+}
+
+.gps-text {
+    font-family: monospace;
+    font-weight: bold;
+    padding: 8px 10px 15px 10px;
+    border-bottom: solid;
+    border-width: 2px;
+    border-color: #f2f2f2;
 }
 
 #map-item-content-img {

@@ -4,30 +4,59 @@ window.gps = (function(){
     // TODO: not this? google needs kml to be hosted from publicly-visible location
     var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
     
-    function load(place) {
+    function load(place, reposition=true) {
         console.log("gps.load() :: " + place);
 
         setErrorVisible(false);
         setLoaderVisible(true);
 
         // is this place already loaded?
-        if (moveMapToExistingPlace(place)) {
+        if (reposition && moveMapToExistingPlace(place)) {
             console.log("already loaded. bailing!");
             return;
         }
 
         var basePath = origin + "/gps/Places/" + place;
 
-        fetch(cacheBust(basePath + "/info.json"))
+        return fetch(cacheBust(basePath + "/info.json"))
             .then(res => {
                 if (res.ok) {
-                    res.json().then(json => handleJSON(basePath, json));
+                    res.json().then(json => {
+                        handleJSON(basePath, json, reposition)
+                        return Promise.resolve();
+                    });
                 }
                 else {
                     setLoaderVisible(false);
                     setErrorVisible(true);
+                    return Promise.reject();
                 }
         })
+    }
+    
+    function loadMultiple(places) {
+        console.log("gps.loadMultiple() :: " + places.length);
+        
+        if (places.length) {
+            
+            var first = places.shift();
+            
+            return load(first, false).then(res => {return loadMultiple(places)});
+        }
+        else {
+            
+            // zoom way out
+            window.gmap.setZoom(7); // fit all CA rivers on screen
+            window.gmap.setCenter({"lat":-119.442998228, "lng":37.159666028}); // North Fork, CA
+            window.gmap.setMapTypeId("hybrid");
+            
+            return Promise.resolve();
+        }
+    }
+    
+    function notLoaded(place) {
+        
+        return window.maps[place] == undefined;
     }
 
     function moveMapToExistingPlace(place) {
@@ -52,7 +81,7 @@ window.gps = (function(){
         return valid;
     }
 
-    function handleJSON(basePath, json) {
+    function handleJSON(basePath, json, reposition) {
 
         console.log("handleJSON");
 
@@ -79,12 +108,47 @@ window.gps = (function(){
                 fullscreenControl:true
             });
 
+            // event when google map has finished loading
             google.maps.event.addListener(window.gmap, 'idle', function(){
-                // do something only the first time the map is loaded
                 setLoaderVisible(false);
             });
+            
+            // event when you click map. show gps coords of where you clicked.
+            google.maps.event.addListener(window.gmap, 'click', function(event) {
+                var clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
+                var clickedLocStr = JSON.stringify(clickedLoc);
+                console.log("google map clicked at " + clickedLocStr);
+                
+                var i = _.keys(window.gps.tacks).length;
+                var id = "delete-marker-" + i;
+                
+                // option to drop pin at this location w/ window telling gps pos
+                var currInfoWindow = new google.maps.InfoWindow({
+                    content: Mustache.render(window.templates["user-created-marker"], {
+                        "loc": clickedLocStr,
+                        "gps": Mustache.render(window.templates["gps-loc"], clickedLoc),
+                        "id": id
+                    })
+                });
+                
+                function onWindowOpened() {
+                    console.log("onWindowOpened() for #" + id);
+                    console.log($("#"+id));
+                    $("#"+id).click(function(e){
+                        console.log("CLICKED id: " + id);
+                        e.preventDefault();
+                        window.gps.tacks[id].window.setMap(null);
+                        _.each(window.gps.tacks[id].markers, function(marker){marker.setMap(null);});
+                    });
+                };
+                
+                var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gmap, 'my_location', onWindowOpened);
+                window.gps.tacks[id] = markerSet;
+                
+                markerSet.onClick();
+            });
         }
-        else {
+        else if (reposition) {
             moveMapToExistingPlace(place);
         }
 
@@ -118,6 +182,7 @@ window.gps = (function(){
 
         var o = {
             "title": location.label,
+            "gps": Mustache.render(window.templates["gps-loc"], location.loc),
             "imgLgSrc": imgLgSrc,
             "imgSmSrc": imgSmSrc,
             "audSrc": audSrc
@@ -126,53 +191,51 @@ window.gps = (function(){
         return Mustache.render(window.templates["map-item-content"], o);
     }
 
-    function createMarker(location, currInfoWindow, map) {
+    function createMarker(location, currInfoWindow, map, labelIcon=undefined, onWindowOpened=undefined) {
 
         var markerOpts = {
             map: map,
             position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
-    //            animation: google.maps.Animation.DROP,
-            title: location.aud ? 'photo + audio' : 'photo',
-            zIndex: location.aud ? 1 : 0, // make audio markers easier to see
-            label: location.aud ? " " : " "
+            label: " ",
+            title: location.aud ? 'photo + audio' : (location.img ? 'photo' : JSON.stringify(location.loc)),
+            zIndex: location.img ? 0 : 1 // make audio markers easier to see
         }
 
-        function onClick(marker) {
+        // add marker
+        var markerPin = new google.maps.Marker(markerOpts);
+        markerPin.addListener('click', onClick);
+
+        // add marker label as svg
+        var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
+            icon: (labelIcon ? makeIcon(labelIcon) : (location.aud ? makeIcon('volume_up') : makeIcon('camera_alt')))
+        }));
+        markerLabel.addListener('click', onClick);
+        
+        function makeIcon(l) {
+
+            return {
+                anchor: new google.maps.Point(12, 40),
+                url: "./rsc/ic_" + l + "_24px.svg"
+            }
+        }
+        
+        function onClick() {
 
             if (window.lastInfoWindow) {
                 window.lastInfoWindow.close();
             }
 
-            currInfoWindow.open(gmap, marker);
+            currInfoWindow.open(map, markerPin);
+            
+            if (onWindowOpened) {
+                onWindowOpened();
+            }
 
             window.lastInfoWindow = currInfoWindow;
         }
-
-        // add marker
-        var markerPin = new google.maps.Marker(markerOpts);
-        markerPin.addListener('click', function(){onClick(markerPin)});
-
-        // add marker label as svg
-        var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
-            icon: location.aud ? audioLabel() : photoLabel()
-        }));
-        markerLabel.addListener('click', function(){onClick(markerLabel)});
-    }
-
-    function audioLabel() {
-
-        return {
-            anchor: new google.maps.Point(12, 40),
-            url: "./rsc/ic_volume_up_24px.svg"
-        }
-    }
-
-    function photoLabel() {
-
-        return {
-            anchor: new google.maps.Point(12, 40),
-            url: "./rsc/ic_camera_alt_24px.svg"
-        }
+        
+        // return object so we can keep track of user-created markers
+        return {"onClick":onClick, "window":currInfoWindow, "markers":[markerPin, markerLabel]};
     }
 
     function setLoaderVisible(visible) {
@@ -201,6 +264,8 @@ window.gps = (function(){
     /** PUBLIC **/
     
     return {
-        load : load
+        tacks : {}, // user-created gps locations
+        load : load,
+        loadMultiple : loadMultiple
     };
 })();
