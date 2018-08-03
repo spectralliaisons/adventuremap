@@ -5,14 +5,12 @@ window.gps = (function(){
     var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
     
     function load(place, reposition=true) {
-        console.log("gps.load() :: " + place);
 
         setErrorVisible(false);
         setLoaderVisible(true);
 
         // is this place already loaded?
         if (reposition && moveMapToExistingPlace(place)) {
-            console.log("already loaded. bailing!");
             return;
         }
 
@@ -31,11 +29,72 @@ window.gps = (function(){
                     setErrorVisible(true);
                     return Promise.reject();
                 }
-        })
+            })
+            .then(res => {
+                // map is ready, permit showing geolocation
+                $("#show-geoloc").click(function(e){
+                    
+                    if (navigator.geolocation) {
+                        
+                        console.log("finding usr geolocation...");
+                        
+                        $("#show-geoloc").addClass("blink");
+                        
+                        // add marker to usr geolocation
+                        navigator.geolocation.getCurrentPosition(setUsrPosition);
+
+                        // update usr pos marker as device location changes
+                        navigator.geolocation.watchPosition(updateUsrPosition);
+                    }
+                });
+            })
+    }
+    
+    function setUsrPosition(position) {
+        
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        
+        console.log("setUsrPosition: " + JSON.stringify(pos));
+
+        // add marker at user geolocation
+        // option to drop pin at this location w/ window telling gps pos
+
+        var currInfoWindow = new google.maps.InfoWindow({
+            content: Mustache.render(window.templates["user-created-marker"], {
+                "loc": JSON.stringify(pos),
+                "gps": Mustache.render(window.templates["gps-loc"], {"id":"usr-geolocation-window", "lat":pos.lat, "lng":pos.lng}),
+                "title": "your location"
+            })
+        });
+
+        var markerSet = createMarker({"loc":pos}, currInfoWindow, window.gmap, 'my_location_blue', undefined, true);
+        window.gps.usrloc = markerSet;
+
+        // center map at user geolocation
+        window.gmap.setZoom(15);
+        window.gmap.setCenter(pos);
+        
+        $("#show-geoloc").removeClass("blink");
+    }
+    
+    function updateUsrPosition(position) {
+        
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        // update marker position
+        _.each(window.gps.usrloc.markers, function(marker){marker.setPosition(pos)});
+
+        // update gps position text in the marker window
+        $("#usr-geolocation-window").html(Mustache.render(window.templates["gps-loc"], {"id":"usr-geolocation-window", "lat":pos.lat, "lng":pos.lng}));
     }
     
     function loadMultiple(places) {
-        console.log("gps.loadMultiple() :: " + places.length);
         
         if (places.length) {
             
@@ -83,8 +142,6 @@ window.gps = (function(){
 
     function handleJSON(basePath, json, reposition) {
 
-        console.log("handleJSON");
-
         // TODO: use promise or something to prevent multiple loading of places
         window.maps[place] = json;
 
@@ -117,33 +174,29 @@ window.gps = (function(){
             google.maps.event.addListener(window.gmap, 'click', function(event) {
                 var clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
                 var clickedLocStr = JSON.stringify(clickedLoc);
-                console.log("google map clicked at " + clickedLocStr);
                 
                 var i = _.keys(window.gps.tacks).length;
-                var id = "delete-marker-" + i;
+                var deleteID = "delete-marker-" + i;
                 
                 // option to drop pin at this location w/ window telling gps pos
                 var currInfoWindow = new google.maps.InfoWindow({
                     content: Mustache.render(window.templates["user-created-marker"], {
                         "loc": clickedLocStr,
                         "gps": Mustache.render(window.templates["gps-loc"], clickedLoc),
-                        "id": id
+                        "deleteID": deleteID
                     })
                 });
                 
                 function onWindowOpened() {
-                    console.log("onWindowOpened() for #" + id);
-                    console.log($("#"+id));
-                    $("#"+id).click(function(e){
-                        console.log("CLICKED id: " + id);
+                    $("#"+deleteID).click(function(e){
                         e.preventDefault();
-                        window.gps.tacks[id].window.setMap(null);
-                        _.each(window.gps.tacks[id].markers, function(marker){marker.setMap(null);});
+                        window.gps.tacks[deleteID].window.setMap(null);
+                        _.each(window.gps.tacks[deleteID].markers, function(marker){marker.setMap(null);});
                     });
                 };
                 
-                var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gmap, 'my_location', onWindowOpened);
-                window.gps.tacks[id] = markerSet;
+                var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gmap, 'edit', onWindowOpened);
+                window.gps.tacks[deleteID] = markerSet;
                 
                 markerSet.onClick();
             });
@@ -155,7 +208,7 @@ window.gps = (function(){
         // add kml layers
         // param to kml url prevents caching by Google
         _.each(json.layers, function(layer) {
-            trackLayer = new google.maps.KmlLayer({
+            new google.maps.KmlLayer({
                 url: cacheBust(basePath + /kml/ + layer),
                 map: window.gmap
             });
@@ -183,6 +236,7 @@ window.gps = (function(){
         var o = {
             "title": location.label,
             "gps": Mustache.render(window.templates["gps-loc"], location.loc),
+            "date": location.date,
             "imgLgSrc": imgLgSrc,
             "imgSmSrc": imgSmSrc,
             "audSrc": audSrc
@@ -191,19 +245,20 @@ window.gps = (function(){
         return Mustache.render(window.templates["map-item-content"], o);
     }
 
-    function createMarker(location, currInfoWindow, map, labelIcon=undefined, onWindowOpened=undefined) {
+    function createMarker(location, currInfoWindow, map, labelIcon=undefined, onWindowOpened=undefined, iconOnly=false) {
 
         var markerOpts = {
             map: map,
             position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
             label: " ",
-            title: location.aud ? 'photo + audio' : (location.img ? 'photo' : JSON.stringify(location.loc)),
             zIndex: location.img ? 0 : 1 // make audio markers easier to see
         }
 
         // add marker
-        var markerPin = new google.maps.Marker(markerOpts);
-        markerPin.addListener('click', onClick);
+        if (!iconOnly) {
+            var markerPin = new google.maps.Marker(markerOpts);
+            markerPin.addListener('click', onClick);
+        }
 
         // add marker label as svg
         var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
@@ -213,10 +268,15 @@ window.gps = (function(){
         
         function makeIcon(l) {
 
-            return {
-                anchor: new google.maps.Point(12, 40),
+            var o = {
                 url: "./rsc/ic_" + l + "_24px.svg"
             }
+            
+            if (!iconOnly) {
+                o.anchor = new google.maps.Point(12, 40)
+            }
+            
+            return o;
         }
         
         function onClick() {
@@ -225,7 +285,7 @@ window.gps = (function(){
                 window.lastInfoWindow.close();
             }
 
-            currInfoWindow.open(map, markerPin);
+            currInfoWindow.open(map, markerLabel);
             
             if (onWindowOpened) {
                 onWindowOpened();
@@ -235,7 +295,7 @@ window.gps = (function(){
         }
         
         // return object so we can keep track of user-created markers
-        return {"onClick":onClick, "window":currInfoWindow, "markers":[markerPin, markerLabel]};
+        return {"onClick":onClick, "window":currInfoWindow, "markers":_.compact([markerPin, markerLabel])};
     }
 
     function setLoaderVisible(visible) {
@@ -264,6 +324,7 @@ window.gps = (function(){
     /** PUBLIC **/
     
     return {
+        usrloc : null, // user geolocation
         tacks : {}, // user-created gps locations
         load : load,
         loadMultiple : loadMultiple

@@ -24,10 +24,10 @@ html {
 #footer {
     position: absolute;
     color:#ffffff;
-    padding-left: 1em;
+    padding-left: 5em;
     font-size: 0.75em;
     font-weight:100;
-    bottom: 1em;
+    bottom: 0.5em;
     margin: 0 auto;
     height:1em;
 }
@@ -70,6 +70,46 @@ html {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.spin {
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.blink {
+    -webkit-animation: blink 1s linear infinite;
+    animation: blink 1s linear infinite;
+}
+
+#edit-menu {
+    position: absolute;
+    right: 18px;
+    top: 45px;
+    flex-flow: column;
+    width: 20px;
+}
+
+.edit-menu-item {
+    cursor: pointer;
+    color: #fdfdfd;
+    transition: .25s ease-in-out;
+}
+.edit-menu-item:hover {
+    color: #d8d8d8;
+    transform: scale(1.10);
 }
 
 #hamburger {
@@ -262,7 +302,7 @@ html {
 */
 }
 
-#gps {
+.gps-info-icon-txt {
     list-style: none;
 
     display: -webkit-box;
@@ -276,13 +316,20 @@ html {
     align-content: space-between;
 }
 
-.gps-text {
+.gps-info-txt {
     font-family: monospace;
     font-weight: bold;
     padding: 8px 10px 15px 10px;
+}
+
+.bottom-border {
     border-bottom: solid;
     border-width: 2px;
     border-color: #f2f2f2;
+}
+
+.date-icon {
+    padding-top:4px;
 }
 
 #map-item-content-img {
@@ -318,5 +365,12 @@ html {
     }
     #hamburger span {
         height: 0.3em;
+    }
+}
+
+@media screen and (max-height: 400px) {
+    #menu {
+        height: 235px;
+        overflow: scroll
     }
 }

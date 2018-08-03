@@ -4,11 +4,13 @@ window.nav = (function(){
 
         // menu is initially retracted
         $("#menu").hide();
-
+        
+        $("#upload-form").hide();
+        
         // tapping hamburger button slides menu down
         $("#hamburger").click(function(){
             $(this).toggleClass("open");
-            $( "#menu" ).slideToggle( "slow", function() {});
+            $("#menu").slideToggle( "slow", function() {});
         });
     });   
 
@@ -26,8 +28,6 @@ window.nav = (function(){
     
     // call this function when you want to load a place
     to = function(href) {
-
-        console.log("nav to " + href);
 
         // remove hash for the place name
         place = href.replace("#", "");
@@ -59,7 +59,6 @@ window.nav = (function(){
     
     // google maps api is ready
     ready = function() {
-        console.log("nav.ready()");
         
         // wait until google maps api is ready before loading places into menu
         fetch(cacheBust("./gps/Places/all_rivers.json"))
@@ -72,7 +71,6 @@ window.nav = (function(){
                 var rest = _.reject(places.places, function(p){return(p.id == "All")});
                 rest = _.sortBy(rest, "disp");
                 var renderPlaces = {"places": rest.concat(all)};
-                console.log(renderPlaces);
                 // load places into the menu
                 var rendered = Mustache.render(window.templates["menu"], renderPlaces);
                 $('#menu').html(rendered);

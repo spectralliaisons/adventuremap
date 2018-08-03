@@ -30,6 +30,11 @@
 
     <!-- dropdown menu of map locations (filled by mustache) -->
     <div id="menu"></div>
+    
+    <form id = "upload-form" method = "post" action = "#">
+        <input id = "fileupload" type = "file" accept="application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz+xml" onchange="window.gps.uploadChanged">
+        <input type = "submit" value = "submit" id = "submit" />
+    </form>
 
     <div id="map-container">
 
@@ -39,12 +44,14 @@
       <!-- gmap content (the map) goes here -->
       <div id="map" class="map-item"></div>
 
+      <div id="edit-menu">
+          <i id="show-geoloc" class="material-icons edit-menu-item" title="your location">my_location</i> <!-- user geolocation -->
+      </div>
+        
       <!-- display error banner if failed to load place -->
       <div id="error" class="hidden">That place does not exist.</div>
 
-      <div id="footer">
-          &copy; wes jackson 2018 :: "love and water are never wasted; they are the efflux of our inner nature"
-      </div>
+      <div id="footer">&copy; wes jackson 2018</div>
     </div>
     
     <!-- hamburger menu -->
@@ -54,4 +61,5 @@
         <span></span> <!-- hamburger line 2 -->
         <span></span> <!-- hamburger line 3 -->
     </div>
+    
 </body>
