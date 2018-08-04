@@ -97,9 +97,10 @@ html {
 #edit-menu {
     position: absolute;
     right: 18px;
-    top: 45px;
+    margin-top: 45px;
     flex-flow: column;
     width: 20px;
+    z-index: 1;
 }
 
 .edit-menu-item {
@@ -368,9 +369,28 @@ html {
     }
 }
 
-@media screen and (max-height: 400px) {
+/** Tiny phones */
+@media screen and (max-width: 400px) {
+    #map-item-content {
+        width: 250px;
+        max-height: 350px
+    }
+    #map-item-content-img {
+        max-height: 160px;
+    }
+}
+
+@media screen and (max-height: 420px) {
     #menu {
         height: 235px;
-        overflow: scroll
+        overflow: scroll;
+    }
+    #map-item-content {
+        font-size: 0.8em;
+        width: 250px;
+        max-height: 300px;
+    }
+    #map-item-content-img {
+        max-height: 110px;
     }
 }

@@ -5,8 +5,6 @@ window.nav = (function(){
         // menu is initially retracted
         $("#menu").hide();
         
-        $("#upload-form").hide();
-        
         // tapping hamburger button slides menu down
         $("#hamburger").click(function(){
             $(this).toggleClass("open");

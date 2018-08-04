@@ -20,7 +20,7 @@ window.templates = {
     '<audio controls style="width: 100%"><source src="{{audSrc}}" type="audio/mpeg">Your browser does not support audio. Good job!</audio>' +
     '{{/audSrc}}' +
 '</div>',
-    "user-created-marker" : '<div>{{{gps}}}' +
+    "user-created-marker" : '<div id="map-item-content">{{{gps}}}' +
     '{{#title}}<h3>{{title}}</h3>{{/title}}' +
     '{{#deleteID}}' +
     '<div class="left"><a href="" id="{{deleteID}}"><i class="material-icons left clickable" id="{{deleteID}}">delete</i></a></div>' +
