@@ -2,7 +2,7 @@ window.gps = (function(){
     /** PRIVATE **/
 
     // TODO: not this? google needs kml to be hosted from publicly-visible location
-    var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com"; //"https://github.com/spectralliaisons/multimap";//; // location.origin
+    var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com";
     
     function load(place, reposition=true) {
 
