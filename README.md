@@ -8,7 +8,7 @@ Overlay gps tracks on Google Maps with pins for photos and audio taken.
 ##
 Adding a track with images and optional audio:
 
-1. Create a directory for the place in `gps/Places/`. You can copy an existing directory and clear out img/, imgErr/, imgSm/, aud/ and kml/.
+1. Create a directory for the place in `gps/s3/`. Copy `gps/_PlaceTemplate/` to use as a template.
 
 2. Add any kml files you may have in kml/. Kml can come from your gps and e.g. [caltopo](https://caltopo.com/m/A912).
 
@@ -34,10 +34,10 @@ Adding a track with images and optional audio:
 }
 ```
 
-6. Run `gps/python/process_places.ipynb`. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/Places/. Info.json is loaded in  `script/gpstracker.js `. 
+6. Run `gps/python/process_places.ipynb`. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
 
-7. Upload Places/ to Amazon AWS (the url of the variable `origin` in gpstracker) at gps/Places/ and make the new place directory publicly visible.
-Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible.
+7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible.
+Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible. Technically, we only need kml to be public (not images, audio, json), but I'd rather let `gpstracker.js` get all resources from one url rather than splitting resources.
 
 TODO:
 - [ ] Use MapBox instead of Google Maps? GeoJSON will need to be used instead of kml, but [caltopo](https://caltopo.com/m/A912) can export this. Or [convert them](https://mapbox.github.io/togeojson/).

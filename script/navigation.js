@@ -59,7 +59,7 @@ window.nav = (function(){
     ready = function() {
         
         // wait until google maps api is ready before loading places into menu
-        fetch(cacheBust("./gps/Places/all_rivers.json"))
+        fetch(cacheBust("./gps/s3/all_rivers.json"))
             .then(res => res.json())
             .then(places => {
                 this.places = places;

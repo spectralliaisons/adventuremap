@@ -2,7 +2,7 @@ window.gps = (function(){
     /** PRIVATE **/
 
     // TODO: not this? google needs kml to be hosted from publicly-visible location
-    var origin = "https://s3-us-west-1.amazonaws.com/wesmjackson.com";
+    var origin = "https://s3-us-west-2.amazonaws.com/multimap";
     
     function load(place, reposition=true) {
 
@@ -14,7 +14,7 @@ window.gps = (function(){
             return;
         }
 
-        var basePath = origin + "/gps/Places/" + place;
+        var basePath = origin + "/gps/s3/" + place;
 
         return fetch(cacheBust(basePath + "/info.json"))
             .then(res => {

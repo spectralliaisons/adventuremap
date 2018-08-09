@@ -284,7 +284,9 @@ html {
 
 .map-item {
     position:absolute;
-    background-image: url(https://s3-us-west-1.amazonaws.com/wesmjackson.com/gps/Places/RussianRiver/img/becomes%20the%20russian%20river%200.jpg);
+/*    background-image: url(../rsc/bg.jpg);*/
+/*    background-size: cover;*/
+    background-image: url(../rsc/topography.png);
     background-size: cover;
     width: 100%;
     height:100%;
