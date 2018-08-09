@@ -1,0 +1,13 @@
+{
+	"zoom":8,
+	"center":"TITLE",
+	"mapType":"hybrid",
+	"locations":[
+		{
+			"label":"TITLE",
+			"loc":{"lat": 0, "lng": 0},
+			"img":null,
+			"aud":null
+		}
+	]
+}
