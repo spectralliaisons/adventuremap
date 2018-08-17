@@ -6,7 +6,6 @@ http://stackoverflow.com/questions/14144426/remove-outline-from-active-jquery-ui
 /* Page */
 body {
 	font: 100%/1.4 Avenir,Menlo,Helvetica Neue,Helvetica,Arial,sans-serif;
-	background-color: #e8e8e8;
 	background-image: url("../rsc/topography.png");
 	margin: 0;
 	padding: 0;
@@ -96,21 +95,24 @@ html {
 
 #edit-menu {
     position: absolute;
-    right: 18px;
-    margin-top: 45px;
+    right: 0px;
+    margin-top: 50px;
     flex-flow: column;
     width: 20px;
     z-index: 1;
 }
 
-.edit-menu-item {
-    cursor: pointer;
-    color: #fdfdfd;
+/*took this from google gm-control button style*/
+.gm-control-button {
+    background: none rgb(255, 255, 255); border: 0px; margin: 10px; padding: 0px; position: absolute; cursor: pointer; user-select: none; border-radius: 2px; height: 40px; width: 40px; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; overflow: hidden; top: 0px; right: 0px;
+}
+
+#gm-control-button-myloc {
+    color:#666;
     transition: .25s ease-in-out;
 }
-.edit-menu-item:hover {
-    color: #d8d8d8;
-    transform: scale(1.10);
+#gm-control-button-myloc:hover {
+    color:#000000;
 }
 
 #hamburger {
@@ -134,8 +136,7 @@ html {
   position: absolute;
   height: 0.23em;
   width: 50%;
-/*  background: #e8e8e8;*/
-  background: #8c8c8c;
+  background: #666;
   border-radius: 2.5em;
   opacity: 1;
   left: 0;

@@ -37,7 +37,11 @@
       <div id="loader"></div>
         
       <div id="edit-menu">
-        <i id="show-geoloc" class="material-icons edit-menu-item" title="your location">my_location</i> <!-- user geolocation -->
+          <div id="show-geoloc">
+              <button draggable="false" title="Toggle fullscreen view" aria-label="Show your location" type="button" class="gm-control-active gm-control-button">
+              <i id="gm-control-button-myloc" class="material-icons" title="your location">my_location</i>
+          </button> 
+          </div>
       </div>
 
       <!-- gmap content (the map) goes here -->

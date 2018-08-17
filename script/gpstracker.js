@@ -27,14 +27,15 @@ window.gps = (function(){
             })
             .then(res => {
                 // map is ready, permit showing geolocation
+            
                 $("#show-geoloc").click(function(e){
-                    
+
                     if (navigator.geolocation) {
-                        
+
                         console.log("finding usr geolocation...");
-                        
-                        $("#show-geoloc").addClass("blink");
-                        
+
+                        $("#gm-control-button-myloc").addClass("blink");
+
                         // add marker to usr geolocation
                         navigator.geolocation.getCurrentPosition(setUsrPosition);
 
@@ -72,7 +73,7 @@ window.gps = (function(){
         window.gmap.setZoom(15);
         window.gmap.setCenter(pos);
         
-        $("#show-geoloc").removeClass("blink");
+        $("#gm-control-button-myloc").removeClass("blink");
     }
     
     function updateUsrPosition(position) {
