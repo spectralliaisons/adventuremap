@@ -59,11 +59,11 @@ window.nav = (function(){
     ready = function() {
         
         // wait until google maps api is ready before loading places into menu
-        fetch(cacheBust("./gps/s3/all_rivers.json"))
+        fetch(s3rsc("all_rivers.json"))
             .then(res => res.json())
             .then(places => {
                 this.places = places;
-                
+            
                 // sort non-"All" places by alphabet
                 var all = _.reject(places.places, function(p){return(p.id != "All")})
                 var rest = _.reject(places.places, function(p){return(p.id == "All")});

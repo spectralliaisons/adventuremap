@@ -1,8 +1,5 @@
 window.gps = (function(){
     /** PRIVATE **/
-
-    // TODO: not this? google needs kml to be hosted from publicly-visible location
-    var origin = "https://s3-us-west-2.amazonaws.com/multimap";
     
     function load(place, reposition=true) {
 
@@ -14,13 +11,11 @@ window.gps = (function(){
             return;
         }
 
-        var basePath = origin + "/gps/s3/" + place;
-
-        return fetch(cacheBust(basePath + "/info.json"))
+        return fetch(s3rsc(place + "/info.json"))
             .then(res => {
                 if (res.ok) {
                     res.json().then(json => {
-                        handleJSON(basePath, json, reposition)
+                        handleJSON(place, json, reposition)
                         return Promise.resolve();
                     });
                 }
@@ -140,7 +135,7 @@ window.gps = (function(){
         return valid;
     }
 
-    function handleJSON(basePath, json, reposition) {
+    function handleJSON(place, json, reposition) {
 
         // TODO: use promise or something to prevent multiple loading of places
         window.maps[place] = json;
@@ -209,7 +204,7 @@ window.gps = (function(){
         // param to kml url prevents caching by Google
         _.each(json.layers, function(layer) {
             new google.maps.KmlLayer({
-                url: cacheBust(basePath + /kml/ + layer),
+                url: s3rsc(place + /kml/ + layer),
                 map: window.gmap
             });
         });
@@ -220,18 +215,18 @@ window.gps = (function(){
 
             //  only one info window at a time
             var currInfoWindow = new google.maps.InfoWindow({
-                content: createWindowHTML(location, basePath)
+                content: createWindowHTML(location, place)
             });
 
             createMarker(location, currInfoWindow, window.gmap);
         });
     }
 
-    function createWindowHTML(location, basePath) {
+    function createWindowHTML(location, place) {
 
-        var imgLgSrc = location.img ? cacheBust(basePath + /img/ + location.img) : "";
-        var imgSmSrc = location.img ? cacheBust(basePath + /imgSm/ + location.img) : "";
-        var audSrc = location.aud ? cacheBust(basePath + /aud/ + location.aud) : "";
+        var imgLgSrc = location.img ? s3rsc(place + /img/ + location.img) : "";
+        var imgSmSrc = location.img ? s3rsc(place + /imgSm/ + location.img) : "";
+        var audSrc = location.aud ? s3rsc(place + /aud/ + location.aud) : "";
 
         var o = {
             "title": location.label,
