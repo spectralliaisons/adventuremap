@@ -71,7 +71,8 @@ window.nav = (function(){
                 var renderPlaces = {"places": rest.concat(all)};
                 // load places into the menu
                 var rendered = Mustache.render(window.templates["menu"], renderPlaces);
-                $('#menu').html(rendered);
+                $("#menu").html(rendered);
+                $("#menu").removeClass("hidden");
             })
             .then(res => {
 

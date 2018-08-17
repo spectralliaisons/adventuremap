@@ -43,6 +43,8 @@ window.gps = (function(){
                         navigator.geolocation.watchPosition(updateUsrPosition);
                     }
                 });
+                
+                $("#edit-menu").removeClass("hidden");
             })
     }
     
