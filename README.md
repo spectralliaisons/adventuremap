@@ -1,9 +1,11 @@
 # multimap
 https://spectralliaisons.github.io/multimap/
 
-Overlay gps tracks on Google Maps with pins for photos and audio taken.
+## Overlay gps tracks on Google Maps with pins for photos and audio taken.
+![an image examplar](./rsc/screenshot1.png)
 
-![an image examplar](./rsc/screenshot.png)
+## Click map to add map marker
+![an image examplar](./rsc/screenshot2.png)
 
 ##
 Adding a track with images and optional audio:
