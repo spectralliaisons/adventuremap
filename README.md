@@ -38,12 +38,14 @@ Adding a track with images and optional audio:
 }
 ```
 
-6. Run `gps/python/process_places.ipynb`*. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
+6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb`<sup>1</sup>. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
 
-7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible*.
+7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible<sup>1</sup>.
 Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible. Technically, we only need kml to be public (not images, audio, json), but I'd rather let `gpstracker.js` get all resources from one url rather than splitting resources.
 
-* Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose!
+8. View `index.html` to see your new favorite map.
+
+<sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose!
 
 TODO:
 - [ ] Use MapBox instead of Google Maps? GeoJSON will need to be used instead of kml, but [caltopo](https://caltopo.com/m/A912) can export this. Or [convert them](https://mapbox.github.io/togeojson/).
