@@ -4,7 +4,7 @@ S3PATH = "s3://multimap/"
 PUBLICPATH = "gps/s3/"
 
 # FullAccessUser
-CREDS = "--access_key=YOUR_ACCESS_KEY --secret_key=YOUR_SECRET_KEY"
+CREDS = "--access_key=#{ENV['S3_ACCESS_KEY']} --secret_key=#{ENV['S3_SECRET_KEY']}"
 
 MEDIA = ['aud', 'img', 'imgSm']
 

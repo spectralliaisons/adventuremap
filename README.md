@@ -9,8 +9,21 @@ https://spectralliaisons.github.io/multimap/
 ## Click map to add map marker
 ![an image examplar](./rsc/screenshot2.png)
 
-##
-Adding a track with images and optional audio:
+## Dependencies
+
+### Amazon s3
+1. Create an Amazon AWS S3 bucket called "s3" and obtain your access and secret key.
+2. Install s3cmd: `brew install s3cmd`
+3. Maybe create environment vars in your bashrc/zshrc: S3_ACCESS_KEY and S3_SECRET_KEY or just specify them for rake commands for pushing to s3.
+
+### Python
+```
+pip install notebook
+pip install Pillow
+pip install ipywidgets
+```
+
+## Adding a track with images and optional audio:
 
 1. Create a directory for the place in `gps/s3/`. Copy `gps/_PlaceTemplate/` to use as a template.
 
