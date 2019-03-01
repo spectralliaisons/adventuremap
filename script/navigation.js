@@ -25,10 +25,10 @@ window.nav = (function(){
     }
     
     // call this function when you want to load a place
-    to = function(href) {
+    function to(href) {
 
         // remove hash for the place name
-        place = href.replace("#", "");
+        var place = href.replace("#", "");
 
         // set the page title
         document.title = document.title.split(' | ')[0] + ' | ' + place;
@@ -56,7 +56,7 @@ window.nav = (function(){
     }
     
     // google maps api is ready
-    ready = function() {
+    function ready() {
         
         // wait until google maps api is ready before loading places into menu
         fetch(s3rsc("all_rivers.json"))

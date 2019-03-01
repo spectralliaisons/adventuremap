@@ -32,8 +32,6 @@ window.gps = (function(){
 
                     if (navigator.geolocation) {
 
-                        console.log("finding usr geolocation...");
-
                         $("#gm-control-button-myloc").addClass("blink");
 
                         // add marker to usr geolocation
@@ -55,8 +53,6 @@ window.gps = (function(){
           lng: position.coords.longitude
         };
         
-        console.log("setUsrPosition: " + JSON.stringify(pos));
-
         // add marker at user geolocation
         // option to drop pin at this location w/ window telling gps pos
 
@@ -170,6 +166,7 @@ window.gps = (function(){
             
             // event when you click map. show gps coords of where you clicked.
             google.maps.event.addListener(window.gmap, 'click', function(event) {
+                
                 var clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
                 var clickedLocStr = JSON.stringify(clickedLoc);
                 
@@ -186,7 +183,7 @@ window.gps = (function(){
                 });
                 
                 function onWindowOpened() {
-                    $("#"+deleteID).click(function(e){
+                    $("#"+deleteID).on("click", function(e){
                         e.preventDefault();
                         window.gps.tacks[deleteID].window.setMap(null);
                         _.each(window.gps.tacks[deleteID].markers, function(marker){marker.setMap(null);});
@@ -250,19 +247,28 @@ window.gps = (function(){
             position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
             label: " ",
             zIndex: location.img ? 0 : 1 // make audio markers easier to see
-        }
+        };
+        
+        function onClick() {
+
+            if (window.lastInfoWindow) {
+                window.lastInfoWindow.close();
+            }
+
+            currInfoWindow.open(map, markerLabel);
+            
+            if (onWindowOpened) {
+                _.defer(onWindowOpened);
+            }
+
+            window.lastInfoWindow = currInfoWindow;
+        };
 
         // add marker
         if (!iconOnly) {
             var markerPin = new google.maps.Marker(markerOpts);
             markerPin.addListener('click', onClick);
         }
-
-        // add marker label as svg
-        var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
-            icon: (labelIcon ? makeIcon(labelIcon) : (location.aud ? makeIcon('volume_up') : makeIcon('camera_alt')))
-        }));
-        markerLabel.addListener('click', onClick);
         
         function makeIcon(l) {
 
@@ -275,22 +281,13 @@ window.gps = (function(){
             }
             
             return o;
-        }
-        
-        function onClick() {
+        };
 
-            if (window.lastInfoWindow) {
-                window.lastInfoWindow.close();
-            }
-
-            currInfoWindow.open(map, markerLabel);
-            
-            if (onWindowOpened) {
-                onWindowOpened();
-            }
-
-            window.lastInfoWindow = currInfoWindow;
-        }
+        // add marker label as svg
+        var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
+            icon: (labelIcon ? makeIcon(labelIcon) : (location.aud ? makeIcon('volume_up') : makeIcon('camera_alt')))
+        }));
+        markerLabel.addListener('click', onClick);
         
         // return object so we can keep track of user-created markers
         return {"onClick":onClick, "window":currInfoWindow, "markers":_.compact([markerPin, markerLabel])};
