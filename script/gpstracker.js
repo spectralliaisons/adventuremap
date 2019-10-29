@@ -15,7 +15,7 @@ window.gps = (function(){
             .then(res => {
                 if (res.ok) {
                     res.json().then(json => {
-                        handleJSON(place, json, reposition)
+                        handleJSON(place, json, reposition);
                         return Promise.resolve();
                     });
                 }

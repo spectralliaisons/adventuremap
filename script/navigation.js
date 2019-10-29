@@ -37,21 +37,29 @@ window.nav = (function(){
         _.each(this.nav.places.places, function(p){$("#" + p.id).removeClass('active')});
         // show the loading page nav tab as active
         $(href).addClass('active');
+        
+        function doLoad(p) {
+            
+            // load the gmap with this place data
+            if (p == "All") {
+                // load all not loaded places
+                var unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), function(p1){return(p1 != "All" && window.maps[p1] == undefined)});
+                window.gps.loadMultiple(unloadedPlaces);
+            }
+            else {
+                window.gps.load(p);
+            }
+        }
 
         // close menu
         if ($("#hamburger").hasClass("open")) {
             $("#hamburger").click();
-        }
-
-        // load the gmap with this place data
-        if (place == "All") {
-            // load all not loaded places
-            var unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), function(place){return(place != "All" && window.maps[place] == undefined)});
-            window.gps.loadMultiple(unloadedPlaces);
             
+            // wait for #hamburger animation to finish before doing all the taxing loading
+            _.delay(doLoad, 600, place);
         }
         else {
-            window.gps.load(place);
+            doLoad(place);
         }
     }
     
@@ -86,7 +94,7 @@ window.nav = (function(){
                     window.location.hash = "#All";
                 }
                 else {
-                    to(window.location.hash);
+                    _.delay(to, 600, window.location.hash);
                 }
         });
     }
