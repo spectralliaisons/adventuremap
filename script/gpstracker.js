@@ -1,49 +1,72 @@
 window.gps = (function(){
+    
+    // introducing some delays to give elements time to load in case we're loading many things
+    var delayLoad = 0;
+    var delayLoad1 = 1000;
+    
     /** PRIVATE **/
     
+    function isLoaded(place) {
+        return window.gps.state.maps[place] != undefined;
+    }
+    
     function load(place, reposition=true) {
+        
+        console.log("load() place: " + place + " reposition: " + reposition);
 
         setErrorVisible(false);
         setLoaderVisible(true);
-
-        // is this place already loaded?
-        if (reposition && moveMapToExistingPlace(place)) {
-            return;
-        }
-
-        return fetch(s3rsc(place + "/info.json"))
-            .then(res => {
-                if (res.ok) {
-                    res.json().then(json => {
-                        handleJSON(place, json, reposition);
-                        return Promise.resolve();
-                    });
+        
+        return new Promise(resolve => {
+            
+           _.delay(function() {
+               
+                // If we've already loaded this place, just center it on the map
+                if (reposition && isLoaded(place)) {
+                    moveMapToExistingPlace(place).then(resolve);
                 }
                 else {
-                    setLoaderVisible(false);
-                    setErrorVisible(true);
-                    return Promise.reject();
+                    // Load new place info and create map elements
+                    fetch(s3rsc(place + "/info.json"))
+                        .then(res => {
+                            if (res.ok) {
+                                return new Promise(r1 => {
+                                   res.json().then(json => {
+                                       handleJSON(place, json, reposition).then(r1);
+                                    }); 
+                                });
+                            }
+                            else {
+                                setLoaderVisible(false);
+                                setErrorVisible(true);
+                                return Promise.reject();
+                            }
+                        })
+                        .then(res => {
+                            // map is ready, permit showing geolocation
+
+                            $("#show-geoloc").click(function(e){
+
+                                if (navigator.geolocation) {
+
+                                    $("#gm-control-button-myloc").addClass("blink");
+
+                                    // add marker to usr geolocation
+                                    navigator.geolocation.getCurrentPosition(setUsrPosition);
+
+                                    // update usr pos marker as device location changes
+                                    navigator.geolocation.watchPosition(updateUsrPosition);
+                                }
+                            });
+
+                            $("#edit-menu").removeClass("hidden");
+
+                            // maybe we have more places to load once this has finished
+                            resolve();
+                        });
                 }
-            })
-            .then(res => {
-                // map is ready, permit showing geolocation
-            
-                $("#show-geoloc").click(function(e){
-
-                    if (navigator.geolocation) {
-
-                        $("#gm-control-button-myloc").addClass("blink");
-
-                        // add marker to usr geolocation
-                        navigator.geolocation.getCurrentPosition(setUsrPosition);
-
-                        // update usr pos marker as device location changes
-                        navigator.geolocation.watchPosition(updateUsrPosition);
-                    }
-                });
-                
-                $("#edit-menu").removeClass("hidden");
-            })
+            }, delayLoad); 
+        });
     }
     
     function setUsrPosition(position) {
@@ -64,12 +87,12 @@ window.gps = (function(){
             })
         });
 
-        var markerSet = createMarker({"loc":pos}, currInfoWindow, window.gmap, 'my_location_blue', undefined, true);
-        window.gps.usrloc = markerSet;
+        var markerSet = createMarker({"loc":pos}, currInfoWindow, window.gps.state.gmap, 'my_location_blue', undefined, true);
+        window.gps.state.usrloc = markerSet;
 
         // center map at user geolocation
-        window.gmap.setZoom(15);
-        window.gmap.setCenter(pos);
+        window.gps.state.gmap.setZoom(15);
+        window.gps.state.gmap.setCenter(pos);
         
         $("#gm-control-button-myloc").removeClass("blink");
     }
@@ -82,7 +105,7 @@ window.gps = (function(){
         };
 
         // update marker position
-        _.each(window.gps.usrloc.markers, function(marker){marker.setPosition(pos)});
+        _.each(window.gps.state.usrloc.markers, function(marker){marker.setPosition(pos)});
 
         // update gps position text in the marker window
         $("#usr-geolocation-window").html(Mustache.render(window.templates["gps-loc"], {"id":"usr-geolocation-window", "lat":pos.lat, "lng":pos.lng}));
@@ -92,38 +115,48 @@ window.gps = (function(){
         
         if (places.length) {
             
+            console.log("loadMultiple() places: " + JSON.stringify(places));
+            
             var first = places.shift();
             
-            return load(first, false).then(res => {return loadMultiple(places)});
+            return load(first, false).then(() => {loadMultiple(places)});
         }
         else {
             
             // zoom way out
-            window.gmap.setZoom(7); // fit all CA rivers on screen
-            window.gmap.setCenter({"lat":-119.442998228, "lng":37.159666028}); // North Fork, CA
-            window.gmap.setMapTypeId("hybrid");
+            window.gps.state.gmap.setZoom(7); // fit all CA rivers on screen
+            window.gps.state.gmap.setCenter({"lat":-119.442998228, "lng":37.159666028}); // North Fork, CA
+            window.gps.state.gmap.setMapTypeId("hybrid");
             
             return Promise.resolve();
         }
     }
     
-    function notLoaded(place) {
-        
-        return window.maps[place] == undefined;
-    }
-
     function moveMapToExistingPlace(place) {
 
-        var json = window.maps[place];
-        if (json) {
+        return new Promise(resolve => {
+            var json = window.gps.state.maps[place];
+            if (json) {
+                
+                _.delay(() => {
+                    
+                    var z = json.zoom;
+                    var ctr = _.findWhere(json.locations, {"label":json.center}).loc;
 
-            window.gmap.setZoom(json.zoom);
-            window.gmap.setCenter(_.findWhere(json.locations, {"label":json.center}).loc);
-            window.gmap.setMapTypeId(json.mapType);
+                    window.gps.state.gmap.setZoom(z);
+                    window.gps.state.gmap.setCenter(ctr);
+                    window.gps.state.gmap.setMapTypeId(json.mapType);
 
-            return true;
-        }
-        return false;
+                    console.log("moveMapToExistingPlace() place: " + place + " --> https://www.google.com/maps/@" + ctr.lat + "," + ctr.lng + "," + z + "z");
+
+                    _.delay(resolve, delayLoad1);
+                    
+                }, delayLoad1);
+            }
+            else {
+                resolve();
+            }
+        });
     }
 
     function validLocation(location) {
@@ -135,9 +168,11 @@ window.gps = (function(){
     }
 
     function handleJSON(place, json, reposition) {
+        
+        console.log("handleJSON() place: " + place + " reposition: " + reposition);
 
         // TODO: use promise or something to prevent multiple loading of places
-        window.maps[place] = json;
+        window.gps.state.maps[place] = json;
 
         // we may not know where to center the map
         var c = _.findWhere(json.locations, {"label":json.center});
@@ -146,9 +181,9 @@ window.gps = (function(){
         }
 
         // setup map type
-        if (!window.gmap) {
+        if (!window.gps.state.gmap) {
 
-            window.gmap = new google.maps.Map(document.getElementById('map'), {
+            window.gps.state.gmap = new google.maps.Map(document.getElementById('map'), {
                 zoom: json.zoom,
                 center: cen,
                 mapTypeId: json.mapType,
@@ -160,17 +195,18 @@ window.gps = (function(){
             });
 
             // event when google map has finished loading
-            google.maps.event.addListener(window.gmap, 'idle', function(){
+            google.maps.event.addListener(window.gps.state.gmap, 'idle', function(){
+                console.log("window.gps.state.gmap is idle!");
                 setLoaderVisible(false);
             });
             
             // event when you click map. show gps coords of where you clicked.
-            google.maps.event.addListener(window.gmap, 'click', function(event) {
+            google.maps.event.addListener(window.gps.state.gmap, 'click', function(event) {
                 
                 var clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
                 var clickedLocStr = JSON.stringify(clickedLoc);
                 
-                var i = _.keys(window.gps.tacks).length;
+                var i = _.keys(window.gps.state.tacks).length;
                 var deleteID = "delete-marker-" + i;
                 
                 // option to drop pin at this location w/ window telling gps pos
@@ -185,19 +221,16 @@ window.gps = (function(){
                 function onWindowOpened() {
                     $("#"+deleteID).on("click", function(e){
                         e.preventDefault();
-                        window.gps.tacks[deleteID].window.setMap(null);
-                        _.each(window.gps.tacks[deleteID].markers, function(marker){marker.setMap(null);});
+                        window.gps.state.tacks[deleteID].window.setMap(null);
+                        _.each(window.gps.state.tacks[deleteID].markers, function(marker){marker.setMap(null);});
                     });
                 };
                 
-                var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gmap, 'edit', onWindowOpened);
-                window.gps.tacks[deleteID] = markerSet;
+                var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gps.state.gmap, 'edit', onWindowOpened);
+                window.gps.state.tacks[deleteID] = markerSet;
                 
                 markerSet.onClick();
             });
-        }
-        else if (reposition) {
-            moveMapToExistingPlace(place);
         }
 
         // add kml layers
@@ -205,7 +238,7 @@ window.gps = (function(){
         _.each(json.layers, function(layer) {
             new google.maps.KmlLayer({
                 url: s3rsc(place + /kml/ + layer),
-                map: window.gmap
+                map: window.gps.state.gmap
             });
         });
 
@@ -218,7 +251,20 @@ window.gps = (function(){
                 content: createWindowHTML(location, place)
             });
 
-            createMarker(location, currInfoWindow, window.gmap);
+            createMarker(location, currInfoWindow, window.gps.state.gmap);
+        });
+        
+        // delay a little before doing anything next to ensure everything's loaded
+        // in case we're loading more after this
+        return new Promise(resolve => {
+            
+            // reposition after a delay
+            if (reposition) {
+                moveMapToExistingPlace(place).then(resolve);
+            }
+            else {
+                resolve();
+            }
         });
     }
 
@@ -316,12 +362,27 @@ window.gps = (function(){
         }
     }
     
+    // have to load everything from scratch (this is only called when using ?clear=true url param)
+    function clear() {
+        window.gps.state = newState();
+    }
+    
+    // an initialized state ensures we have to load everything from scratch
+    function newState() {
+        return {
+            "usrloc": null, // user geolocation
+            "tacks" : {}, // user-created gps locations,
+            "maps": {}, // list of maps we've already loaded (so we don't load and parse their info json again)
+            "gmap" : null // the Google Map
+        }
+    }
+    
     /** PUBLIC **/
     
     return {
-        usrloc : null, // user geolocation
-        tacks : {}, // user-created gps locations
+        state : newState(),
         load : load,
-        loadMultiple : loadMultiple
+        loadMultiple : loadMultiple,
+        clear : clear
     };
 })();

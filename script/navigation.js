@@ -24,8 +24,25 @@ window.nav = (function(){
         to(window.location.hash)
     }
     
+    // https://davidwalsh.name/query-string-javascript
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.href);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+    
     // call this function when you want to load a place
-    function to(href) {
+    function to(fullHref) {
+        
+        // ignore url params
+        var href = fullHref.split("?")[0];
+        
+        // url param to force place loading
+        if (getUrlParameter("clear") == "true") {
+            console.log("FORCE LOAD");
+            window.gps.clear();
+        }
 
         // remove hash for the place name
         var place = href.replace("#", "");
@@ -43,7 +60,7 @@ window.nav = (function(){
             // load the gmap with this place data
             if (p == "All") {
                 // load all not loaded places
-                var unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), function(p1){return(p1 != "All" && window.maps[p1] == undefined)});
+                var unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), function(p1){return(p1 != "All" && window.gps.state.maps[p1] == undefined)});
                 window.gps.loadMultiple(unloadedPlaces);
             }
             else {
@@ -85,7 +102,7 @@ window.nav = (function(){
             .then(res => {
 
                 // track map loading history; don't load the same map twice
-                window.maps = {};
+                window.gps.state.maps = {};
 
                 // load the current place in url if needed
                 if (window.location.hash == "") {
