@@ -108,7 +108,8 @@ window.nav = (function(){
                 if (window.location.hash == "") {
 
                     // make sure url has this hash (e.g. default landing hash)
-                    window.location.hash = "#All";
+//                    window.location.hash = "#All";
+                    window.location.hash = "#Russian_River";
                 }
                 else {
                     _.delay(to, 600, window.location.hash);

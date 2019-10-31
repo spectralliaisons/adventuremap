@@ -46,9 +46,14 @@ html {
     display: none;
 }
 
+.inactive {
+    opacity: 30%;
+    pointer-events: none;
+}
+
 /* Center the loader */
 #loader {
-  display: none;
+  margin-top: 60px;
   position: relative;
   z-index: 1;
   margin: 10px auto;
