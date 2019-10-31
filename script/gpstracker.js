@@ -340,13 +340,11 @@ window.gps = (function(){
     function setLoaderVisible(visible) {
         
         if (visible) {
-            $("#loader").removeClass("hidden");
-            $("#hamburger").addClass("hidden");
+            $("#hamburger").addClass("loading");
             $("#map-container").addClass("inactive");
         }
         else {
-            $("#loader").addClass("hidden");
-            $("#hamburger").removeClass("hidden");
+            $("#hamburger").removeClass("loading");
             $("#map-container").removeClass("inactive");
         }
     }
