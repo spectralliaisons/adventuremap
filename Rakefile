@@ -24,7 +24,7 @@ namespace :build do
     
     desc "build info.json for each place with the python script"
     task :places do
-        `jupyter nbconvert --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=-1 --execute gps/python/process_places.ipynb`
+        `jupyter nbconvert --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=-1 --execute gps/python/process_places.ipynb --to python`
     end
     
 end
