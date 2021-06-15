@@ -40,6 +40,8 @@ html {
     font-size: 1.5em;
     background-color: #fc194d;
     padding:2.5%;
+    z-index: 999;
+    text-align: center;
 }
 
 .hidden {
