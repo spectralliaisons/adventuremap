@@ -1,42 +1,42 @@
-window.nav = (function(){
+window.nav = (() => {
     // set up UI event listeners when document ready
-    $( document ).ready(function() {
+    $( document ).ready(() => {
 
         // menu is initially retracted
         $("#menu").hide();
         
         // tapping hamburger button slides menu down
-        $("#hamburger").click(function(){
+        $("#hamburger").click(() => {
             $(this).toggleClass("open");
-            $("#menu").slideToggle( "slow", function() {});
+            $("#menu").slideToggle( "slow", () => {});
         });
     });   
 
     // enable back, fwd button history
-    window.onpopstate = function(e) {
+    window.onpopstate = e => {
         if (e.state) {
             to('#' + e.state.id);
         }
     };
 
     // handle change of address (url hash)
-    window.onhashchange = function() {
+    window.onhashchange = () => {
         to(window.location.hash)
     }
     
     // https://davidwalsh.name/query-string-javascript
-    function getUrlParameter(name) {
+    const getUrlParameter = name => {
         name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-        var results = regex.exec(location.href);
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.href);
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
     
     // call this function when you want to load a place
-    function to(fullHref) {
+    const to = fullHref => {
         
         // ignore url params
-        var href = fullHref.split("?")[0];
+        const href = fullHref.split("?")[0];
         
         // url param to force place loading
         if (getUrlParameter("clear") == "true") {
@@ -44,22 +44,22 @@ window.nav = (function(){
         }
 
         // remove hash for the place name
-        var place = href.replace("#", "");
+        const place = href.replace("#", "");
 
         // set the page title
         document.title = document.title.split(' | ')[0] + ' | ' + place;
 
         // show all nav pages as inactive
-        _.each(this.nav.places.places, function(p){$("#" + p.id).removeClass('active')});
+        _.each(window.nav.places.places, p => {$("#" + p.id).removeClass('active')});
         // show the loading page nav tab as active
         $(href).addClass('active');
         
-        function doLoad(p) {
+        const doLoad = p => {
             
             // load the gmap with this place data
             if (p == "All") {
                 // load all not loaded places
-                var unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), function(p1){return(p1 != "All" && window.gps.state.maps[p1] == undefined)});
+                const unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), p1 => {return(p1 != "All" && window.gps.state.maps[p1] == undefined)});
                 window.gps.loadMultiple(unloadedPlaces);
             }
             else {
@@ -80,21 +80,21 @@ window.nav = (function(){
     }
     
     // google maps api is ready
-    function ready() {
+    const ready = () => {
         
         // wait until google maps api is ready before loading places into menu
         fetch(s3rsc("all_rivers.json"))
             .then(res => res.json())
-            .then(places => {
-                this.places = places;
+            .then(({places}) => {
+                window.nav.places = places;
             
                 // sort non-"All" places by alphabet
-                var all = _.reject(places.places, function(p){return(p.id != "All")})
-                var rest = _.reject(places.places, function(p){return(p.id == "All")});
+                const all = _.reject(places, p => {return(p.id != "All")})
+                let rest = _.reject(places, p => {return(p.id == "All")});
                 rest = _.sortBy(rest, "disp");
-                var renderPlaces = {"places": rest.concat(all)};
+                const renderPlaces = {"places": rest.concat(all)};
                 // load places into the menu
-                var rendered = Mustache.render(window.templates["menu"], renderPlaces);
+                const rendered = Mustache.render(window.templates["menu"], renderPlaces);
                 $("#menu").html(rendered);
                 $("#menu").removeClass("hidden");
             })
@@ -113,6 +113,9 @@ window.nav = (function(){
                 else {
                     _.delay(to, 600, window.location.hash);
                 }
+        })
+        .catch(err => {
+            console.log(["Error loading all_rivers.json", err])
         });
     }
 

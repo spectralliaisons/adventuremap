@@ -30,8 +30,8 @@ window.templates = {
 };
 
 // prevent caching
-window.s3rsc = function(url) {
+window.s3rsc = url => {
     // TODO: not this? google needs kml to be hosted from publicly-visible location
-    var basePath = "https://s3-us-west-2.amazonaws.com/multimap/gps/s3/";
+    const basePath = "https://s3-us-west-2.amazonaws.com/multimap/gps/s3/";
     return basePath + url + "?rev=" + (new Date()).getTime();
 };

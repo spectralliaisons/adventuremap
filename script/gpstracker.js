@@ -1,22 +1,26 @@
-window.gps = (function(){
+window.gps = (() => {
     
     // introducing some delays to give elements time to load in case we're loading many things
-    var delayLoad = 250;
+    const delayLoad = 250;
     
     /** PRIVATE **/
     
-    function isLoaded(place) {
-        return window.gps.state.maps[place] != undefined;
-    }
+    const isLoaded = place => window.gps.state.maps[place] != undefined;
     
-    function load(place, reposition=true) {
+    const load = (place, reposition=true) => {
         
         setErrorVisible(false);
         setLoaderVisible(true);
         
         return new Promise(resolve => {
+
+            const showError = () => {
+                setLoaderVisible(false);
+                setErrorVisible(true);
+                return Promise.reject();
+            }
             
-           _.delay(function() {
+           _.delay(() => {
                
                 // If we've already loaded this place, just center it on the map
                 if (reposition && isLoaded(place)) {
@@ -34,15 +38,13 @@ window.gps = (function(){
                                 });
                             }
                             else {
-                                setLoaderVisible(false);
-                                setErrorVisible(true);
-                                return Promise.reject();
+                                showError();
                             }
                         })
                         .then(res => {
                             // map is ready, permit showing geolocation
 
-                            $("#show-geoloc").click(function(e){
+                            $("#show-geoloc").click(() => {
 
                                 if (navigator.geolocation) {
 
@@ -60,15 +62,19 @@ window.gps = (function(){
 
                             // maybe we have more places to load once this has finished
                             resolve();
-                        });
+                        })
+                        .catch(err => {
+                            console.log(["Error loading: " + place, err])
+                            showError();
+                        })
                 }
             }, delayLoad); 
         });
     }
     
-    function setUsrPosition(position) {
+    const setUsrPosition = position => {
         
-        var pos = {
+        const pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
@@ -76,7 +82,7 @@ window.gps = (function(){
         // add marker at user geolocation
         // option to drop pin at this location w/ window telling gps pos
 
-        var currInfoWindow = new google.maps.InfoWindow({
+        const currInfoWindow = new google.maps.InfoWindow({
             content: Mustache.render(window.templates["user-created-marker"], {
                 "loc": JSON.stringify(pos),
                 "gps": Mustache.render(window.templates["gps-loc"], {"id":"usr-geolocation-window", "lat":pos.lat, "lng":pos.lng}),
@@ -84,7 +90,7 @@ window.gps = (function(){
             })
         });
 
-        var markerSet = createMarker({"loc":pos}, currInfoWindow, window.gps.state.gmap, 'my_location_blue', undefined, true);
+        const markerSet = createMarker({"loc":pos}, currInfoWindow, window.gps.state.gmap, 'my_location_blue', undefined, true);
         window.gps.state.usrloc = markerSet;
 
         // center map at user geolocation
@@ -94,25 +100,25 @@ window.gps = (function(){
         $("#gm-control-button-myloc").removeClass("blink");
     }
     
-    function updateUsrPosition(position) {
+    const updateUsrPosition = position => {
         
-        var pos = {
+        const pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
 
         // update marker position
-        _.each(window.gps.state.usrloc.markers, function(marker){marker.setPosition(pos)});
+        _.each(window.gps.state.usrloc.markers, marker => {marker.setPosition(pos)});
 
         // update gps position text in the marker window
         $("#usr-geolocation-window").html(Mustache.render(window.templates["gps-loc"], {"id":"usr-geolocation-window", "lat":pos.lat, "lng":pos.lng}));
     }
     
-    function loadMultiple(places) {
+    const loadMultiple = places => {
         
         if (places.length) {
             
-            var first = places.shift();
+            const first = places.shift();
             
             return load(first, false).then(() => {
                 _.delay(loadMultiple, 5000, places);
@@ -131,20 +137,20 @@ window.gps = (function(){
         }
     }
     
-    function moveMapToExistingPlace(place) {
+    const moveMapToExistingPlace = place => 
         
-        return new Promise(resolve => {
+        new Promise(resolve => {
             
-            function hideLoaderOnResolution() {
+            const hideLoaderOnResolution = () => {
                 setLoaderVisible(false);
                 resolve();
             }
             
-            var json = window.gps.state.maps[place];
+            const json = window.gps.state.maps[place];
             if (json) {
                 
-                var z = json.zoom;
-                var ctr = _.findWhere(json.locations, {"label":json.center}).loc;
+                const z = json.zoom;
+                const ctr = _.findWhere(json.locations, {"label":json.center}).loc;
 
                 window.gps.state.gmap.setZoom(z);
                 window.gps.state.gmap.setCenter(ctr);
@@ -156,25 +162,25 @@ window.gps = (function(){
                 hideLoaderOnResolution();
             }
         });
-    }
 
-    function validLocation(location) {
-        var valid = (location.loc != undefined && location.loc.lat != undefined && location.loc.lng != undefined);
+    const validLocation = location => {
+        const valid = (location.loc != undefined && location.loc.lat != undefined && location.loc.lng != undefined);
         if (!valid) {
             console.log("INVALID LOCATION: " + JSON.stringify(location));
         }
         return valid;
     }
 
-    function handleJSON(place, json, reposition) {
+    const handleJSON = (place, json, reposition) => {
         
         // TODO: use promise or something to prevent multiple loading of places
         window.gps.state.maps[place] = json;
 
         // we may not know where to center the map
-        var c = _.findWhere(json.locations, {"label":json.center});
+        const c = _.findWhere(json.locations, {"label":json.center});
+        let cen;
         if (c) {
-            var cen = c.loc
+            cen = c.loc
         }
         
         return new Promise(resolve => {
@@ -194,16 +200,16 @@ window.gps = (function(){
                 });
 
                 // event when you click map. show gps coords of where you clicked.
-                google.maps.event.addListener(window.gps.state.gmap, 'click', function(event) {
+                google.maps.event.addListener(window.gps.state.gmap, 'click', event => {
 
-                    var clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
-                    var clickedLocStr = JSON.stringify(clickedLoc);
+                    const clickedLoc = {"lat":event.latLng.lat(), "lng":event.latLng.lng()};
+                    const clickedLocStr = JSON.stringify(clickedLoc);
 
-                    var i = _.keys(window.gps.state.tacks).length;
-                    var deleteID = "delete-marker-" + i;
+                    const i = _.keys(window.gps.state.tacks).length;
+                    const deleteID = "delete-marker-" + i;
 
                     // option to drop pin at this location w/ window telling gps pos
-                    var currInfoWindow = new google.maps.InfoWindow({
+                    const currInfoWindow = new google.maps.InfoWindow({
                         content: Mustache.render(window.templates["user-created-marker"], {
                             "loc": clickedLocStr,
                             "gps": Mustache.render(window.templates["gps-loc"], clickedLoc),
@@ -211,15 +217,15 @@ window.gps = (function(){
                         })
                     });
 
-                    function onWindowOpened() {
-                        $("#"+deleteID).on("click", function(e){
+                    const onWindowOpened = () => {
+                        $("#"+deleteID).on("click", e => {
                             e.preventDefault();
                             window.gps.state.tacks[deleteID].window.setMap(null);
-                            _.each(window.gps.state.tacks[deleteID].markers, function(marker){marker.setMap(null);});
+                            _.each(window.gps.state.tacks[deleteID].markers, marker => {marker.setMap(null);});
                         });
                     };
 
-                    var markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gps.state.gmap, 'edit', onWindowOpened);
+                    const markerSet = createMarker({"loc":clickedLoc}, currInfoWindow, window.gps.state.gmap, 'edit', onWindowOpened);
                     window.gps.state.tacks[deleteID] = markerSet;
 
                     markerSet.onClick();
@@ -228,7 +234,7 @@ window.gps = (function(){
 
             // add kml layers
             // param to kml url prevents caching by Google
-            _.each(json.layers, function(layer) {
+            _.each(json.layers, layer => {
                 new google.maps.KmlLayer({
                     url: s3rsc(place + /kml/ + layer),
                     map: window.gps.state.gmap
@@ -236,11 +242,11 @@ window.gps = (function(){
             });
 
             // add interactive marker for each location
-            var validLocations = _.filter(json.locations, validLocation);
-            _.each(validLocations, function(location) {
+            const validLocations = _.filter(json.locations, validLocation);
+            _.each(validLocations, location => {
 
                 //  only one info window at a time
-                var currInfoWindow = new google.maps.InfoWindow({
+                const currInfoWindow = new google.maps.InfoWindow({
                     content: createWindowHTML(location, place)
                 });
 
@@ -248,7 +254,7 @@ window.gps = (function(){
             });
             
             // when google map has finished loading, resolve the current promise
-            var listener = google.maps.event.addListener(window.gps.state.gmap, 'idle', () => {
+            const listener = google.maps.event.addListener(window.gps.state.gmap, 'idle', () => {
                 
                 google.maps.event.removeListener(listener);
                 
@@ -264,13 +270,13 @@ window.gps = (function(){
         });
     }
 
-    function createWindowHTML(location, place) {
+    const createWindowHTML = (location, place) => {
 
-        var imgLgSrc = location.img ? s3rsc(place + /img/ + location.img) : "";
-        var imgSmSrc = location.img ? s3rsc(place + /imgSm/ + location.img) : "";
-        var audSrc = location.aud ? s3rsc(place + /aud/ + location.aud) : "";
+        const imgLgSrc = location.img ? s3rsc(place + /imgLg/ + location.img) : "";
+        const imgSmSrc = location.img ? s3rsc(place + /imgSm/ + location.img) : "";
+        const audSrc = location.aud ? s3rsc(place + /aud/ + location.aud) : "";
 
-        var o = {
+        const o = {
             "title": location.label,
             "gps": Mustache.render(window.templates["gps-loc"], location.loc),
             "date": location.date,
@@ -282,16 +288,16 @@ window.gps = (function(){
         return Mustache.render(window.templates["map-item-content"], o);
     }
 
-    function createMarker(location, currInfoWindow, map, labelIcon=undefined, onWindowOpened=undefined, iconOnly=false) {
+    const createMarker = (location, currInfoWindow, map, labelIcon=undefined, onWindowOpened=undefined, iconOnly=false) => {
 
-        var markerOpts = {
+        const markerOpts = {
             map: map,
             position: new google.maps.LatLng(location.loc.lat, location.loc.lng),
             label: " ",
             zIndex: location.img ? 0 : 1 // make audio markers easier to see
         };
         
-        function onClick() {
+        const onClick = () => {
 
             if (window.lastInfoWindow) {
                 window.lastInfoWindow.close();
@@ -307,14 +313,15 @@ window.gps = (function(){
         };
 
         // add marker
+        let markerPin;
         if (!iconOnly) {
-            var markerPin = new google.maps.Marker(markerOpts);
+            markerPin = new google.maps.Marker(markerOpts);
             markerPin.addListener('click', onClick);
         }
         
-        function makeIcon(l) {
+        const makeIcon = l => {
 
-            var o = {
+            const o = {
                 url: "./rsc/ic_" + l + "_24px.svg"
             }
             
@@ -326,7 +333,7 @@ window.gps = (function(){
         };
 
         // add marker label as svg
-        var markerLabel = new google.maps.Marker(_.extend(markerOpts, {
+        const markerLabel = new google.maps.Marker(_.extend(markerOpts, {
             icon: (labelIcon ? makeIcon(labelIcon) : (location.aud ? makeIcon('volume_up') : makeIcon('camera_alt')))
         }));
         markerLabel.addListener('click', onClick);
@@ -335,7 +342,7 @@ window.gps = (function(){
         return {"onClick":onClick, "window":currInfoWindow, "markers":_.compact([markerPin, markerLabel])};
     }
 
-    function setLoaderVisible(visible) {
+    const setLoaderVisible = visible => {
         
         if (visible) {
             $("#hamburger").addClass("loading");
@@ -348,7 +355,7 @@ window.gps = (function(){
     }
 
     // failed to load json for a place
-    function setErrorVisible(visible) { 
+    const setErrorVisible = visible => { 
 
         if (visible) {
             $("#error").removeClass("hidden");      
@@ -359,19 +366,17 @@ window.gps = (function(){
     }
     
     // have to load everything from scratch (this is only called when using ?clear=true url param)
-    function clear() {
+    const clear = () => {
         window.gps.state = newState();
     }
     
     // an initialized state ensures we have to load everything from scratch
-    function newState() {
-        return {
-            "usrloc": null, // user geolocation
-            "tacks" : {}, // user-created gps locations,
-            "maps": {}, // list of maps we've already loaded (so we don't load and parse their info json again)
-            "gmap" : null // the Google Map upon which all map layers are drawn
-        }
-    }
+    const newState = () => ({
+        "usrloc": null, // user geolocation
+        "tacks" : {}, // user-created gps locations,
+        "maps": {}, // list of maps we've already loaded (so we don't load and parse their info json again)
+        "gmap" : null // the Google Map upon which all map layers are drawn
+    })
     
     /** PUBLIC **/
     
