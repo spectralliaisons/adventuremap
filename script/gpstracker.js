@@ -149,8 +149,6 @@ window.gps = (function(){
                 window.gps.state.gmap.setZoom(z);
                 window.gps.state.gmap.setCenter(ctr);
                 window.gps.state.gmap.setMapTypeId(json.mapType);
-
-                console.log("moveMapToExistingPlace() place: " + place + " --> https://www.google.com/maps/@" + ctr.lat + "," + ctr.lng + "," + z + "z");
                 
                 _.delay(hideLoaderOnResolution, delayLoad);
             }

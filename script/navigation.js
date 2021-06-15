@@ -40,7 +40,6 @@ window.nav = (function(){
         
         // url param to force place loading
         if (getUrlParameter("clear") == "true") {
-            console.log("FORCE LOAD");
             window.gps.clear();
         }
 
