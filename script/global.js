@@ -3,8 +3,7 @@ console.log("love and water are never wasted; they are the efflux of our inner n
 window.templates = {
     "menu" : '{{#places}}' +
     '<a id={{id}} href="#{{id}}">{{disp}}</a>' +
-    '{{/places}}' +
-    '</div>',
+    '{{/places}}',
     "map-item-content" : '<div class="map-item-content">{{{gps}}}' +
     '{{#date}}' +
     '<div class="gps-info-icon-txt"><i class="material-icons date-icon">schedule</i><div class="gps-info-txt">{{date}}</div></div>' +
@@ -25,7 +24,7 @@ window.templates = {
     '<div class="left"><a href="" id="{{deleteID}}"><i class="material-icons left clickable" id="{{deleteID}}">delete</i></a></div>' +
     '{{/deleteID}}' +
     '</div>',
-    "gps-loc" : '<div id="{{id}}" class="gps-info-icon-txt bottom-border"><a href="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" target="_"><i class="material-icons left clickable">map</i></a><div class="gps-info-txt"><a href="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" target="_">{{lat}},{{lng}}</a></div>'
+    "gps-loc" : '<div id="{{id}}" class="gps-info-icon-txt bottom-border"><a href="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" target="_"><i class="material-icons left clickable">map</i></a><div class="gps-info-txt"><a href="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" target="_">{{lat}},{{lng}}</a></div></div>'
 };
 
 // prevent caching

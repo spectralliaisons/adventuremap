@@ -8,7 +8,6 @@ window.nav = (() => {
         // tapping hamburger button slides menu down
         $("#hamburger").click(() => {
             $(this).toggleClass("open");
-            $("#map").toggleClass("open");
             $("#menu").slideToggle( "slow", () => {});
         });
     });   
@@ -54,29 +53,16 @@ window.nav = (() => {
         _.each(window.nav.places.places, p => {$("#" + p.id).removeClass('active')});
         // show the loading page nav tab as active
         $(href).addClass('active');
-        
-        const doLoad = p => {
-            
-            // load the gmap with this place data
-            if (p == "All") {
-                // load all not loaded places
-                const unloadedPlaces = _.filter(_.pluck(window.nav.places.places, "id"), p1 => {return(p1 != "All" && window.gps.state.maps[p1] == undefined)});
-                window.gps.loadMultiple(unloadedPlaces);
-            }
-            else {
-                window.gps.load(p);
-            }
-        }
 
         // close menu
         if ($("#hamburger").hasClass("open")) {
             $("#hamburger").click();
             
             // wait for #hamburger animation to finish before doing all the taxing loading
-            _.delay(doLoad, 600, place);
+            _.delay(window.gps.load, 600, place);
         }
         else {
-            doLoad(place);
+            window.gps.load(place);
         }
     }
     
@@ -88,12 +74,7 @@ window.nav = (() => {
             .then(res => res.json())
             .then(({places}) => {
                 window.nav.places = places;
-            
-                // sort non-"All" places by alphabet
-                const all = _.reject(places, p => {return(p.id != "All")})
-                let rest = _.reject(places, p => {return(p.id == "All")});
-                rest = _.sortBy(rest, "disp");
-                const renderPlaces = {"places": rest.concat(all)};
+                const renderPlaces = {"places": _.sortBy(places, "disp")};
                 // load places into the menu
                 const rendered = Mustache.render(window.templates["menu"], renderPlaces);
                 $("#menu").html(rendered);
@@ -108,7 +89,6 @@ window.nav = (() => {
                 if (window.location.hash == "") {
 
                     // make sure url has this hash (e.g. default landing hash)
-//                    window.location.hash = "#All";
                     window.location.hash = "#Russian_River";
                 }
                 else {
