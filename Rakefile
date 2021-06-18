@@ -6,7 +6,7 @@ PUBLICPATH = "gps/s3/"
 # FullAccessUser
 CREDS = "--access_key=#{ENV['S3_ACCESS_KEY']} --secret_key=#{ENV['S3_SECRET_KEY']}"
 
-MEDIA = ['aud', 'img', 'imgSm']
+MEDIA = ['aud', 'imgLg', 'imgSm']
 
 def places
     puts "ENV PLACE: #{ENV['place']}"
