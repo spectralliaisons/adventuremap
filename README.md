@@ -29,7 +29,7 @@ pip install ipywidgets
 
 2. Add any kml files you may have in kml/. Kml can come from your gps and e.g. [caltopo](https://caltopo.com/m/A912).
 
-3. Add any images you may have in img/. Don't add anything to imgErr/ or imgSm/; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
+3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
 
 4. Add any audio files you may have in aud/. File name sans extension must match an image with valid GPS coordinates or else will not appear.
 
