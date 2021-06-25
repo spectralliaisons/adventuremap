@@ -21,6 +21,8 @@ https://spectralliaisons.github.io/multimap/
 pip install notebook
 pip install Pillow
 pip install ipywidgets
+pip install wand
+pip install numpy
 ```
 
 ## Adding a track with images and optional audio:
