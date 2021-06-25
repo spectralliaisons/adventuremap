@@ -7,7 +7,8 @@
 
 
 from PIL import Image, ExifTags
-import getexifdata, glob, os, json, io, shutil, logprogress
+from wand.image import Image as WandImage
+import getexifdata, glob, os, json, io, shutil, logprogress, numpy
 
 DIR_PLACES = "../s3/"
 DIR_KML = "kml/"
@@ -58,7 +59,7 @@ def find_audio_for_img(label):
     return None # no warning needed
 
 def for_img_with_exif(fpath, fnExif, fnNoExif):
-    im = Image.open(fpath)
+    im = get_im(fpath)
     edat = getexifdata.get_exif_data(im)
     lat, lng = getexifdata.get_lat_lon(edat)
     if lat == None or lng == None:
@@ -70,34 +71,21 @@ def for_img_with_exif(fpath, fnExif, fnNoExif):
             fnExif(fpath, im)
         return {"lat":lat, "lng":lng}
 
-def ensure_img_sanity(fpath):
-    print("ensure_img_sanity", fpath)
-    def fnExif(fpath, im):
-        extension = "." + fpath.split(".")[-1]
-        im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
-    def fnNoExif(fpath, im):
-        im.save(base_path + DIR_IMG_ERR + get_fname(fpath).replace(IMG_FORMAT, "") + "_WARNING! no gps data for image" + IMG_FORMAT)
-    for_img_with_exif(fpath, fnExif, fnNoExif)
+def get_im(fpath):
+    try:
+        return Image.open(fpath)
+    except:
+        return as_pil_image(fpath)
+
+# convert HEIF images to PIL format
+def as_pil_image(fpath):
+    wand_im = WandImage(filename=fpath)
+    img_buffer = numpy.asarray(bytearray(wand_im.make_blob(format='png')), dtype='uint8')
+    bytesio = io.BytesIO(img_buffer)
+    return Image.open(bytesio)
 
 def get_gps_for_fpath(fpath):
     return for_img_with_exif(fpath, None, None)
-    
-# def format_img(fpath):
-#     im = Image.open(fpath)
-#     extension = "." + fpath.split(".")[-1]
-#     print("format_img", fpath)
-#     im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
-    
-# def get_gps_for_fpath(fpath):
-#     print("get_gps_for_fpath: " + fpath)
-#     im = Image.open(fpath)
-#     edat = getexifdata.get_exif_data(im)
-#     lat, lng = getexifdata.get_lat_lon(edat)
-#     if lat == None or lng == None:
-#         save_err_img(fpath, "WARNING! no gps data for image")
-#         return None
-#     else:
-#         return {"lat":lat, "lng":lng}
 
 def get_date_for_fpath(fpath):
     im = Image.open(fpath)
@@ -166,6 +154,15 @@ def ensure_audio_img_match():
 def ensure_all_img_sanity():
     [ensure_img_sanity(fpath) for fpath in glob.glob(base_path + DIR_IMG_ORIG + "*")]
 
+def ensure_img_sanity(fpath):
+    print("ensure_img_sanity", fpath)
+    def fnExif(fpath, im):
+        extension = "." + fpath.split(".")[-1]
+        im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
+    def fnNoExif(fpath, im):
+        im.save(base_path + DIR_IMG_ERR + get_fname(fpath).replace(IMG_FORMAT, "") + "_WARNING! no gps data for image" + IMG_FORMAT)
+    for_img_with_exif(fpath, fnExif, fnNoExif)
+    
 # only permit location labels that were most likely hand-named image filenames
 def verify_flabel(flabel):
     # invalid label if filename begins with '201' (likely a date)
