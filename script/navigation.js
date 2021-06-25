@@ -7,7 +7,7 @@ window.nav = (() => {
         
         // tapping hamburger button slides menu down
         $("#hamburger").click(() => {
-            $(this).toggleClass("open");
+            $("#hamburger").toggleClass("open");
             $("#menu").slideToggle( "slow", () => {});
         });
     });   
