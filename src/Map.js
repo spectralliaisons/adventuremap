@@ -10,6 +10,20 @@ mapboxgl.accessToken =
 
 const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
+const loadPlace = (place) => 
+  fetch(s3rsc(place + "/info.json"))
+    .then(res => {
+      if (res.ok) {
+        return new Promise(r1 => {
+            res.json().then(json => {
+              _.each(json.layers, layer => {
+                const url = s3rsc(`${place}/kml/${layer}`);
+              });
+            });
+          });
+        }
+      });
+
 const fetchPlaces = (map) =>
   fetch(s3rsc("all_rivers.json"))
     .then(res => res.json())
@@ -66,7 +80,7 @@ const Map = () => {
   return (
     <div>
       <div className='sidebar'>
-        <Menu places={places} />
+        <Menu loadPlace={loadPlace} places={places} />
       </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>
