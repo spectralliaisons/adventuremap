@@ -5,6 +5,28 @@ import './Map.css';
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A';
 
+const s3url = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+
+const paintRiver = {'line-color': '#00bcff','line-width': 3};
+
+const paintLine = (map, paint, location, track) => {
+  map.addSource(track, {
+    type: 'geojson',
+    data: s3url(`${location}/geojson/${track}.geojson`)
+  });
+    
+  map.addLayer({
+    'id': `${track}-layer`,
+    'type': 'line',
+    'source': track,
+    'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': paint
+  });
+};
+
 const Map = () => {
   const mapContainerRef = useRef(null);
 
@@ -29,6 +51,8 @@ const Map = () => {
       setLat(map.getCenter().lat.toFixed(4));
       setZoom(map.getZoom().toFixed(2));
     });
+
+    map.on('load', () => paintLine(map, paintRiver, "Russian_River", "russian_river"));
 
     // Clean up on unmount
     return () => map.remove();
