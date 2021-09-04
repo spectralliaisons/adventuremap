@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
+import Menu from './Menu';
 
 let _ = require('underscore');
 
@@ -10,13 +11,13 @@ mapboxgl.accessToken =
 const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
 const fetchPlaces = (map) =>
-  // paintLine(map, paintRiver, "Russian_River", "russian_river");
   fetch(s3rsc("all_rivers.json"))
     .then(res => res.json())
     .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
 
 const paintRiver = {'line-color': '#00bcff','line-width': 3};
 
+// paintLine(map, paintRiver, "Russian_River", "russian_river");
 const paintLine = (map, paint, location, track) => {
   map.addSource(track, {
     type: 'geojson',
@@ -33,16 +34,6 @@ const paintLine = (map, paint, location, track) => {
     },
     'paint': paint
   });
-};
-
-function Menu({places}) {
-  return (
-    <ol>
-      {places.map(({disp, id}) => (
-        <li key={id}>{disp}</li>
-      ))}
-    </ol>
-  );
 };
 
 const Map = () => {
@@ -64,7 +55,9 @@ const Map = () => {
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    map.on('load', () => fetchPlaces(map).then(setPlaces));
+    map.once('load', () => fetchPlaces(map).then((res) => {
+      setPlaces(res);
+    }));
 
     // Clean up on unmount
     return () => map.remove();
