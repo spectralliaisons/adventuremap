@@ -1,7 +1,8 @@
 // @flow
 
 import murmur3 from 'murmurhash-js';
-import {register} from '../util/web_worker_transfer';
+import {register} from '../util/web_worker_transfer.js';
+import {MAX_SAFE_INTEGER} from '../util/util.js';
 import assert from 'assert';
 
 type SerializedFeaturePositionMap = {
@@ -83,8 +84,6 @@ export default class FeaturePositionMap {
         return map;
     }
 }
-
-const MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
 
 function getNumericId(value: mixed) {
     const numValue = +value;

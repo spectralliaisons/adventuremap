@@ -1,28 +1,35 @@
 // @flow
 
-import type {RequestParameters} from '../util/ajax';
-import type {RGBAImage, AlphaImage} from '../util/image';
-import type {GlyphPositions} from '../render/glyph_atlas';
-import type ImageAtlas from '../render/image_atlas';
-import type {OverscaledTileID} from './tile_id';
-import type {Bucket} from '../data/bucket';
-import type FeatureIndex from '../data/feature_index';
-import type {CollisionBoxArray} from '../data/array_types';
-import type DEMData from '../data/dem_data';
-import type {StyleGlyph} from '../style/style_glyph';
-import type {StyleImage} from '../style/style_image';
-import type {PromoteIdSpecification} from '../style-spec/types';
-import window from '../util/window';
+import type {RequestParameters} from '../util/ajax.js';
+import type {RGBAImage, AlphaImage} from '../util/image.js';
+import type {GlyphPositions} from '../render/glyph_atlas.js';
+import type ImageAtlas from '../render/image_atlas.js';
+import type LineAtlas from '../render/line_atlas.js';
+import type {OverscaledTileID} from './tile_id.js';
+import type {Bucket} from '../data/bucket.js';
+import type FeatureIndex from '../data/feature_index.js';
+import type {CollisionBoxArray} from '../data/array_types.js';
+import type DEMData from '../data/dem_data.js';
+import type {StyleGlyph} from '../style/style_glyph.js';
+import type {StyleImage} from '../style/style_image.js';
+import type {PromoteIdSpecification} from '../style-spec/types.js';
+import window from '../util/window.js';
 const {ImageBitmap} = window;
 
 export type TileParameters = {
     source: string,
-    uid: string,
+    uid: number,
 };
 
-export type WorkerTileParameters = TileParameters & {
+export type RequestedTileParameters = TileParameters & {
     tileID: OverscaledTileID,
+    tileZoom: number,
     request: RequestParameters,
+    data?: mixed,
+    isSymbolTile: ?boolean
+};
+
+export type WorkerTileParameters = RequestedTileParameters & {
     zoom: number,
     maxZoom: number,
     tileSize: number,
@@ -30,25 +37,29 @@ export type WorkerTileParameters = TileParameters & {
     pixelRatio: number,
     showCollisionBoxes: boolean,
     collectResourceTiming?: boolean,
-    returnDependencies?: boolean
+    returnDependencies?: boolean,
+    enableTerrain?: boolean
 };
 
 export type WorkerDEMTileParameters = TileParameters & {
     coord: { z: number, x: number, y: number, w: number },
     rawImageData: RGBAImage | ImageBitmap,
-    encoding: "mapbox" | "terrarium"
+    encoding: "mapbox" | "terrarium",
+    padding: number,
+    buildQuadTree?: boolean
 };
 
 export type WorkerTileResult = {
     buckets: Array<Bucket>,
     imageAtlas: ImageAtlas,
     glyphAtlasImage: AlphaImage,
+    lineAtlas: LineAtlas,
     featureIndex: FeatureIndex,
     collisionBoxArray: CollisionBoxArray,
     rawTileData?: ArrayBuffer,
     resourceTiming?: Array<PerformanceResourceTiming>,
     // Only used for benchmarking:
-    glyphMap?: {[_: string]: {[_: number]: ?StyleGlyph}} | null,
+    glyphMap?: {[_: string]: {glyphs: {[_: number]: ?StyleGlyph}, ascender?: number, descender?: number}} | null,
     iconMap?: {[_: string]: StyleImage} | null,
     glyphPositions?: GlyphPositions | null
 };

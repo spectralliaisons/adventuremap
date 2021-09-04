@@ -1,40 +1,42 @@
 // @flow
 
-import {packUint8ToFloat} from '../shaders/encode_attribute';
-import Color from '../style-spec/util/color';
-import {supportsPropertyExpression} from '../style-spec/util/properties';
-import {register} from '../util/web_worker_transfer';
-import {PossiblyEvaluatedPropertyValue} from '../style/properties';
-import {StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16, PatternLayoutArray} from './array_types';
-import {clamp} from '../util/util';
-import patternAttributes from './bucket/pattern_attributes';
-import EvaluationParameters from '../style/evaluation_parameters';
-import FeaturePositionMap from './feature_position_map';
+import {packUint8ToFloat} from '../shaders/encode_attribute.js';
+import Color from '../style-spec/util/color.js';
+import {supportsPropertyExpression} from '../style-spec/util/properties.js';
+import {register} from '../util/web_worker_transfer.js';
+import {PossiblyEvaluatedPropertyValue} from '../style/properties.js';
+import {StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16, PatternLayoutArray, DashLayoutArray} from './array_types.js';
+import {clamp} from '../util/util.js';
+import patternAttributes from './bucket/pattern_attributes.js';
+import dashAttributes from './bucket/dash_attributes.js';
+import EvaluationParameters from '../style/evaluation_parameters.js';
+import FeaturePositionMap from './feature_position_map.js';
 import {
     Uniform,
     Uniform1f,
     UniformColor,
     Uniform4f,
     type UniformLocations
-} from '../render/uniform_binding';
+} from '../render/uniform_binding.js';
 
-import type {CanonicalTileID} from '../source/tile_id';
-import type Context from '../gl/context';
-import type {TypedStyleLayer} from '../style/style_layer/typed_style_layer';
-import type {CrossfadeParameters} from '../style/evaluation_parameters';
-import type {StructArray, StructArrayMember} from '../util/struct_array';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type {ImagePosition} from '../render/image_atlas';
+import type {CanonicalTileID} from '../source/tile_id.js';
+import type Context from '../gl/context.js';
+import type {TypedStyleLayer} from '../style/style_layer/typed_style_layer.js';
+import type {CrossfadeParameters} from '../style/evaluation_parameters.js';
+import type {StructArray, StructArrayMember} from '../util/struct_array.js';
+import type VertexBuffer from '../gl/vertex_buffer.js';
+import type {ImagePosition} from '../render/image_atlas.js';
 import type {
     Feature,
     FeatureState,
     GlobalProperties,
     SourceExpression,
     CompositeExpression
-} from '../style-spec/expression';
-import type {PossiblyEvaluated} from '../style/properties';
-import type {FeatureStates} from '../source/source_state';
-import type {FormattedSection} from '../style-spec/expression/types/formatted';
+} from '../style-spec/expression/index.js';
+import type {PossiblyEvaluated} from '../style/properties.js';
+import type {FeatureStates} from '../source/source_state.js';
+import type {FormattedSection} from '../style-spec/expression/types/formatted.js';
+import assert from 'assert';
 
 export type BinderUniform = {
     name: string,
@@ -53,7 +55,7 @@ function packColor(color: Color): [number, number] {
  *  `Binder` is the interface definition for the strategies for constructing,
  *  uploading, and binding paint property data as GLSL attributes. Most style-
  *  spec properties have a 1:1 relationship to shader attribute/uniforms, but
- *  some require multliple values per feature to be passed to the GPU, and in
+ *  some require multiple values per feature to be passed to the GPU, and in
  *  those cases we bind multiple attributes/uniforms.
  *
  *  It has three implementations, one for each of the three strategies we use:
@@ -72,7 +74,7 @@ function packColor(color: Color): [number, number] {
  *    uniform allows us to cheaply update the value on every frame.
  *
  *  Note that the shader source varies depending on whether we're using a uniform or
- *  attribute. We dynamically compile shaders at runtime to accomodate this.
+ *  attribute. We dynamically compile shaders at runtime to accommodate this.
  *
  * @private
  */
@@ -130,21 +132,21 @@ class CrossFadedConstantBinder implements UniformBinder {
     setConstantPatternPositions(posTo: ImagePosition, posFrom: ImagePosition) {
         this.pixelRatioFrom = posFrom.pixelRatio;
         this.pixelRatioTo = posTo.pixelRatio;
-        this.patternFrom = posFrom.tlbr;
-        this.patternTo = posTo.tlbr;
+        this.patternFrom = posFrom.tl.concat(posFrom.br);
+        this.patternTo = posTo.tl.concat(posTo.br);
     }
 
     setUniform(uniform: Uniform<*>, globals: GlobalProperties, currentValue: PossiblyEvaluatedPropertyValue<mixed>, uniformName: string) {
         const pos =
-            uniformName === 'u_pattern_to' ? this.patternTo :
-            uniformName === 'u_pattern_from' ? this.patternFrom :
+            uniformName === 'u_pattern_to' || uniformName === 'u_dash_to' ? this.patternTo :
+            uniformName === 'u_pattern_from' || uniformName === 'u_dash_from' ? this.patternFrom :
             uniformName === 'u_pixel_ratio_to' ? this.pixelRatioTo :
             uniformName === 'u_pixel_ratio_from' ? this.pixelRatioFrom : null;
         if (pos) uniform.set(pos);
     }
 
     getBinding(context: Context, location: WebGLUniformLocation, name: string): $Shape<Uniform<any>> {
-        return name.substr(0, 9) === 'u_pattern' ?
+        return name === 'u_pattern_from' || name === 'u_pattern_to' || name === 'u_dash_from' || name === 'u_dash_to' ?
             new Uniform4f(context, location) :
             new Uniform1f(context, location);
     }
@@ -312,12 +314,17 @@ class CrossFadedCompositeBinder implements AttributeBinder {
     zoomOutPaintVertexBuffer: ?VertexBuffer;
     paintVertexAttributes: Array<StructArrayMember>;
 
-    constructor(expression: CompositeExpression, type: string, useIntegerZoom: boolean, zoom: number, PaintVertexArray: Class<StructArray>, layerId: string) {
+    constructor(expression: CompositeExpression, names: Array<string>, type: string, useIntegerZoom: boolean, zoom: number, PaintVertexArray: Class<StructArray>, layerId: string) {
         this.expression = expression;
         this.type = type;
         this.useIntegerZoom = useIntegerZoom;
         this.zoom = zoom;
         this.layerId = layerId;
+
+        this.paintVertexAttributes = (type === 'array' ? dashAttributes : patternAttributes).members;
+        for (let i = 0; i < names.length; ++i) {
+            assert(`a_${names[i]}` === this.paintVertexAttributes[i].name);
+        }
 
         this.zoomInPaintVertexArray = new PaintVertexArray();
         this.zoomOutPaintVertexArray = new PaintVertexArray();
@@ -347,25 +354,23 @@ class CrossFadedCompositeBinder implements AttributeBinder {
         // we're cross-fading to at layout time. In order to keep vertex attributes to a minimum and not pass
         // unnecessary vertex data to the shaders, we determine which to upload at draw time.
         for (let i = start; i < end; i++) {
-            this.zoomInPaintVertexArray.emplace(i,
-                imageMid.tl[0], imageMid.tl[1], imageMid.br[0], imageMid.br[1],
-                imageMin.tl[0], imageMin.tl[1], imageMin.br[0], imageMin.br[1],
-                imageMid.pixelRatio,
-                imageMin.pixelRatio,
-            );
-            this.zoomOutPaintVertexArray.emplace(i,
-                imageMid.tl[0], imageMid.tl[1], imageMid.br[0], imageMid.br[1],
-                imageMax.tl[0], imageMax.tl[1], imageMax.br[0], imageMax.br[1],
-                imageMid.pixelRatio,
-                imageMax.pixelRatio,
-            );
+            this._setPaintValue(this.zoomInPaintVertexArray, i, imageMid, imageMin);
+            this._setPaintValue(this.zoomOutPaintVertexArray, i, imageMid, imageMax);
         }
+    }
+
+    _setPaintValue(array, i, posA, posB) {
+        array.emplace(i,
+            posA.tl[0], posA.tl[1], posA.br[0], posA.br[1],
+            posB.tl[0], posB.tl[1], posB.br[0], posB.br[1],
+            posA.pixelRatio, posB.pixelRatio
+        );
     }
 
     upload(context: Context) {
         if (this.zoomInPaintVertexArray && this.zoomInPaintVertexArray.arrayBuffer && this.zoomOutPaintVertexArray && this.zoomOutPaintVertexArray.arrayBuffer) {
-            this.zoomInPaintVertexBuffer = context.createVertexBuffer(this.zoomInPaintVertexArray, patternAttributes.members, this.expression.isStateDependent);
-            this.zoomOutPaintVertexBuffer = context.createVertexBuffer(this.zoomOutPaintVertexArray, patternAttributes.members, this.expression.isStateDependent);
+            this.zoomInPaintVertexBuffer = context.createVertexBuffer(this.zoomInPaintVertexArray, this.paintVertexAttributes, this.expression.isStateDependent);
+            this.zoomOutPaintVertexBuffer = context.createVertexBuffer(this.zoomOutPaintVertexArray, this.paintVertexAttributes, this.expression.isStateDependent);
         }
     }
 
@@ -401,7 +406,7 @@ export default class ProgramConfiguration {
 
     _buffers: Array<VertexBuffer>;
 
-    constructor(layer: TypedStyleLayer, zoom: number, filterProperties: (_: string) => boolean) {
+    constructor(layer: TypedStyleLayer, zoom: number, filterProperties: (_: string) => boolean = () => true) {
         this.binders = {};
         this._buffers = [];
 
@@ -420,16 +425,18 @@ export default class ProgramConfiguration {
             const propType = value.property.specification['property-type'];
             const isCrossFaded = propType === 'cross-faded' || propType === 'cross-faded-data-driven';
 
-            if (expression.kind === 'constant') {
+            const sourceException = String(property) === 'line-dasharray' && (layer.layout: any).get('line-cap').value.kind !== 'constant';
+
+            if (expression.kind === 'constant' && !sourceException) {
                 this.binders[property] = isCrossFaded ?
                     new CrossFadedConstantBinder(expression.value, names) :
                     new ConstantBinder(expression.value, names, type);
                 keys.push(`/u_${property}`);
 
-            } else if (expression.kind === 'source' || isCrossFaded) {
+            } else if (expression.kind === 'source' || sourceException || isCrossFaded) {
                 const StructArrayLayout = layoutType(property, type, 'source');
                 this.binders[property] = isCrossFaded ?
-                    new CrossFadedCompositeBinder(expression, type, useIntegerZoom, zoom, StructArrayLayout, layer.id) :
+                    new CrossFadedCompositeBinder(expression, names, type, useIntegerZoom, zoom, StructArrayLayout, layer.id) :
                     new SourceExpressionBinder(expression, names, type, StructArrayLayout);
                 keys.push(`/a_${property}`);
 
@@ -502,13 +509,9 @@ export default class ProgramConfiguration {
         const result = [];
         for (const property in this.binders) {
             const binder = this.binders[property];
-            if (binder instanceof SourceExpressionBinder || binder instanceof CompositeExpressionBinder) {
+            if (binder instanceof SourceExpressionBinder || binder instanceof CompositeExpressionBinder || binder instanceof CrossFadedCompositeBinder) {
                 for (let i = 0; i < binder.paintVertexAttributes.length; i++) {
                     result.push(binder.paintVertexAttributes[i].name);
-                }
-            } else if (binder instanceof CrossFadedCompositeBinder) {
-                for (let i = 0; i < patternAttributes.members.length; i++) {
-                    result.push(patternAttributes.members[i].name);
                 }
             }
         }
@@ -550,7 +553,7 @@ export default class ProgramConfiguration {
 
     setUniforms<Properties: Object>(context: Context, binderUniforms: Array<BinderUniform>, properties: PossiblyEvaluated<Properties>, globals: GlobalProperties) {
         // Uniform state bindings are owned by the Program, but we set them
-        // from within the ProgramConfiguraton's binder members.
+        // from within the ProgramConfiguration's binder members.
         for (const {name, property, binding} of binderUniforms) {
             (this.binders[property]: any).setUniform(binding, globals, properties.get(property), name);
         }
@@ -643,59 +646,60 @@ export class ProgramConfigurationSet<Layer: TypedStyleLayer> {
     }
 }
 
-function paintAttributeNames(property, type) {
-    const attributeNameExceptions = {
-        'text-opacity': ['opacity'],
-        'icon-opacity': ['opacity'],
-        'text-color': ['fill_color'],
-        'icon-color': ['fill_color'],
-        'text-halo-color': ['halo_color'],
-        'icon-halo-color': ['halo_color'],
-        'text-halo-blur': ['halo_blur'],
-        'icon-halo-blur': ['halo_blur'],
-        'text-halo-width': ['halo_width'],
-        'icon-halo-width': ['halo_width'],
-        'line-gap-width': ['gapwidth'],
-        'line-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
-        'fill-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
-        'fill-extrusion-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
-    };
+const attributeNameExceptions = {
+    'text-opacity': ['opacity'],
+    'icon-opacity': ['opacity'],
+    'text-color': ['fill_color'],
+    'icon-color': ['fill_color'],
+    'text-halo-color': ['halo_color'],
+    'icon-halo-color': ['halo_color'],
+    'text-halo-blur': ['halo_blur'],
+    'icon-halo-blur': ['halo_blur'],
+    'text-halo-width': ['halo_width'],
+    'icon-halo-width': ['halo_width'],
+    'line-gap-width': ['gapwidth'],
+    'line-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
+    'fill-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
+    'fill-extrusion-pattern': ['pattern_to', 'pattern_from', 'pixel_ratio_to', 'pixel_ratio_from'],
+    'line-dasharray': ['dash_to', 'dash_from']
+};
 
+function paintAttributeNames(property, type) {
     return attributeNameExceptions[property] || [property.replace(`${type}-`, '').replace(/-/g, '_')];
 }
 
-function getLayoutException(property) {
-    const propertyExceptions = {
-        'line-pattern':{
-            'source': PatternLayoutArray,
-            'composite': PatternLayoutArray
-        },
-        'fill-pattern': {
-            'source': PatternLayoutArray,
-            'composite': PatternLayoutArray
-        },
-        'fill-extrusion-pattern':{
-            'source': PatternLayoutArray,
-            'composite': PatternLayoutArray
-        }
-    };
+const propertyExceptions = {
+    'line-pattern': {
+        'source': PatternLayoutArray,
+        'composite': PatternLayoutArray
+    },
+    'fill-pattern': {
+        'source': PatternLayoutArray,
+        'composite': PatternLayoutArray
+    },
+    'fill-extrusion-pattern':{
+        'source': PatternLayoutArray,
+        'composite': PatternLayoutArray
+    },
+    'line-dasharray': { // temporary layout
+        'source': DashLayoutArray,
+        'composite': DashLayoutArray
+    }
+};
 
-    return propertyExceptions[property];
-}
+const defaultLayouts = {
+    'color': {
+        'source': StructArrayLayout2f8,
+        'composite': StructArrayLayout4f16
+    },
+    'number': {
+        'source': StructArrayLayout1f4,
+        'composite': StructArrayLayout2f8
+    }
+};
 
 function layoutType(property, type, binderType) {
-    const defaultLayouts = {
-        'color': {
-            'source': StructArrayLayout2f8,
-            'composite': StructArrayLayout4f16
-        },
-        'number': {
-            'source': StructArrayLayout1f4,
-            'composite': StructArrayLayout2f8
-        }
-    };
-
-    const layoutException = getLayoutException(property);
+    const layoutException = propertyExceptions[property];
     return  layoutException && layoutException[binderType] || defaultLayouts[type][binderType];
 }
 

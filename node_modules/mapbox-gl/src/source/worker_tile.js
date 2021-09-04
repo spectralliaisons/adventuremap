@@ -1,37 +1,40 @@
 // @flow
 
-import FeatureIndex from '../data/feature_index';
+import FeatureIndex from '../data/feature_index.js';
 
-import {performSymbolLayout} from '../symbol/symbol_layout';
-import {CollisionBoxArray} from '../data/array_types';
-import DictionaryCoder from '../util/dictionary_coder';
-import SymbolBucket from '../data/bucket/symbol_bucket';
-import LineBucket from '../data/bucket/line_bucket';
-import FillBucket from '../data/bucket/fill_bucket';
-import FillExtrusionBucket from '../data/bucket/fill_extrusion_bucket';
-import {warnOnce, mapObject, values} from '../util/util';
+import {performSymbolLayout} from '../symbol/symbol_layout.js';
+import {CollisionBoxArray} from '../data/array_types.js';
+import DictionaryCoder from '../util/dictionary_coder.js';
+import SymbolBucket from '../data/bucket/symbol_bucket.js';
+import LineBucket from '../data/bucket/line_bucket.js';
+import FillBucket from '../data/bucket/fill_bucket.js';
+import FillExtrusionBucket from '../data/bucket/fill_extrusion_bucket.js';
+import {warnOnce, mapObject, values} from '../util/util.js';
 import assert from 'assert';
-import ImageAtlas from '../render/image_atlas';
-import GlyphAtlas from '../render/glyph_atlas';
-import EvaluationParameters from '../style/evaluation_parameters';
-import {OverscaledTileID} from './tile_id';
+import LineAtlas from '../render/line_atlas.js';
+import ImageAtlas from '../render/image_atlas.js';
+import GlyphAtlas from '../render/glyph_atlas.js';
+import EvaluationParameters from '../style/evaluation_parameters.js';
+import {OverscaledTileID} from './tile_id.js';
+import {PerformanceUtils} from '../util/performance.js';
 
-import type {Bucket} from '../data/bucket';
-import type Actor from '../util/actor';
-import type StyleLayer from '../style/style_layer';
-import type StyleLayerIndex from '../style/style_layer_index';
-import type {StyleImage} from '../style/style_image';
-import type {StyleGlyph} from '../style/style_glyph';
+import type {Bucket} from '../data/bucket.js';
+import type Actor from '../util/actor.js';
+import type StyleLayer from '../style/style_layer.js';
+import type StyleLayerIndex from '../style/style_layer_index.js';
+import type {StyleImage} from '../style/style_image.js';
+import type {StyleGlyph} from '../style/style_glyph.js';
 import type {
     WorkerTileParameters,
     WorkerTileCallback,
-} from '../source/worker_source';
-import type {PromoteIdSpecification} from '../style-spec/types';
+} from '../source/worker_source.js';
+import type {PromoteIdSpecification} from '../style-spec/types.js';
 
 class WorkerTile {
     tileID: OverscaledTileID;
-    uid: string;
+    uid: number;
     zoom: number;
+    tileZoom: number;
     pixelRatio: number;
     tileSize: number;
     source: string;
@@ -40,6 +43,8 @@ class WorkerTile {
     showCollisionBoxes: boolean;
     collectResourceTiming: boolean;
     returnDependencies: boolean;
+    enableTerrain: boolean;
+    isSymbolTile: ?boolean;
 
     status: 'parsing' | 'done';
     data: VectorTile;
@@ -51,6 +56,7 @@ class WorkerTile {
 
     constructor(params: WorkerTileParameters) {
         this.tileID = new OverscaledTileID(params.tileID.overscaledZ, params.tileID.wrap, params.tileID.canonical.z, params.tileID.canonical.x, params.tileID.canonical.y);
+        this.tileZoom = params.tileZoom;
         this.uid = params.uid;
         this.zoom = params.zoom;
         this.pixelRatio = params.pixelRatio;
@@ -61,9 +67,12 @@ class WorkerTile {
         this.collectResourceTiming = !!params.collectResourceTiming;
         this.returnDependencies = !!params.returnDependencies;
         this.promoteId = params.promoteId;
+        this.enableTerrain = !!params.enableTerrain;
+        this.isSymbolTile = params.isSymbolTile;
     }
 
     parse(data: VectorTile, layerIndex: StyleLayerIndex, availableImages: Array<string>, actor: Actor, callback: WorkerTileCallback) {
+        const m = PerformanceUtils.beginMeasure('parseTile1');
         this.status = 'parsing';
         this.data = data;
 
@@ -75,11 +84,15 @@ class WorkerTile {
 
         const buckets: {[_: string]: Bucket} = {};
 
+        // we initially reserve space for a 256x256 atlas, but trim it after processing all line features
+        const lineAtlas = new LineAtlas(256, 256);
+
         const options = {
             featureIndex,
             iconDependencies: {},
             patternDependencies: {},
             glyphDependencies: {},
+            lineAtlas,
             availableImages
         };
 
@@ -87,6 +100,22 @@ class WorkerTile {
         for (const sourceLayerId in layerFamilies) {
             const sourceLayer = data.layers[sourceLayerId];
             if (!sourceLayer) {
+                continue;
+            }
+
+            let anySymbolLayers = false;
+            let anyOtherLayers = false;
+            for (const family of layerFamilies[sourceLayerId]) {
+                if (family[0].type === 'symbol') {
+                    anySymbolLayers = true;
+                } else {
+                    anyOtherLayers = true;
+                }
+            }
+
+            if (this.isSymbolTile === true && !anySymbolLayers) {
+                continue;
+            } else if (this.isSymbolTile === false && !anyOtherLayers) {
                 continue;
             }
 
@@ -105,6 +134,7 @@ class WorkerTile {
 
             for (const family of layerFamilies[sourceLayerId]) {
                 const layer = family[0];
+                if (this.isSymbolTile !== undefined && (layer.type === 'symbol') !== this.isSymbolTile) continue;
 
                 assert(layer.source === this.source);
                 if (layer.minzoom && this.zoom < Math.floor(layer.minzoom)) continue;
@@ -121,7 +151,8 @@ class WorkerTile {
                     overscaling: this.overscaling,
                     collisionBoxArray: this.collisionBoxArray,
                     sourceLayerIndex,
-                    sourceID: this.source
+                    sourceID: this.source,
+                    enableTerrain: this.enableTerrain
                 });
 
                 bucket.populate(features, options, this.tileID.canonical);
@@ -129,10 +160,13 @@ class WorkerTile {
             }
         }
 
+        lineAtlas.trim();
+
         let error: ?Error;
-        let glyphMap: ?{[_: string]: {[_: number]: ?StyleGlyph}};
+        let glyphMap: ?{[_: string]: {glyphs: {[_: number]: ?StyleGlyph}, ascender?: number, descender?: number}};
         let iconMap: ?{[_: string]: StyleImage};
         let patternMap: ?{[_: string]: StyleImage};
+        const taskMetadata = {type: 'maybePrepare', isSymbolTile: this.isSymbolTile, zoom: this.zoom};
 
         const stacks = mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
         if (Object.keys(stacks).length) {
@@ -142,7 +176,7 @@ class WorkerTile {
                     glyphMap = result;
                     maybePrepare.call(this);
                 }
-            });
+            }, undefined, false, taskMetadata);
         } else {
             glyphMap = {};
         }
@@ -155,7 +189,7 @@ class WorkerTile {
                     iconMap = result;
                     maybePrepare.call(this);
                 }
-            });
+            }, undefined, false, taskMetadata);
         } else {
             iconMap = {};
         }
@@ -168,10 +202,12 @@ class WorkerTile {
                     patternMap = result;
                     maybePrepare.call(this);
                 }
-            });
+            }, undefined, false, taskMetadata);
         } else {
             patternMap = {};
         }
+
+        PerformanceUtils.endMeasure(m);
 
         maybePrepare.call(this);
 
@@ -179,6 +215,7 @@ class WorkerTile {
             if (error) {
                 return callback(error);
             } else if (glyphMap && iconMap && patternMap) {
+                const m = PerformanceUtils.beginMeasure('parseTile2');
                 const glyphAtlas = new GlyphAtlas(glyphMap);
                 const imageAtlas = new ImageAtlas(iconMap, patternMap);
 
@@ -186,7 +223,14 @@ class WorkerTile {
                     const bucket = buckets[key];
                     if (bucket instanceof SymbolBucket) {
                         recalculateLayers(bucket.layers, this.zoom, availableImages);
-                        performSymbolLayout(bucket, glyphMap, glyphAtlas.positions, iconMap, imageAtlas.iconPositions, this.showCollisionBoxes, this.tileID.canonical);
+                        performSymbolLayout(bucket,
+                            glyphMap,
+                            glyphAtlas.positions,
+                            iconMap,
+                            imageAtlas.iconPositions,
+                            this.showCollisionBoxes,
+                            this.tileID.canonical,
+                            this.tileZoom);
                     } else if (bucket.hasPattern &&
                         (bucket instanceof LineBucket ||
                          bucket instanceof FillBucket ||
@@ -202,12 +246,14 @@ class WorkerTile {
                     featureIndex,
                     collisionBoxArray: this.collisionBoxArray,
                     glyphAtlasImage: glyphAtlas.image,
+                    lineAtlas,
                     imageAtlas,
                     // Only used for benchmarking:
                     glyphMap: this.returnDependencies ? glyphMap : null,
                     iconMap: this.returnDependencies ? iconMap : null,
                     glyphPositions: this.returnDependencies ? glyphAtlas.positions : null
                 });
+                PerformanceUtils.endMeasure(m);
             }
         }
     }

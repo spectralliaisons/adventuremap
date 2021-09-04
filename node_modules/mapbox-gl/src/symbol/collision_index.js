@@ -1,23 +1,25 @@
 // @flow
 
 import Point from '@mapbox/point-geometry';
-import clipLine from './clip_line';
-import PathInterpolator from './path_interpolator';
+import clipLine from './clip_line.js';
+import PathInterpolator from './path_interpolator.js';
 
-import * as intersectionTests from '../util/intersection_tests';
-import Grid from './grid_index';
-import {mat4} from 'gl-matrix';
-import ONE_EM from '../symbol/one_em';
+import * as intersectionTests from '../util/intersection_tests.js';
+import Grid from './grid_index.js';
+import {mat4, vec4} from 'gl-matrix';
+import ONE_EM from '../symbol/one_em.js';
+import {FOG_SYMBOL_CLIPPING_THRESHOLD, getFogOpacityAtTileCoord} from '../style/fog_helpers.js';
 import assert from 'assert';
 
-import * as projection from '../symbol/projection';
-
-import type Transform from '../geo/transform';
-import type {SingleCollisionBox} from '../data/bucket/symbol_bucket';
+import * as projection from '../symbol/projection.js';
+import type Transform from '../geo/transform.js';
+import type {SingleCollisionBox} from '../data/bucket/symbol_bucket.js';
 import type {
     GlyphOffsetArray,
     SymbolLineVertexArray
-} from '../data/array_types';
+} from '../data/array_types.js';
+import type {FogState} from '../style/fog_helpers.js';
+import {OverscaledTileID} from '../source/tile_id.js';
 
 // When a symbol crosses the edge that causes it to be included in
 // collision detection, it will cause changes in the symbols around
@@ -48,9 +50,11 @@ class CollisionIndex {
     screenBottomBoundary: number;
     gridRightBoundary: number;
     gridBottomBoundary: number;
+    fogState: ?FogState;
 
     constructor(
         transform: Transform,
+        fogState: ?FogState,
         grid: Grid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25),
         ignoredGrid: Grid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25)
     ) {
@@ -64,18 +68,27 @@ class CollisionIndex {
         this.screenBottomBoundary = transform.height + viewportPadding;
         this.gridRightBoundary = transform.width + 2 * viewportPadding;
         this.gridBottomBoundary = transform.height + 2 * viewportPadding;
+        this.fogState = fogState;
     }
 
-    placeCollisionBox(collisionBox: SingleCollisionBox, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4, collisionGroupPredicate?: any): { box: Array<number>, offscreen: boolean } {
-        const projectedPoint = this.projectAndGetPerspectiveRatio(posMatrix, collisionBox.anchorPointX, collisionBox.anchorPointY);
+    placeCollisionBox(scale: number, collisionBox: SingleCollisionBox, shift: Point, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4, collisionGroupPredicate?: any): { box: Array<number>, offscreen: boolean } {
+        assert(!this.transform.elevation || collisionBox.elevation !== undefined);
+        const projectedPoint = this.projectAndGetPerspectiveRatio(posMatrix, collisionBox.anchorPointX, collisionBox.anchorPointY, collisionBox.elevation, collisionBox.tileID);
         const tileToViewport = textPixelRatio * projectedPoint.perspectiveRatio;
-        const tlX = collisionBox.x1 * tileToViewport + projectedPoint.point.x;
-        const tlY = collisionBox.y1 * tileToViewport + projectedPoint.point.y;
-        const brX = collisionBox.x2 * tileToViewport + projectedPoint.point.x;
-        const brY = collisionBox.y2 * tileToViewport + projectedPoint.point.y;
+        const tlX = (collisionBox.x1 * scale + shift.x - collisionBox.padding) * tileToViewport + projectedPoint.point.x;
+        const tlY = (collisionBox.y1 * scale + shift.y - collisionBox.padding) * tileToViewport + projectedPoint.point.y;
+        const brX = (collisionBox.x2 * scale + shift.x + collisionBox.padding) * tileToViewport + projectedPoint.point.x;
+        const brY = (collisionBox.y2 * scale + shift.y + collisionBox.padding) * tileToViewport + projectedPoint.point.y;
+        // Clip at 10 times the distance of the map center or, said otherwise, when the label
+        // would be drawn at 10% the size of the features around it without scaling. Refer:
+        // https://github.com/mapbox/mapbox-gl-native/wiki/Text-Rendering#perspective-scaling
+        // 0.55 === projection.getPerspectiveRatio(camera_to_center, camera_to_center * 10)
+        const minPerspectiveRatio = 0.55;
+        const isClipped = projectedPoint.perspectiveRatio <= minPerspectiveRatio || projectedPoint.aboveHorizon;
 
         if (!this.isInsideGrid(tlX, tlY, brX, brY) ||
-            (!allowOverlap && this.grid.hitTest(tlX, tlY, brX, brY, collisionGroupPredicate))) {
+            (!allowOverlap && this.grid.hitTest(tlX, tlY, brX, brY, collisionGroupPredicate)) ||
+            isClipped) {
             return {
                 box: [],
                 offscreen: false
@@ -100,22 +113,26 @@ class CollisionIndex {
                           pitchWithMap: boolean,
                           collisionGroupPredicate?: any,
                           circlePixelDiameter: number,
-                          textPixelPadding: number): { circles: Array<number>, offscreen: boolean, collisionDetected: boolean } {
+                          textPixelPadding: number,
+                          tileID: OverscaledTileID): { circles: Array<number>, offscreen: boolean, collisionDetected: boolean } {
         const placedCollisionCircles = [];
+        const elevation = this.transform.elevation;
+        const getElevation = elevation ? (p => elevation.getAtTileOffset(tileID, p.x, p.y)) : (_ => 0);
 
         const tileUnitAnchorPoint = new Point(symbol.anchorX, symbol.anchorY);
-        const screenAnchorPoint = projection.project(tileUnitAnchorPoint, posMatrix);
-        const perspectiveRatio = projection.getPerspectiveRatio(this.transform.cameraToCenterDistance, screenAnchorPoint.signedDistanceFromCamera);
+        const anchorElevation = getElevation(tileUnitAnchorPoint);
+        const screenAnchorPoint = this.projectAndGetPerspectiveRatio(posMatrix, tileUnitAnchorPoint.x, tileUnitAnchorPoint.y, anchorElevation, tileID);
+        const {perspectiveRatio} = screenAnchorPoint;
         const labelPlaneFontSize = pitchWithMap ? fontSize / perspectiveRatio : fontSize * perspectiveRatio;
         const labelPlaneFontScale = labelPlaneFontSize / ONE_EM;
 
-        const labelPlaneAnchorPoint = projection.project(tileUnitAnchorPoint, labelPlaneMatrix).point;
+        const labelPlaneAnchorPoint = projection.project(tileUnitAnchorPoint, labelPlaneMatrix, anchorElevation).point;
 
         const projectionCache = {};
         const lineOffsetX = symbol.lineOffsetX * labelPlaneFontScale;
         const lineOffsetY = symbol.lineOffsetY * labelPlaneFontScale;
 
-        const firstAndLastGlyph = projection.placeFirstAndLastGlyph(
+        const firstAndLastGlyph = screenAnchorPoint.signedDistanceFromCamera > 0 ? projection.placeFirstAndLastGlyph(
             labelPlaneFontScale,
             glyphOffsetArray,
             lineOffsetX,
@@ -126,13 +143,16 @@ class CollisionIndex {
             symbol,
             lineVertexArray,
             labelPlaneMatrix,
-            projectionCache);
+            projectionCache,
+            elevation && !pitchWithMap ? getElevation : null, // pitchWithMap: no need to sample elevation as it has no effect when projecting using scale/rotate to tile space labelPlaneMatrix.
+            pitchWithMap && !!elevation
+        ) : null;
 
         let collisionDetected = false;
         let inGrid = false;
         let entirelyOffscreen = true;
 
-        if (firstAndLastGlyph) {
+        if (firstAndLastGlyph && !screenAnchorPoint.aboveHorizon) {
             const radius = circlePixelDiameter * 0.5 * perspectiveRatio + textPixelPadding;
             const screenPlaneMin = new Point(-viewportPadding, -viewportPadding);
             const screenPlaneMax = new Point(this.screenRightBoundary, this.screenBottomBoundary);
@@ -156,7 +176,13 @@ class CollisionIndex {
 
             // The path might need to be converted into screen space if a pitched map is used as the label space
             if (labelToScreenMatrix) {
-                const screenSpacePath = projectedPath.map(p => projection.project(p, labelToScreenMatrix));
+                assert(pitchWithMap);
+                const screenSpacePath = elevation ?
+                    projectedPath.map((p, index) => {
+                        const z = getElevation(index < first.path.length - 1 ? first.tilePath[first.path.length - 1 - index] : last.tilePath[index - first.path.length + 2]);
+                        return projection.project(p, labelToScreenMatrix, z);
+                    }) :
+                    projectedPath.map(p => projection.project(p, labelToScreenMatrix));
 
                 // Do not try to place collision circles if even of the points is behind the camera.
                 // This is a plausible scenario with big camera pitch angles
@@ -334,9 +360,22 @@ class CollisionIndex {
         }
     }
 
-    projectAndGetPerspectiveRatio(posMatrix: mat4, x: number, y: number) {
-        const p = [x, y, 0, 1];
-        projection.xyTransformMat4(p, p, posMatrix);
+    projectAndGetPerspectiveRatio(posMatrix: mat4, x: number, y: number, elevation?: number, tileID: ?OverscaledTileID) {
+        const p = [x, y, elevation || 0, 1];
+        let aboveHorizon = false;
+        if (elevation || this.transform.pitch > 0) {
+            vec4.transformMat4(p, p, posMatrix);
+
+            let behindFog = false;
+            if (this.fogState && tileID) {
+                const fogOpacity = getFogOpacityAtTileCoord(this.fogState, x, y, elevation || 0, tileID.toUnwrapped(), this.transform);
+                behindFog = fogOpacity > FOG_SYMBOL_CLIPPING_THRESHOLD;
+            }
+
+            aboveHorizon = p[2] > p[3] || behindFog;
+        } else {
+            projection.xyTransformMat4(p, p, posMatrix);
+        }
         const a = new Point(
             (((p[0] / p[3] + 1) / 2) * this.transform.width) + viewportPadding,
             (((-p[1] / p[3] + 1) / 2) * this.transform.height) + viewportPadding
@@ -346,7 +385,9 @@ class CollisionIndex {
             // See perspective ratio comment in symbol_sdf.vertex
             // We're doing collision detection in viewport space so we need
             // to scale down boxes in the distance
-            perspectiveRatio: 0.5 + 0.5 * (this.transform.cameraToCenterDistance / p[3])
+            perspectiveRatio: Math.min(0.5 + 0.5 * (this.transform.cameraToCenterDistance / p[3]), 1.5),
+            signedDistanceFromCamera: p[3],
+            aboveHorizon
         };
     }
 

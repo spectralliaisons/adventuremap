@@ -1,21 +1,21 @@
 // @flow
 
-import Texture from './texture';
-import Color from '../style-spec/util/color';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import ColorMode from '../gl/color_mode';
-import CullFaceMode from '../gl/cull_face_mode';
+import Texture from './texture.js';
+import Color from '../style-spec/util/color.js';
+import DepthMode from '../gl/depth_mode.js';
+import StencilMode from '../gl/stencil_mode.js';
+import ColorMode from '../gl/color_mode.js';
+import CullFaceMode from '../gl/cull_face_mode.js';
 import {
     heatmapUniformValues,
     heatmapTextureUniformValues
-} from './program/heatmap_program';
+} from './program/heatmap_program.js';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type HeatmapStyleLayer from '../style/style_layer/heatmap_style_layer';
-import type HeatmapBucket from '../data/bucket/heatmap_bucket';
-import type {OverscaledTileID} from '../source/tile_id';
+import type Painter from './painter.js';
+import type SourceCache from '../source/source_cache.js';
+import type HeatmapStyleLayer from '../style/style_layer/heatmap_style_layer.js';
+import type HeatmapBucket from '../data/bucket/heatmap_bucket.js';
+import type {OverscaledTileID} from '../source/tile_id.js';
 
 export default drawHeatmap;
 
@@ -53,9 +53,12 @@ function drawHeatmap(painter: Painter, sourceCache: SourceCache, layer: HeatmapS
             const programConfiguration = bucket.programConfigurations.get(layer.id);
             const program = painter.useProgram('heatmap', programConfiguration);
             const {zoom} = painter.transform;
+            if (painter.terrain) painter.terrain.setupElevationDraw(tile, program);
+
+            painter.prepareDrawProgram(context, program, coord.toUnwrapped());
 
             program.draw(context, gl.TRIANGLES, DepthMode.disabled, stencilMode, colorMode, CullFaceMode.disabled,
-                heatmapUniformValues(coord.posMatrix,
+                heatmapUniformValues(coord.projMatrix,
                     tile, zoom, layer.paint.get('heatmap-intensity')),
                 layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer,
                 bucket.segments, layer.paint, painter.transform.zoom,

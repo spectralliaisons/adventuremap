@@ -5,13 +5,13 @@ import {
     Uniform1f,
     Uniform2f,
     UniformMatrix4f
-} from '../uniform_binding';
-import {extend} from '../../util/util';
-import browser from '../../util/browser';
+} from '../uniform_binding.js';
+import {extend} from '../../util/util.js';
+import browser from '../../util/browser.js';
 
-import type Context from '../../gl/context';
-import type Painter from '../painter';
-import type {UniformValues, UniformLocations} from '../uniform_binding';
+import type Context from '../../gl/context.js';
+import type Painter from '../painter.js';
+import type {UniformValues, UniformLocations} from '../uniform_binding.js';
 
 export type SymbolIconUniformsType = {|
     'u_is_size_zoom_constant': Uniform1i,
@@ -77,6 +77,8 @@ export type symbolTextAndIconUniformsType = {|
     'u_device_pixel_ratio': Uniform1f,
     'u_is_halo': Uniform1i
 |};
+
+export type SymbolDefinesType = 'PITCH_WITH_MAP_TERRAIN';
 
 const symbolIconUniforms = (context: Context, locations: UniformLocations): SymbolIconUniformsType => ({
     'u_is_size_zoom_constant': new Uniform1i(context, locations.u_is_size_zoom_constant),
@@ -190,12 +192,12 @@ const symbolSDFUniformValues = (
     texSize: [number, number],
     isHalo: boolean
 ): UniformValues<SymbolSDFUniformsType> => {
-    const transform = painter.transform;
+    const {cameraToCenterDistance, _pitch} = painter.transform;
 
     return extend(symbolIconUniformValues(functionType, size,
         rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix,
         glCoordMatrix, isText, texSize), {
-        'u_gamma_scale': (pitchWithMap ? Math.cos(transform._pitch) * transform.cameraToCenterDistance : 1),
+        'u_gamma_scale': pitchWithMap ? cameraToCenterDistance * Math.cos(painter.terrain ? 0 : _pitch) : 1,
         'u_device_pixel_ratio': browser.devicePixelRatio,
         'u_is_halo': +isHalo
     });

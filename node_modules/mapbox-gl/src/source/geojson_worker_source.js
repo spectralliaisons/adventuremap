@@ -1,28 +1,29 @@
 // @flow
 
-import {getJSON} from '../util/ajax';
+import {getJSON} from '../util/ajax.js';
 
-import {RequestPerformance} from '../util/performance';
+import {getPerformanceMeasurement} from '../util/performance.js';
 import rewind from '@mapbox/geojson-rewind';
-import GeoJSONWrapper from './geojson_wrapper';
+import GeoJSONWrapper from './geojson_wrapper.js';
 import vtpbf from 'vt-pbf';
 import Supercluster from 'supercluster';
 import geojsonvt from 'geojson-vt';
 import assert from 'assert';
-import VectorTileWorkerSource from './vector_tile_worker_source';
-import {createExpression} from '../style-spec/expression';
+import VectorTileWorkerSource from './vector_tile_worker_source.js';
+import {createExpression} from '../style-spec/expression/index.js';
 
 import type {
+    RequestedTileParameters,
     WorkerTileParameters,
     WorkerTileCallback,
-} from '../source/worker_source';
+} from '../source/worker_source.js';
 
-import type Actor from '../util/actor';
-import type StyleLayerIndex from '../style/style_layer_index';
+import type Actor from '../util/actor.js';
+import type StyleLayerIndex from '../style/style_layer_index.js';
 
-import type {LoadVectorDataCallback} from './vector_tile_worker_source';
-import type {RequestParameters, ResponseCallback} from '../util/ajax';
-import type {Callback} from '../types/callback';
+import type {LoadVectorDataCallback} from './vector_tile_worker_source.js';
+import type {RequestParameters, ResponseCallback} from '../util/ajax.js';
+import type {Callback} from '../types/callback.js';
 import type {GeoJSONFeature} from '@mapbox/geojson-types';
 
 export type LoadGeoJSONParameters = {
@@ -47,7 +48,7 @@ export interface GeoJSONIndex {
     getLeaves(clusterId: number, limit: number, offset: number): Array<GeoJSONFeature>;
 }
 
-function loadGeoJSONTile(params: WorkerTileParameters, callback: LoadVectorDataCallback) {
+function loadGeoJSONTile(params: RequestedTileParameters, callback: LoadVectorDataCallback) {
     const canonical = params.tileID.canonical;
 
     if (!this._geoJSONIndex) {
@@ -76,11 +77,6 @@ function loadGeoJSONTile(params: WorkerTileParameters, callback: LoadVectorDataC
     });
 }
 
-export type SourceState =
-    | 'Idle'            // Source empty or data loaded
-    | 'Coalescing'      // Data finished loading, but discard 'loadData' messages until receiving 'coalesced'
-    | 'NeedsLoadData';  // 'loadData' received while coalescing, trigger one more 'loadData' on receiving 'coalesced'
-
 /**
  * The {@link WorkerSource} implementation that supports {@link GeoJSONSource}.
  * This class is designed to be easily reused to support custom source types
@@ -93,11 +89,6 @@ export type SourceState =
  */
 class GeoJSONWorkerSource extends VectorTileWorkerSource {
     loadGeoJSON: LoadGeoJSON;
-    _state: SourceState;
-    _pendingCallback: Callback<{
-        resourceTiming?: {[_: string]: Array<PerformanceResourceTiming>},
-        abandoned?: boolean }>;
-    _pendingLoadDataParams: LoadGeoJSONParameters;
     _geoJSONIndex: GeoJSONIndex
 
     /**
@@ -106,8 +97,8 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * See {@link GeoJSONWorkerSource#loadGeoJSON}.
      * @private
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, availableImages: Array<string>, loadGeoJSON: ?LoadGeoJSON) {
-        super(actor, layerIndex, availableImages, loadGeoJSONTile);
+    constructor(actor: Actor, layerIndex: StyleLayerIndex, availableImages: Array<string>, isSpriteLoaded: boolean, loadGeoJSON: ?LoadGeoJSON) {
+        super(actor, layerIndex, availableImages, isSpriteLoaded, loadGeoJSONTile);
         if (loadGeoJSON) {
             this.loadGeoJSON = loadGeoJSON;
         }
@@ -130,41 +121,9 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @param callback
      * @private
      */
-    loadData(params: LoadGeoJSONParameters, callback: Callback<{
-        resourceTiming?: {[_: string]: Array<PerformanceResourceTiming>},
-        abandoned?: boolean }>) {
-        if (this._pendingCallback) {
-            // Tell the foreground the previous call has been abandoned
-            this._pendingCallback(null, {abandoned: true});
-        }
-        this._pendingCallback = callback;
-        this._pendingLoadDataParams = params;
-
-        if (this._state &&
-            this._state !== 'Idle') {
-            this._state = 'NeedsLoadData';
-        } else {
-            this._state = 'Coalescing';
-            this._loadData();
-        }
-    }
-
-    /**
-     * Internal implementation: called directly by `loadData`
-     * or by `coalesce` using stored parameters.
-     */
-    _loadData() {
-        if (!this._pendingCallback || !this._pendingLoadDataParams) {
-            assert(false);
-            return;
-        }
-        const callback = this._pendingCallback;
-        const params = this._pendingLoadDataParams;
-        delete this._pendingCallback;
-        delete this._pendingLoadDataParams;
-
-        const perf = (params && params.request && params.request.collectResourceTiming) ?
-            new RequestPerformance(params.request) : false;
+    loadData(params: LoadGeoJSONParameters, callback: Callback<{resourceTiming?: {[_: string]: Array<PerformanceResourceTiming>}}>) {
+        const requestParam = params && params.request;
+        const perf = requestParam && requestParam.collectResourceTiming;
 
         this.loadGeoJSON(params, (err: ?Error, data: ?Object) => {
             if (err || !data) {
@@ -195,7 +154,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
 
                 const result = {};
                 if (perf) {
-                    const resourceTimingData = perf.finish();
+                    const resourceTimingData = getPerformanceMeasurement(requestParam);
                     // it's necessary to eval the result of getEntriesByName() here via parse/stringify
                     // late evaluation in the main thread causes TypeError: illegal invocation
                     if (resourceTimingData) {
@@ -206,35 +165,6 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 callback(null, result);
             }
         });
-    }
-
-    /**
-     * While processing `loadData`, we coalesce all further
-     * `loadData` messages into a single call to _loadData
-     * that will happen once we've finished processing the
-     * first message. {@link GeoJSONSource#_updateWorkerData}
-     * is responsible for sending us the `coalesce` message
-     * at the time it receives a response from `loadData`
-     *
-     *          State: Idle
-     *          ↑          |
-     *     'coalesce'   'loadData'
-     *          |     (triggers load)
-     *          |          ↓
-     *        State: Coalescing
-     *          ↑          |
-     *   (triggers load)   |
-     *     'coalesce'   'loadData'
-     *          |          ↓
-     *        State: NeedsLoadData
-     */
-    coalesce() {
-        if (this._state === 'Coalescing') {
-            this._state = 'Idle';
-        } else if (this._state === 'NeedsLoadData') {
-            this._state = 'Coalescing';
-            this._loadData();
-        }
     }
 
     /**
@@ -286,14 +216,6 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         } else {
             return callback(new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`));
         }
-    }
-
-    removeSource(params: {source: string}, callback: Callback<mixed>) {
-        if (this._pendingCallback) {
-            // Don't leak callbacks
-            this._pendingCallback(null, {abandoned: true});
-        }
-        callback();
     }
 
     getClusterExpansionZoom(params: {clusterId: number}, callback: Callback<number>) {

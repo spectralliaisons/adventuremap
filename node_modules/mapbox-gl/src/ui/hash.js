@@ -1,10 +1,10 @@
 // @flow
 
-import {bindAll} from '../util/util';
-import window from '../util/window';
-import throttle from '../util/throttle';
+import {bindAll} from '../util/util.js';
+import window from '../util/window.js';
+import throttle from '../util/throttle.js';
 
-import type Map from './map';
+import type Map from './map.js';
 
 /*
  * Adds the map's position to its page's location hash.
@@ -132,14 +132,9 @@ class Hash {
     }
 
     _updateHashUnthrottled() {
-        const hash = this.getHashString();
-        try {
-            window.history.replaceState(window.history.state, '', hash);
-        } catch (SecurityError) {
-            // IE11 does not allow this if the page is within an iframe created
-            // with iframe.contentWindow.document.write(...).
-            // https://github.com/mapbox/mapbox-gl-js/issues/7410
-        }
+        // Replace if already present, else append the updated hash string
+        const location = window.location.href.replace(/(#.+)?$/, this.getHashString());
+        window.history.replaceState(window.history.state, null, location);
     }
 
 }

@@ -1,6 +1,6 @@
 // @flow
 
-import {createLayout} from '../../util/struct_array';
+import {createLayout} from '../../util/struct_array.js';
 
 export const symbolLayoutAttributes = createLayout([
     {name: 'a_pos_offset',  components: 4, type: 'Int16'},
@@ -18,7 +18,12 @@ export const placementOpacityAttributes = createLayout([
 
 export const collisionVertexAttributes = createLayout([
     {name: 'a_placed', components: 2, type: 'Uint8'},
-    {name: 'a_shift', components: 2, type: 'Float32'}
+    {name: 'a_shift', components: 2, type: 'Float32'},
+]);
+
+export const collisionVertexAttributesExt = createLayout([
+    {name: 'a_size_scale', components: 1, type: 'Float32'},
+    {name: 'a_padding', components: 2, type: 'Float32'},
 ]);
 
 export const collisionBox = createLayout([
@@ -27,10 +32,12 @@ export const collisionBox = createLayout([
     {type: 'Int16', name: 'anchorPointY'},
 
     // distances to the edges from the anchor
-    {type: 'Int16', name: 'x1'},
-    {type: 'Int16', name: 'y1'},
-    {type: 'Int16', name: 'x2'},
-    {type: 'Int16', name: 'y2'},
+    {type: 'Float32', name: 'x1'},
+    {type: 'Float32', name: 'y1'},
+    {type: 'Float32', name: 'x2'},
+    {type: 'Float32', name: 'y2'},
+
+    {type: 'Int16', name: 'padding'},
 
     // the index of the feature in the original vectortile
     {type: 'Uint32', name: 'featureIndex'},
@@ -47,7 +54,7 @@ export const collisionBoxLayout = createLayout([ // used to render collision box
 ], 4);
 
 export const collisionCircleLayout = createLayout([ // used to render collision circles for debugging purposes
-    {name: 'a_pos',        components: 2, type: 'Float32'},
+    {name: 'a_pos_2f',     components: 2, type: 'Float32'},
     {name: 'a_radius',     components: 1, type: 'Float32'},
     {name: 'a_flags',      components: 2, type: 'Int16'}
 ], 4);
@@ -57,8 +64,8 @@ export const quadTriangle = createLayout([
 ]);
 
 export const placement = createLayout([
-    {type: 'Int16', name: 'anchorX'},
-    {type: 'Int16', name: 'anchorY'},
+    {type: 'Float32', name: 'anchorX'},
+    {type: 'Float32', name: 'anchorY'},
     {type: 'Uint16', name: 'glyphStartIndex'},
     {type: 'Uint16', name: 'numGlyphs'},
     {type: 'Uint32', name: 'vertexStartIndex'},
@@ -73,12 +80,13 @@ export const placement = createLayout([
     {type: 'Uint8', name: 'placedOrientation'},
     {type: 'Uint8', name: 'hidden'},
     {type: 'Uint32', name: 'crossTileID'},
-    {type: 'Int16', name: 'associatedIconIndex'}
+    {type: 'Int16', name: 'associatedIconIndex'},
+    {type: 'Uint8', name: 'flipState'}
 ]);
 
 export const symbolInstance = createLayout([
-    {type: 'Int16', name: 'anchorX'},
-    {type: 'Int16', name: 'anchorY'},
+    {type: 'Float32', name: 'anchorX'},
+    {type: 'Float32', name: 'anchorY'},
     {type: 'Int16', name: 'rightJustifiedTextSymbolIndex'},
     {type: 'Int16', name: 'centerJustifiedTextSymbolIndex'},
     {type: 'Int16', name: 'leftJustifiedTextSymbolIndex'},
@@ -101,7 +109,6 @@ export const symbolInstance = createLayout([
     {type: 'Uint16', name: 'numVerticalIconVertices'},
     {type: 'Uint16', name: 'useRuntimeCollisionCircles'},
     {type: 'Uint32', name: 'crossTileID'},
-    {type: 'Float32', name: 'textBoxScale'},
     {type: 'Float32', components: 2, name: 'textOffset'},
     {type: 'Float32', name: 'collisionCircleDiameter'},
 ]);

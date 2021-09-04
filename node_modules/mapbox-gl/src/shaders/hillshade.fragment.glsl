@@ -7,8 +7,6 @@ uniform vec4 u_shadow;
 uniform vec4 u_highlight;
 uniform vec4 u_accent;
 
-#define PI 3.141592653589793
-
 void main() {
     vec4 pixel = texture2D(u_image, v_pos);
 
@@ -45,6 +43,10 @@ void main() {
     float shade = abs(mod((aspect + azimuth) / PI + 0.5, 2.0) - 1.0);
     vec4 shade_color = mix(u_shadow, u_highlight, shade) * sin(scaledSlope) * clamp(intensity * 2.0, 0.0, 1.0);
     gl_FragColor = accent_color * (1.0 - shade_color.a) + shade_color;
+
+#ifdef FOG
+    gl_FragColor = fog_dither(fog_apply_premultiplied(gl_FragColor, v_fog_pos));
+#endif
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);

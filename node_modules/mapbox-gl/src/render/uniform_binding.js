@@ -1,8 +1,8 @@
 // @flow
 
-import Color from '../style-spec/util/color';
+import Color from '../style-spec/util/color.js';
 
-import type Context from '../gl/context';
+import type Context from '../gl/context.js';
 
 export type UniformValues<Us: Object>
     = $Exact<$ObjMap<Us, <V>(u: Uniform<V>) => V>>;
@@ -133,6 +133,24 @@ class UniformMatrix4f extends Uniform<Float32Array> {
     }
 }
 
+const emptyMat3 = new Float32Array(9);
+class UniformMatrix3f extends Uniform<Float32Array> {
+    constructor(context: Context, location: WebGLUniformLocation) {
+        super(context, location);
+        this.current = emptyMat3;
+    }
+
+    set(v: Float32Array): void {
+        for (let i = 0; i < 9; i++) {
+            if (v[i] !== this.current[i]) {
+                this.current = v;
+                this.gl.uniformMatrix3fv(this.location, false, v);
+                break;
+            }
+        }
+    }
+}
+
 export {
     Uniform,
     Uniform1i,
@@ -141,6 +159,7 @@ export {
     Uniform3f,
     Uniform4f,
     UniformColor,
+    UniformMatrix3f,
     UniformMatrix4f
 };
 

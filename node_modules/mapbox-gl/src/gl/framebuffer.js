@@ -1,8 +1,8 @@
 // @flow
-import {ColorAttachment, DepthAttachment} from './value';
-import assert from 'assert';
+import {ColorAttachment, DepthAttachment} from './value.js';
 
-import type Context from './context';
+import type Context from './context.js';
+import assert from 'assert';
 
 class Framebuffer {
     context: Context;

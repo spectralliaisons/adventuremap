@@ -1,16 +1,16 @@
 // @flow
 
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import CullFaceMode from '../gl/cull_face_mode';
-import {debugUniformValues} from './program/debug_program';
-import Color from '../style-spec/util/color';
-import ColorMode from '../gl/color_mode';
-import browser from '../util/browser';
+import DepthMode from '../gl/depth_mode.js';
+import StencilMode from '../gl/stencil_mode.js';
+import CullFaceMode from '../gl/cull_face_mode.js';
+import {debugUniformValues} from './program/debug_program.js';
+import Color from '../style-spec/util/color.js';
+import ColorMode from '../gl/color_mode.js';
+import browser from '../util/browser.js';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type {OverscaledTileID} from '../source/tile_id';
+import type Painter from './painter.js';
+import type SourceCache from '../source/source_cache.js';
+import type {OverscaledTileID} from '../source/tile_id.js';
 
 export default drawDebug;
 
@@ -34,6 +34,12 @@ export function drawDebugPadding(painter: Painter) {
     // Center
     const center = painter.transform.centerPoint;
     drawCrosshair(painter, center.x, painter.transform.height - center.y, centerColor);
+}
+
+export function drawDebugQueryGeometry(painter: Painter, sourceCache: SourceCache, coords: Array<OverscaledTileID>) {
+    for (let i = 0; i < coords.length; i++) {
+        drawTileQueryGeometry(painter, sourceCache, coords[i]);
+    }
 }
 
 function drawCrosshair(painter: Painter, x: number, y: number, color: Color) {
@@ -69,12 +75,57 @@ function drawDebug(painter: Painter, sourceCache: SourceCache, coords: Array<Ove
     }
 }
 
+function drawTileQueryGeometry(painter, sourceCache, coord: OverscaledTileID) {
+    const context = painter.context;
+    const gl = context.gl;
+
+    const posMatrix = coord.projMatrix;
+    const program = painter.useProgram('debug');
+    const tile = sourceCache.getTileByID(coord.key);
+    if (painter.terrain) painter.terrain.setupElevationDraw(tile, program);
+
+    const depthMode = DepthMode.disabled;
+    const stencilMode = StencilMode.disabled;
+    const colorMode = painter.colorModeForRenderPass();
+    const id = '$debug';
+
+    context.activeTexture.set(gl.TEXTURE0);
+    // Bind the empty texture for drawing outlines
+    painter.emptyTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+
+    if (tile.queryGeometryDebugViz && tile.queryGeometryDebugViz.vertices.length > 0) {
+        tile.queryGeometryDebugViz.lazyUpload(context);
+        const vertexBuffer = tile.queryGeometryDebugViz.vertexBuffer;
+        const indexBuffer = tile.queryGeometryDebugViz.indexBuffer;
+        const segments = tile.queryGeometryDebugViz.segments;
+        if (vertexBuffer != null && indexBuffer != null && segments != null) {
+            program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled,
+                debugUniformValues(posMatrix, tile.queryGeometryDebugViz.color), id,
+                vertexBuffer, indexBuffer, segments);
+        }
+    }
+
+    if (tile.queryBoundsDebugViz && tile.queryBoundsDebugViz.vertices.length > 0) {
+        tile.queryBoundsDebugViz.lazyUpload(context);
+        const vertexBuffer = tile.queryBoundsDebugViz.vertexBuffer;
+        const indexBuffer = tile.queryBoundsDebugViz.indexBuffer;
+        const segments = tile.queryBoundsDebugViz.segments;
+        if (vertexBuffer != null && indexBuffer != null && segments != null) {
+            program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled,
+                debugUniformValues(posMatrix, tile.queryBoundsDebugViz.color), id,
+                vertexBuffer, indexBuffer, segments);
+        }
+    }
+}
+
 function drawDebugTile(painter, sourceCache, coord: OverscaledTileID) {
     const context = painter.context;
     const gl = context.gl;
 
-    const posMatrix = coord.posMatrix;
+    const posMatrix = coord.projMatrix;
     const program = painter.useProgram('debug');
+    const tile = sourceCache.getTileByID(coord.key);
+    if (painter.terrain) painter.terrain.setupElevationDraw(tile, program);
 
     const depthMode = DepthMode.disabled;
     const stencilMode = StencilMode.disabled;
@@ -89,7 +140,7 @@ function drawDebugTile(painter, sourceCache, coord: OverscaledTileID) {
         debugUniformValues(posMatrix, Color.red), id,
         painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
 
-    const tileRawData = sourceCache.getTileByID(coord.key).latestRawTileData;
+    const tileRawData = tile.latestRawTileData;
     const tileByteLength = (tileRawData && tileRawData.byteLength) || 0;
     const tileSizeKb = Math.floor(tileByteLength / 1024);
     const tileSize = sourceCache.getTile(coord).tileSize;

@@ -1,21 +1,21 @@
 // @flow
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type StyleLayer from '../style/style_layer';
-import type {OverscaledTileID} from '../source/tile_id';
-import type SymbolBucket from '../data/bucket/symbol_bucket';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import CullFaceMode from '../gl/cull_face_mode';
-import {collisionUniformValues, collisionCircleUniformValues} from './program/collision_program';
+import type Painter from './painter.js';
+import type SourceCache from '../source/source_cache.js';
+import type StyleLayer from '../style/style_layer.js';
+import type {OverscaledTileID} from '../source/tile_id.js';
+import type SymbolBucket from '../data/bucket/symbol_bucket.js';
+import DepthMode from '../gl/depth_mode.js';
+import StencilMode from '../gl/stencil_mode.js';
+import CullFaceMode from '../gl/cull_face_mode.js';
+import {collisionUniformValues, collisionCircleUniformValues} from './program/collision_program.js';
 
-import {QuadTriangleArray, CollisionCircleLayoutArray} from '../data/array_types';
-import {collisionCircleLayout} from '../data/bucket/symbol_attributes';
-import SegmentVector from '../data/segment';
+import {QuadTriangleArray, CollisionCircleLayoutArray} from '../data/array_types.js';
+import {collisionCircleLayout} from '../data/bucket/symbol_attributes.js';
+import SegmentVector from '../data/segment.js';
 import {mat4} from 'gl-matrix';
-import VertexBuffer from '../gl/vertex_buffer';
-import IndexBuffer from '../gl/index_buffer';
+import VertexBuffer from '../gl/vertex_buffer.js';
+import IndexBuffer from '../gl/index_buffer.js';
 
 export default drawCollisionDebug;
 
@@ -41,9 +41,9 @@ function drawCollisionDebug(painter: Painter, sourceCache: SourceCache, layer: S
         const tile = sourceCache.getTile(coord);
         const bucket: ?SymbolBucket = (tile.getBucket(layer): any);
         if (!bucket) continue;
-        let posMatrix = coord.posMatrix;
+        let posMatrix = coord.projMatrix;
         if (translate[0] !== 0 || translate[1] !== 0) {
-            posMatrix = painter.translatePosMatrix(coord.posMatrix, tile, translate, translateAnchor);
+            posMatrix = painter.translatePosMatrix(coord.projMatrix, tile, translate, translateAnchor);
         }
         const buffers = isText ? bucket.textCollisionBox : bucket.iconCollisionBox;
         // Get collision circle data of this bucket
@@ -69,6 +69,7 @@ function drawCollisionDebug(painter: Painter, sourceCache: SourceCache, layer: S
             circleOffset = circleCount;
         }
         if (!buffers) continue;
+        if (painter.terrain) painter.terrain.setupElevationDraw(tile, program);
         program.draw(context, gl.LINES,
             DepthMode.disabled, StencilMode.disabled,
             painter.colorModeForRenderPass(),
@@ -78,8 +79,9 @@ function drawCollisionDebug(painter: Painter, sourceCache: SourceCache, layer: S
                 painter.transform,
                 tile),
             layer.id, buffers.layoutVertexBuffer, buffers.indexBuffer,
-            buffers.segments, null, painter.transform.zoom, null, null,
-            buffers.collisionVertexBuffer);
+            buffers.segments, null, painter.transform.zoom, null,
+            buffers.collisionVertexBuffer,
+            buffers.collisionVertexBufferExt);
     }
 
     if (!isText || !tileBatches.length) {
