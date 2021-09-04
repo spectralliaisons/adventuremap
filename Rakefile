@@ -1,5 +1,5 @@
 
-# S3PATH must match the s3 url in script/global.js window.s3rsc()
+# S3PATH must match the s3 url in Map.js
 S3PATH = "s3://multimap/"
 PUBLICPATH = "gps/s3/"
 

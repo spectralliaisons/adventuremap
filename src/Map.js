@@ -2,17 +2,25 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 
+let _ = require('underscore');
+
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A';
 
-const s3url = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+
+const fetchPlaces = (map) =>
+  // paintLine(map, paintRiver, "Russian_River", "russian_river");
+  fetch(s3rsc("all_rivers.json"))
+    .then(res => res.json())
+    .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
 
 const paintRiver = {'line-color': '#00bcff','line-width': 3};
 
 const paintLine = (map, paint, location, track) => {
   map.addSource(track, {
     type: 'geojson',
-    data: s3url(`${location}/geojson/${track}.geojson`)
+    data: s3rsc(`${location}/geojson/${track}.geojson`)
   });
     
   map.addLayer({
@@ -27,32 +35,36 @@ const paintLine = (map, paint, location, track) => {
   });
 };
 
+function Menu({places}) {
+  return (
+    <ol>
+      {places.map(({disp, id}) => (
+        <li key={id}>{disp}</li>
+      ))}
+    </ol>
+  );
+};
+
 const Map = () => {
   const mapContainerRef = useRef(null);
 
-  const [lng, setLng] = useState(5);
-  const [lat, setLat] = useState(34);
-  const [zoom, setZoom] = useState(1.5);
+  const [places, setPlaces] = useState([]);
+
+  console.log(["Map places", places]);
 
   // Initialize map when component mounts
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [lng, lat],
-      zoom: zoom
+      center: [-123.0561972, 38.9144944],
+      zoom: 5
     });
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    map.on('move', () => {
-      setLng(map.getCenter().lng.toFixed(4));
-      setLat(map.getCenter().lat.toFixed(4));
-      setZoom(map.getZoom().toFixed(2));
-    });
-
-    map.on('load', () => paintLine(map, paintRiver, "Russian_River", "russian_river"));
+    map.on('load', () => fetchPlaces(map).then(setPlaces));
 
     // Clean up on unmount
     return () => map.remove();
@@ -61,9 +73,7 @@ const Map = () => {
   return (
     <div>
       <div className='sidebar'>
-        <div>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </div>
+        <Menu places={places} />
       </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>
