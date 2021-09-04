@@ -10,6 +10,9 @@
   padding: 6px;
   font-weight: bold;
   li {
-    cursor: pointer;;
+    cursor: pointer;
+  }
+  li.loaded {
+      font-style: italic;
   }
 }
