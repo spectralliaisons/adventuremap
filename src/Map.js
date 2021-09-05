@@ -10,16 +10,24 @@ mapboxgl.accessToken =
 
 const paintPlace = map => place => 
   loadPlace(place, paintData(map, place))
-    .then((json) => {
-      console.log(["paintPlace json", json]);
+    .then(({json, paint}) => {
       moveTo(map, json);
+      if (paint) {
+        paintMultimediaMarkers(map, json);
+      }
     });
 
 const moveTo = (map, {zoom, locations, center}) => {
   const {lat, lng} = _.findWhere(locations, {"label":center}).loc;
   map.flyTo({center:[lng, lat], zoom: zoom});
-}
+};
 
+// paint custom markers for photos & audio 
+const paintMultimediaMarkers = (map, json) => {
+  // ...
+};
+
+// paint geojson data
 const paintData = (map, place) => layer => data => {
   map.addSource(layer, {
     type: 'geojson',
@@ -28,7 +36,6 @@ const paintData = (map, place) => layer => data => {
   window.themap = map;
   // https://docs.mapbox.com/mapbox-gl-js/example/multiple-geometries/
   const kinds = layer.split("-");
-  console.log(`paintData place ${place} layer ${layer} kinds ${JSON.stringify(kinds)}`);
   const isTrack = kinds.indexOf("track") != -1;
   const isWaterMarker = kinds.indexOf("cenote") != -1;
 

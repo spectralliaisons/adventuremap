@@ -2,6 +2,8 @@ let _ = require('underscore');
 
 const s3rsc = where => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
+let cache = {};
+
 const fetchJSON = which =>
   fetch(s3rsc(`${which}.json`))
     .then(res => {
@@ -13,12 +15,19 @@ const fetchJSON = which =>
       }
     })
 
-const loadPlace = (place, paintData) => 
-  fetchJSON(`${place}/info`)
-    .then(json => {
-        _.each(json.layers, loadLayer(place, paintData))
-        return Promise.resolve(json);
-    });
+const loadPlace = (place, paintData) => {
+  if (cache[place] == null) {
+    return fetchJSON(`${place}/info`)
+      .then(json => {
+          cache[place] = json;
+          _.each(json.layers, loadLayer(place, paintData));
+          return Promise.resolve({json:json, paint:true});
+      });
+  }
+  else {
+    return Promise.resolve({json:cache[place], paint:false});
+  }
+}
 
 const fetchPlaces = () =>
   fetchJSON("all_rivers")
