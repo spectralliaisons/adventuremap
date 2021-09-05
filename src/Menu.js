@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
 import './Menu.scss';
 
-const Menu = ({loadPlace, places}) => {
+const Menu = ({paintPlace, places}) => {
 
     return (
-        <ol>{places.map(({disp,id}) => <div key={id}><Item loadPlace={loadPlace} disp={disp} id={id}/></div>)}</ol>
+        <ol>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
     );
 };
 
 
-const Item = ({loadPlace, disp, id}) => {
+const Item = ({paintPlace, disp, id}) => {
     const [loaded, setLoaded] = useState("unloaded");
 
     function fetch() {
-        loadPlace(id).then(() => setLoaded("loaded"));
+        paintPlace(id).then(() => setLoaded("loaded"));
     }
 
     return (

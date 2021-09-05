@@ -2,42 +2,25 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import Menu from './Menu';
-
+import {fetchPlaces, loadPlace} from './Api';
 let _ = require('underscore');
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A';
 
-const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+const paintPlace = map => place => 
+  loadPlace(place, paintData(map, place))
+    .then((json) => {
+      console.log(["paintPlace json", json]);
+      moveTo(map, json);
+    });
 
-const fetchJSON = (which) =>
-  fetch(s3rsc(`${which}.json`))
-    .then(res => {
-      if (res.ok) {
-        return(res.json());
-      }
-      else {
-        return Promise.reject(`Unable to fetch ${which}.json`);
-      }
-    })
+const moveTo = (map, {zoom, locations, center}) => {
+  const {lat, lng} = _.findWhere(locations, {"label":center}).loc;
+  map.flyTo({center:[lng, lat], zoom: zoom});
+}
 
-const loadPlace = map => place => 
-  fetchJSON(`${place}/info`)
-    .then(json => {
-      Promise.all(_.map(json.layers, layer => loadLayer(map, place, layer)))
-        .catch(alert)
-    })
-
-const fetchPlaces = () =>
-  fetchJSON("all_rivers")
-    .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
-
-const loadLayer = (map, place, layer) => 
-  fetch(s3rsc(`${place}/geojson/${layer}`))
-    .then((res) => res.json())
-    .then(paintData(map, place, layer))
-
-const paintData = (map, place, layer) => (data) => {
+const paintData = (map, place) => layer => data => {
   map.addSource(layer, {
     type: 'geojson',
     data: data
@@ -119,7 +102,7 @@ const Map = () => {
   return (
     <div>
       <div className='sidebar'>
-        <Menu loadPlace={loadPlace(map)} places={places} />
+        <Menu paintPlace={paintPlace(map)} places={places} />
       </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>
