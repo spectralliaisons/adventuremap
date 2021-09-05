@@ -5,3 +5,17 @@
   left: 0;
   right: 0;
 }
+
+.marker {
+  background-image: url('./rsc/ic_circle-blue.png');
+  background-size: cover;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.window {
+  width: 400px;
+  height: 400px;
+}

@@ -1,0 +1,26 @@
+.mapboxgl-popup-content {
+    .mapboxgl-popup-close-button {
+        scale : 2.4;
+        right: 15px;
+    }
+    .mapboxgl-popup-close-button:hover {
+        background-color: unset;
+        opacity: 0.4;
+    }
+    .window {
+        img {
+            width: 600px;
+            height: auto;
+            padding-bottom: 3px;
+        }
+        audio {
+            width: 100%;
+        }
+        h3 {
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 let _ = require('underscore');
 
-const _s3rsc = where => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+const s3rsc = where => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
 let _cache = {};
 
@@ -23,7 +23,7 @@ const loadPlace = (place, paintData) => {
 };
 
 const _fetchJSON = which =>
-  fetch(_s3rsc(`${which}.json`))
+  fetch(s3rsc(`${which}.json`))
     .then(res => {
       if (res.ok) {
         return(res.json());
@@ -34,8 +34,8 @@ const _fetchJSON = which =>
     });
 
 const _loadLayer = (place, paintData) => layer => 
-  fetch(_s3rsc(`${place}/geojson/${layer}`))
+  fetch(s3rsc(`${place}/geojson/${layer}`))
     .then((res) => res.json())
     .then(paintData(layer))
 
-export {fetchPlaces, loadPlace}
+export {s3rsc, fetchPlaces, loadPlace}

@@ -12,7 +12,10 @@
   li {
     cursor: pointer;
   }
+  li:hover {
+    opacity: 0.6;
+  }
   li.loaded {
-      font-style: italic;
+      color: #76dbff;
   }
 }

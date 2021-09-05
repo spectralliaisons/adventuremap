@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import './Map.css';
+import './Map.scss';
 import Menu from './Menu';
+import {paintWindow} from './Window'
 import {fetchPlaces, loadPlace} from './Api';
 let _ = require('underscore');
 
@@ -13,19 +14,17 @@ const paintPlace = map => place =>
     .then(({json, paint}) => {
       moveTo(map, json);
       if (paint) {
-        paintMultimediaMarkers(map, json);
+        paintMultimediaMarkers(map, place, json);
       }
     });
 
 const moveTo = (map, {zoom, locations, center}) => {
-  const {lat, lng} = _.findWhere(locations, {"label":center}).loc;
-  map.flyTo({center:[lng, lat], zoom: zoom});
+  const pos = _.findWhere(locations, {"label":center}).loc;
+  map.flyTo({center:[pos.lng, pos.lat], zoom: zoom});
 };
 
 // paint custom markers for photos & audio 
-const paintMultimediaMarkers = (map, json) => {
-  // ...
-};
+const paintMultimediaMarkers = (map, place, {locations}) => _.each(locations, paintWindow(map, place));
 
 // paint geojson data
 const paintData = (map, place) => layer => data => {
@@ -83,7 +82,7 @@ const Map = () => {
   const mapContainerRef = useRef(null);
 
   const [map, setMap] = useState(null);
-  const [places, setPlaces] = useState([]);
+  const [places, setPlaces] = useState([{disp:"loading...",id:""}]);
 
   // Initialize map when component mounts
   useEffect(() => {
