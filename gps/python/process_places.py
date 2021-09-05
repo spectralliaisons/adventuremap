@@ -11,7 +11,7 @@ from wand.image import Image as WandImage
 import getexifdata, glob, os, json, io, shutil, logprogress, numpy
 
 DIR_PLACES = "../s3/"
-DIR_KML = "kml/"
+DIR_GEODAT = "geojson/"
 DIR_AUD = "aud/"
 DIR_IMG_ORIG = "imgOrig/"
 DIR_IMG_LG = "imgLg/"
@@ -103,8 +103,8 @@ try:
 except NameError:
     to_unicode = str    
 
-def find_kml():
-    return [strip_dir(fpath, "/" + DIR_KML) for fpath in glob.glob(base_path + DIR_KML + "*.kml")]
+def find_geodat():
+    return [strip_dir(fpath, "/" + DIR_GEODAT) for fpath in glob.glob(base_path + DIR_GEODAT + "*.geojson")]
 
 def reorient_img(fileName, height):
     # thanks storm_to : http://stackoverflow.com/questions/4228530/pil-thumbnail-is-rotating-my-image 
@@ -188,16 +188,6 @@ def verify_flabel(flabel):
 
 # process every dir in Places/
 placels = glob.glob(DIR_PLACES + "*/")
-
-# create json of all places. initialize with a "place" called "All"
-# all_places = {"places":[{"id":"All", "disp":"All"}]}
-# WJ 2019.10.30 removing "All" tab until I can figure out how to support drawing more kml layers
-# Yucatan_2019 makes there be too many to display and I get a bunch of 400 errors from google
-# TODO: refer to this for possible solution:
-# https://stackoverflow.com/questions/45386187/google-maps-api-kml-layer-limit
-# https://github.com/geocodezip/geoxml3
-# when it's supported again, uncomment this line in navigation.js:
-# window.location.hash = "#All";
 all_places = {"places":[]}
 
 # process each directory
@@ -216,9 +206,9 @@ for base_path in logprogress.log_progress(placels):
     # read json template
     with open(base_path + INPUT_JSON) as data_file:
         data = json.load(data_file)
-        data["layers"] = find_kml()
+        data["layers"] = find_geodat()
 
-        # for every image...
+        # for everyimage...
         files = glob.glob(base_path + DIR_IMG_LG + "*" + IMG_FORMAT)
         for fpath in logprogress.log_progress(files):
             

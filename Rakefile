@@ -1,6 +1,6 @@
 
 # S3PATH must match the s3 url in Map.js
-S3PATH = "s3://multimap/"
+S3PATH = "s3://multimap-2/"
 PUBLICPATH = "gps/s3/"
 
 # FullAccessUser

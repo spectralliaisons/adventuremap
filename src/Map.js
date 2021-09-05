@@ -8,25 +8,31 @@ let _ = require('underscore');
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A';
 
-const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
-const loadPlace = (place) => 
-  fetch(s3rsc(place + "/info.json"))
+const fetchJSON = (which) =>
+  fetch(s3rsc(`${which}.json`))
     .then(res => {
+      console.log(`fetchJSON ${which} res.ok ${res.ok}`);
       if (res.ok) {
-        return new Promise(r1 => {
-            res.json().then(json => {
-              _.each(json.layers, layer => {
-                const url = s3rsc(`${place}/kml/${layer}`);
-              });
-            });
-          });
-        }
-      });
+        return(res.json());
+      }
+      else {
+        return Promise.reject(`Unable to fetch ${which}.json`);
+      }
+    })
 
-const fetchPlaces = (map) =>
-  fetch(s3rsc("all_rivers.json"))
-    .then(res => res.json())
+const loadPlace = map => place => 
+  fetchJSON(`${place}/info`)
+    .then(json => {
+      _.each(json.layers, layer => {
+        paintLine(map, paintRiver, place, layer);
+      });
+    })
+    .catch(() => console.log("That didn't work."))
+
+const fetchPlaces = () =>
+  fetchJSON("all_rivers")
     .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
 
 const paintRiver = {'line-color': '#00bcff','line-width': 3};
@@ -35,7 +41,7 @@ const paintRiver = {'line-color': '#00bcff','line-width': 3};
 const paintLine = (map, paint, location, track) => {
   map.addSource(track, {
     type: 'geojson',
-    data: s3rsc(`${location}/geojson/${track}.geojson`)
+    data: s3rsc(`${location}/geojson/${track}`)
   });
     
   map.addLayer({
@@ -53,9 +59,8 @@ const paintLine = (map, paint, location, track) => {
 const Map = () => {
   const mapContainerRef = useRef(null);
 
+  const [map, setMap] = useState(null);
   const [places, setPlaces] = useState([]);
-
-  console.log(["Map places", places]);
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -69,8 +74,9 @@ const Map = () => {
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    map.once('load', () => fetchPlaces(map).then((res) => {
+    map.once('load', () => fetchPlaces().then((res) => {
       setPlaces(res);
+      setMap(map);
     }));
 
     // Clean up on unmount
@@ -80,7 +86,7 @@ const Map = () => {
   return (
     <div>
       <div className='sidebar'>
-        <Menu loadPlace={loadPlace} places={places} />
+        <Menu loadPlace={loadPlace(map)} places={places} />
       </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>
