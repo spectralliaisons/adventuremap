@@ -13,7 +13,6 @@ const s3rsc = (where) => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/$
 const fetchJSON = (which) =>
   fetch(s3rsc(`${which}.json`))
     .then(res => {
-      console.log(`fetchJSON ${which} res.ok ${res.ok}`);
       if (res.ok) {
         return(res.json());
       }
@@ -25,36 +24,70 @@ const fetchJSON = (which) =>
 const loadPlace = map => place => 
   fetchJSON(`${place}/info`)
     .then(json => {
-      _.each(json.layers, layer => {
-        paintLine(map, paintRiver, place, layer);
-      });
+      Promise.all(_.map(json.layers, layer => loadLayer(map, place, layer)))
+        .catch(alert)
     })
-    .catch(() => console.log("That didn't work."))
 
 const fetchPlaces = () =>
   fetchJSON("all_rivers")
     .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
 
-const paintRiver = {'line-color': '#00bcff','line-width': 3};
+const loadLayer = (map, place, layer) => 
+  fetch(s3rsc(`${place}/geojson/${layer}`))
+    .then((res) => res.json())
+    .then(paintData(map, place, layer))
 
-// paintLine(map, paintRiver, "Russian_River", "russian_river");
-const paintLine = (map, paint, location, track) => {
-  map.addSource(track, {
+const paintData = (map, place, layer) => (data) => {
+  map.addSource(layer, {
     type: 'geojson',
-    data: s3rsc(`${location}/geojson/${track}`)
+    data: data
   });
-    
+  window.themap = map;
+  // https://docs.mapbox.com/mapbox-gl-js/example/multiple-geometries/
+  const kinds = layer.split("-");
+  console.log(`paintData place ${place} layer ${layer} kinds ${JSON.stringify(kinds)}`);
+  const isTrack = kinds.indexOf("track") != -1;
+  const isWaterMarker = kinds.indexOf("cenote") != -1;
+
   map.addLayer({
-    'id': `${track}-layer`,
+    'id': `${place}-${layer}-lines`,
     'type': 'line',
-    'source': track,
+    'source': layer,
     'layout': {
       'line-join': 'round',
       'line-cap': 'round'
     },
-    'paint': paint
+    'paint': (isTrack ? paintTrack : paintRivers),
+    'filter': ['==', '$type', 'LineString']
   });
+
+  map.addLayer({
+    'id': `${place}-${layer}-points`,
+    'type': 'circle',
+    'source': layer,
+    'paint': {
+    'circle-radius': 6,
+    'circle-color': (isWaterMarker ? '#0000FF' : '#FF0000')
+    },
+    'filter': ['==', '$type', 'Point']
+  });
+
+  map.addLayer({
+    'id': `${place}-${layer}-polygons`,
+    'type': 'fill',
+    'source': layer,
+    'paint': {
+      'fill-color': '#000000',
+      'fill-opacity': 0.2
+    },
+    'filter': ['==', '$type', 'Polygon']
+  });
+
+  // TODO: custom icon / hover / click marker: https://docs.mapbox.com/mapbox-gl-js/example/custom-marker-icons/
 };
+
+const paintRivers = {'line-color': '#00bcff','line-width': 2};
+const paintTrack = {'line-color': '#000000','line-width': 2,'line-opacity':0.6};
 
 const Map = () => {
   const mapContainerRef = useRef(null);

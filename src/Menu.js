@@ -12,8 +12,6 @@ const Menu = ({loadPlace, places}) => {
 const Item = ({loadPlace, disp, id}) => {
     const [loaded, setLoaded] = useState("unloaded");
 
-    console.log(`Item disp: ${disp} id: ${id} loaded: ${loaded}`);
-
     function fetch() {
         loadPlace(id).then(() => setLoaded("loaded"));
     }
