@@ -33,25 +33,17 @@ const paintData = (map, place) => layer => data => {
     data: data
   });
   
-  // https://docs.mapbox.com/mapbox-gl-js/example/multiple-geometries/
   const kinds = layer.split("-");
-  const isTrack = kinds.indexOf("track") !== -1;
+  addPoints(map, place, layer, kinds);
+  addLines(map, place, layer, kinds);
+  addPolys(map, place, layer);
+};
+
+const addPoints = (map, place, layer, kinds) => {
   const isWaterMarker = kinds.indexOf("cenote") !== -1;
-
+  const lID = `${place}-${layer}-points`;
   map.addLayer({
-    'id': `${place}-${layer}-lines`,
-    'type': 'line',
-    'source': layer,
-    'layout': {
-      'line-join': 'round',
-      'line-cap': 'round'
-    },
-    'paint': (isTrack ? paintTrack : paintRivers),
-    'filter': ['==', '$type', 'LineString']
-  });
-
-  map.addLayer({
-    'id': `${place}-${layer}-points`,
+    'id': lID,
     'type': 'circle',
     'source': layer,
     'paint': {
@@ -60,8 +52,9 @@ const paintData = (map, place) => layer => data => {
     },
     'filter': ['==', '$type', 'Point']
   });
-  
-  map.on('mousemove', `${place}-${layer}-points`, ({ features }) => {
+
+  // add tooltips on hover
+  map.on('mousemove', lID, ({ features }) => {
     if (features.length == 0 ) return;
     const ft = features[0];
     const el = document.createElement('div');
@@ -74,11 +67,28 @@ const paintData = (map, place) => layer => data => {
     map.on('closeAllPopups', () => { 
       popup.remove(); 
     });
-    map.on('mouseleave', `${place}-${layer}-points`, ({ features }) => {
+    map.on('mouseleave', lID, () => {
       map.fire('closeAllPopups');
     });
   });
+};
 
+const addLines = (map, place, layer, kinds) => {
+  const isTrack = kinds.indexOf("track") !== -1;
+  map.addLayer({
+    'id': `${place}-${layer}-lines`,
+    'type': 'line',
+    'source': layer,
+    'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': (isTrack ? paintTrack : paintRivers),
+    'filter': ['==', '$type', 'LineString']
+  });
+};
+
+const addPolys = (map, place, layer) => {
   map.addLayer({
     'id': `${place}-${layer}-polygons`,
     'type': 'fill',
