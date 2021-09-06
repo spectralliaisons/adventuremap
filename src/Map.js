@@ -32,11 +32,11 @@ const paintData = (map, place) => layer => data => {
     type: 'geojson',
     data: data
   });
-  window.themap = map;
+  
   // https://docs.mapbox.com/mapbox-gl-js/example/multiple-geometries/
   const kinds = layer.split("-");
-  const isTrack = kinds.indexOf("track") != -1;
-  const isWaterMarker = kinds.indexOf("cenote") != -1;
+  const isTrack = kinds.indexOf("track") !== -1;
+  const isWaterMarker = kinds.indexOf("cenote") !== -1;
 
   map.addLayer({
     'id': `${place}-${layer}-lines`,
@@ -60,6 +60,24 @@ const paintData = (map, place) => layer => data => {
     },
     'filter': ['==', '$type', 'Point']
   });
+  
+  map.on('mousemove', `${place}-${layer}-points`, ({ features }) => {
+    if (features.length == 0 ) return;
+    const ft = features[0];
+    const el = document.createElement('div');
+    el.textContent = ft.properties.name;
+    const popup = new mapboxgl.Popup({ offset: [0, -15] })
+      .setLngLat(ft.geometry.coordinates)
+      .setDOMContent(el)
+      .addTo(map);
+    el.parentNode.parentNode.className += ' tip';
+    map.on('closeAllPopups', () => { 
+      popup.remove(); 
+    });
+    map.on('mouseleave', `${place}-${layer}-points`, ({ features }) => {
+      map.fire('closeAllPopups');
+    });
+  });
 
   map.addLayer({
     'id': `${place}-${layer}-polygons`,
@@ -71,8 +89,6 @@ const paintData = (map, place) => layer => data => {
     },
     'filter': ['==', '$type', 'Polygon']
   });
-
-  // TODO: custom icon / hover / click marker: https://docs.mapbox.com/mapbox-gl-js/example/custom-marker-icons/
 };
 
 const paintRivers = {'line-color': '#00bcff','line-width': 2};

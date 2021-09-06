@@ -14,3 +14,22 @@
     cursor: pointer;
   }
 }
+
+.mapboxgl-popup.tip {
+  .mapboxgl-popup-content {
+    border-radius: unset;
+    box-shadow: none;
+    padding: 0;
+    background: none;
+    background-color: #404040;
+    padding: 2px 8px 2px;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .mapboxgl-popup-close-button {
+    display: none;
+  }
+  .mapboxgl-popup-tip {
+    display: none;
+  }
+}

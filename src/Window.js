@@ -4,41 +4,41 @@ import {s3rsc} from './Api';
 import './Window.scss';
 
 const paintWindow = (map, place) => (location) => {
-    const placeholder = document.createElement('div');
-    ReactDOM.render(<Window place={place} location={location}/>, placeholder);  
-  
     const el = document.createElement('div');
-    el.className = 'marker';
+    ReactDOM.render(<Window place={place} location={location}/>, el);
 
-    new mapboxgl.Marker(el)
+    new mapboxgl.Marker()
       .setLngLat([location.loc.lng, location.loc.lat])
       .setPopup(
         new mapboxgl.Popup({ offset: 25 })
-          .setDOMContent(placeholder)
+          .setDOMContent(el)
       )
       .addTo(map)
+    
+    el.parentNode.className += ' media';
   }
 
 const Window = ({place, location}) => {
     const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
     const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
+    const label = location.label || "";
     return (
         <div className="window">
-          <h3>{location.label}</h3>
-          <Image srcLg={srcLg} srcSm={srcSm} />
+          <h3>{label}</h3>
+          <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
           <Sound place={place} src={location.aud} />
         </div>
     );
 };
 
-const Image = ({srcLg, srcSm}) => {
+const Image = ({srcLg, srcSm, label}) => {
   if (srcSm == null || srcLg == null) {
     return <div></div>
   }
   else {
     return (
-      <a href={srcLg} target="_blank">
-        <img src={srcSm} href={srcLg}/>
+      <a href={srcLg} target="_blank" rel="noreferrer">
+        <img src={srcSm} href={srcLg} alt={label}/>
       </a>
     )
   }
