@@ -28,20 +28,22 @@ const paintMultimediaMarkers = (map, place, {locations}) => _.each(locations, pa
 
 // paint geojson data
 const paintData = (map, place) => layer => data => {
-  map.addSource(layer, {
+  const lID = `layer-${place}-${layer}`;
+  console.log(`Map paintData layer ${lID}`);
+  map.addSource(lID, {
     type: 'geojson',
     data: data
   });
   
-  const kinds = layer.split("-");
-  addPoints(map, place, layer, kinds);
-  addLines(map, place, layer, kinds);
-  addPolys(map, place, layer);
+  const kinds = lID.split("-");
+  addPoints(map, lID, kinds);
+  addLines(map, lID, kinds);
+  addPolys(map, lID);
 };
 
-const addPoints = (map, place, layer, kinds) => {
+const addPoints = (map, layer, kinds) => {
   const isWaterMarker = kinds.indexOf("cenote") !== -1;
-  const lID = `${place}-${layer}-points`;
+  const lID = `${layer}-points`;
   map.addLayer({
     'id': lID,
     'type': 'circle',
@@ -73,10 +75,10 @@ const addPoints = (map, place, layer, kinds) => {
   });
 };
 
-const addLines = (map, place, layer, kinds) => {
+const addLines = (map, layer, kinds) => {
   const isTrack = kinds.indexOf("track") !== -1;
   map.addLayer({
-    'id': `${place}-${layer}-lines`,
+    'id': `${layer}-lines`,
     'type': 'line',
     'source': layer,
     'layout': {
@@ -88,9 +90,9 @@ const addLines = (map, place, layer, kinds) => {
   });
 };
 
-const addPolys = (map, place, layer) => {
+const addPolys = (map, layer) => {
   map.addLayer({
-    'id': `${place}-${layer}-polygons`,
+    'id': `${layer}-polygons`,
     'type': 'fill',
     'source': layer,
     'paint': {
