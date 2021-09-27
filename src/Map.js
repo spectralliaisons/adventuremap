@@ -55,7 +55,7 @@ const addPoints = (map, place, layer, kinds) => {
 
   // add tooltips on hover
   map.on('mousemove', lID, ({ features }) => {
-    if (features.length == 0 ) return;
+    if (features.length === 0 ) return;
     const ft = features[0];
     const el = document.createElement('div');
     el.textContent = ft.properties.name;
