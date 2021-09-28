@@ -3,26 +3,34 @@ import mapboxgl from 'mapbox-gl';
 import {s3rsc} from './Api';
 import 'material-icons/iconfont/material-icons.css';
 import './Window.scss';
+let _ = require('underscore');
 
 const paintWindow = (map, place) => location => {
   const el = document.createElement('div');
-  ReactDOM.render(<Window place={place} location={location}/>, el);
+  ReactDOM.render(<Window place={place} location={location}/>, el, ()=>{
+    setTimeout(() => {
+      let el1 = document.getElementById("scroll");
+      console.log(["Window rendered", el1]);
+    }, 500);
+  });
 
   new mapboxgl.Marker()
     .setLngLat([location.loc.lng, location.loc.lat])
     .setPopup(
-      new mapboxgl.Popup({ offset: 25 })
-        .setDOMContent(el)
+      new mapboxgl.Popup({ 
+        className: 'media', 
+        closeOnClick: true,
+        offset: 25 
+      }).setDOMContent(el)
     )
     .addTo(map)
-  
-  el.parentNode.className += ' media';
 }
 
 const Window = ({place, location}) => {
   const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
   const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
   const label = location.label || "";
+
   return (
       <div>
         <div className="labels">
@@ -65,7 +73,7 @@ const Image = ({srcLg, srcSm, label}) => {
   else {
     return (
       <div className="center">
-        <a className="scroll" href={srcLg} target="_blank" rel="noreferrer">
+        <a id="scroll" href={srcLg} target="_blank" rel="noreferrer">
           <img src={srcSm} href={srcLg} alt={label}/>
         </a>
       </div>

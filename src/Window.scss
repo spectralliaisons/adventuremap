@@ -1,3 +1,6 @@
+$tablet: 900px;
+$phone: 450px;
+
 .mapboxgl-marker {
     cursor: pointer;
 }
@@ -6,65 +9,83 @@
     max-width: unset !important;
 }
 
-.mapboxgl-popup-content.media {
-    position: relative;
-    background: #fff;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0,0,0,.1);
-    padding: 10px 10px 3px;
-    pointer-events: auto;
-    .labels {
-        .icon {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            width: 100%;
-            margin-bottom: 7px;
-        }
-        .icon.link {
-            cursor: pointer;
-            color: #49aaff;
-            border-bottom: solid;
-            border-width: 2px;
-            border-color: #f2f2f2;
-            padding-top: 10px;
-            padding-bottom: 15px;
-        }
-    }
-    h3 {
-        font-size: 18px;
-        text-align: center;
-        font-weight: bold;
-        max-width: 300px;
-    }
-    .center {
-        display: flex;
-        justify-content: center;
-    }
-    .scroll {
-        max-width: 400px;
-        overflow: scroll;
-        display: block;
-        img {
-            margin-top: 8px;
-            margin-bottom: 8px;
-            height: 400px;
-            max-width: none;
-        }
-    }
-    audio {
+.mapboxgl-popup.media {
+    @media screen and (max-width: $phone) {
+        z-index: 2;
+        transform: unset !important;
         width: 100%;
     }
-    .mapboxgl-popup-close-button {
-        display: block;
-        scale : 2.4;
-        right: 15px;
-        top: 5px;
+    .mapboxgl-popup-tip {
+        @media screen and (max-width: $phone) {
+            display: none;
+        }
     }
-    .mapboxgl-popup-close-button:hover {
-        display: block;
-        background-color: unset;
-        opacity: 0.4;
+    .mapboxgl-popup-content {
+        position: relative;
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0,0,0,.1);
+        padding: 10px 10px 3px;
+        pointer-events: auto;
+        @media screen and (max-width: $phone) {
+            width: 100%;
+        }
+        .labels {
+            .icon {
+                display: flex;
+                align-items: center;
+                font-weight: bold;
+                font-size: 14px;
+                width: 100%;
+                margin-bottom: 7px;
+            }
+            .icon.link {
+                cursor: pointer;
+                color: #49aaff;
+                border-bottom: solid;
+                border-width: 2px;
+                border-color: #f2f2f2;
+                padding-top: 10px;
+                padding-bottom: 15px;
+            }
+        }
+        h3 {
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            max-width: 300px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+        #scroll {
+            max-width: 100%;
+            @media screen and (min-width: $phone) {
+                max-width: 400px;
+            }
+            overflow: scroll;
+            display: block;
+            img {
+                margin-top: 8px;
+                margin-bottom: 8px;
+                height: 400px;
+                max-width: none;
+            }
+        }
+        audio {
+            width: 100%;
+        }
+        .mapboxgl-popup-close-button {
+            display: block;
+            scale : 2.4;
+            right: 15px;
+            top: 5px;
+        }
+        .mapboxgl-popup-close-button:hover {
+            display: block;
+            background-color: unset;
+            opacity: 0.4;
+        }
     }
 }
