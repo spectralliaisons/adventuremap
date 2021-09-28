@@ -4,38 +4,38 @@ import {s3rsc} from './Api';
 import 'material-icons/iconfont/material-icons.css';
 import './Window.scss';
 
-const paintWindow = (map, place) => (location) => {
-    const el = document.createElement('div');
-    ReactDOM.render(<Window place={place} location={location}/>, el);
+const paintWindow = (map, place) => location => {
+  const el = document.createElement('div');
+  ReactDOM.render(<Window place={place} location={location}/>, el);
 
-    new mapboxgl.Marker()
-      .setLngLat([location.loc.lng, location.loc.lat])
-      .setPopup(
-        new mapboxgl.Popup({ offset: 25 })
-          .setDOMContent(el)
-      )
-      .addTo(map)
-    
-    el.parentNode.className += ' media';
-  }
+  new mapboxgl.Marker()
+    .setLngLat([location.loc.lng, location.loc.lat])
+    .setPopup(
+      new mapboxgl.Popup({ offset: 25 })
+        .setDOMContent(el)
+    )
+    .addTo(map)
+  
+  el.parentNode.className += ' media';
+}
 
 const Window = ({place, location}) => {
-    const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
-    const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
-    const label = location.label || "";
-    return (
-        <div>
-          <div className="center">
-            <div className="labels">
-            <Location location={location}/>
-            <Date date={location.date} />
-            </div>
-            <h3>{label}</h3>
-            <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
-          </div>
-          <Sound place={place} src={location.aud} />
+  const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
+  const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
+  const label = location.label || "";
+  return (
+      <div>
+        <div className="labels">
+          <Location location={location}/>
+          <Date date={location.date} />
         </div>
-    );
+        <div className="center">
+          <h3>{label}</h3>
+        </div>
+        <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
+        <Sound place={place} src={location.aud} />
+      </div>
+  );
 };
 
 const Location = ({location}) => {
@@ -64,9 +64,11 @@ const Image = ({srcLg, srcSm, label}) => {
   }
   else {
     return (
-      <a href={srcLg} target="_blank" rel="noreferrer">
-        <img src={srcSm} href={srcLg} alt={label}/>
-      </a>
+      <div className="center">
+        <a className="scroll" href={srcLg} target="_blank" rel="noreferrer">
+          <img src={srcSm} href={srcLg} alt={label}/>
+        </a>
+      </div>
     )
   }
 }
