@@ -3,28 +3,33 @@ import mapboxgl from 'mapbox-gl';
 import {s3rsc} from './Api';
 import 'material-icons/iconfont/material-icons.css';
 import './Window.scss';
-let _ = require('underscore');
 
 const paintWindow = (map, place) => location => {
   const el = document.createElement('div');
-  ReactDOM.render(<Window place={place} location={location}/>, el, ()=>{
-    setTimeout(() => {
-      let el1 = document.getElementById("scroll");
-      console.log(["Window rendered", el1]);
-    }, 500);
-  });
+  ReactDOM.render(<Window place={place} location={location}/>, el);
+
+  const popup = new mapboxgl.Popup({ 
+    className: 'media', 
+    closeOnClick: true,
+    offset: 25 
+  }).setDOMContent(el);
 
   new mapboxgl.Marker()
     .setLngLat([location.loc.lng, location.loc.lat])
-    .setPopup(
-      new mapboxgl.Popup({ 
-        className: 'media', 
-        closeOnClick: true,
-        offset: 25 
-      }).setDOMContent(el)
-    )
-    .addTo(map)
-}
+    .setPopup(popup)
+    .addTo(map);
+
+  popup.on('open', resizePopup);
+  window.addEventListener('resize', resizePopup, true);
+};
+
+const resizePopup = () => {
+  let el = document.getElementsByClassName("mapboxgl-popup-content")[0];
+  if (el != null) {
+    let x = window.innerWidth/2 - el.clientWidth/2;
+    el.style = `transform:translate(${x}px, 0px)`;
+  }
+};
 
 const Window = ({place, location}) => {
   const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;

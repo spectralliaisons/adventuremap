@@ -1,5 +1,5 @@
-$tablet: 900px;
-$phone: 450px;
+$tablet: 9999px;
+$phone: 500px;
 
 .mapboxgl-marker {
     cursor: pointer;
@@ -10,13 +10,20 @@ $phone: 450px;
 }
 
 .mapboxgl-popup.media {
-    @media screen and (max-width: $phone) {
+    @media screen and (max-width: $tablet) {
         z-index: 2;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        transform: unset !important;
+    }
+    @media screen and (max-width: $phone) {
         transform: unset !important;
         width: 100%;
     }
     .mapboxgl-popup-tip {
-        @media screen and (max-width: $phone) {
+        @media screen and (max-width: $tablet) {
             display: none;
         }
     }
@@ -27,6 +34,9 @@ $phone: 450px;
         box-shadow: 0 1px 2px rgba(0,0,0,.1);
         padding: 10px 10px 3px;
         pointer-events: auto;
+        @media screen and (max-width: $tablet) {
+            width: $phone;
+        }
         @media screen and (max-width: $phone) {
             width: 100%;
         }
