@@ -18,10 +18,6 @@ $phone: 500px;
         justify-content: center;
         transform: unset !important;
     }
-    @media screen and (max-width: $phone) {
-        transform: unset !important;
-        width: 100%;
-    }
     .mapboxgl-popup-tip {
         @media screen and (max-width: $tablet) {
             display: none;
