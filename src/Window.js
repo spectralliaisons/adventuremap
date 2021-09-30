@@ -14,7 +14,17 @@ const paintWindow = (map, place) => location => {
     offset: 25 
   }).setDOMContent(el);
 
-  new mapboxgl.Marker()
+  let marker = document.createElement('div');
+  if (location.aud != null) {
+    marker.className = 'marker-aud';
+  }
+  else if (location.img != null) {
+    marker.className = 'marker-img';
+  }
+  else {
+    marker.className = 'marker-pt'
+  }
+  new mapboxgl.Marker(marker)
     .setLngLat([location.loc.lng, location.loc.lat])
     .setPopup(popup)
     .addTo(map);

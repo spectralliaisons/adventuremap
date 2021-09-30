@@ -16,6 +16,7 @@
 }
 
 .mapboxgl-popup.tip {
+  z-index: 4;
   .mapboxgl-popup-content {
     border-radius: unset;
     box-shadow: none;

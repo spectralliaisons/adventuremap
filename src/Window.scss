@@ -1,7 +1,24 @@
 $phone: 450px;
 
 .mapboxgl-marker {
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     cursor: pointer;
+}
+
+.marker-aud {
+    background-image: url('./rsc/markers/circle-aud.svg');
+    z-index: 2;
+}
+.marker-img {
+    background-image: url('./rsc/markers/circle-img.svg');
+    z-index: 1;
+}
+.marker-pt {
+    background-image: url('./rsc/markers/circle.svg');
+    z-index: 1;
 }
 
 .mapboxgl-popup {
@@ -9,7 +26,7 @@ $phone: 450px;
 }
 
 .mapboxgl-popup.media {
-    z-index: 2;
+    z-index: 5;
     width: 100%;
     height: 100%;
     display: flex;
