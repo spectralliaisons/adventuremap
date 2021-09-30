@@ -9,16 +9,18 @@ $phone: 450px;
 }
 
 .marker-aud {
-    background-image: url('./rsc/markers/circle-aud.svg');
+    background-image: url('./rsc/circle-aud.svg');
     z-index: 2;
 }
 .marker-img {
-    background-image: url('./rsc/markers/circle-img.svg');
+    background-image: url('./rsc/circle-img.svg');
     z-index: 1;
 }
 .marker-pt {
-    background-image: url('./rsc/markers/circle.svg');
+    background-image: url('./rsc/circle.svg');
     z-index: 1;
+    width: 12px;
+    height: 12px;
 }
 
 .mapboxgl-popup {

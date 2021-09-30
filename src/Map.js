@@ -42,7 +42,7 @@ const paintData = (map, place) => layer => data => {
 };
 
 const addPoints = (map, layer, kinds) => {
-  const isWaterMarker = kinds.indexOf("cenote") !== -1;
+  const isWaterMarker = kinds.indexOf("cenote") !== -1 || kinds.indexOf("river") !== -1;
   const lID = `${layer}-points`;
   map.addLayer({
     'id': lID,
@@ -50,7 +50,7 @@ const addPoints = (map, layer, kinds) => {
     'source': layer,
     'paint': {
     'circle-radius': 6,
-    'circle-color': (isWaterMarker ? '#0000FF' : '#FF0000')
+    'circle-color': (isWaterMarker ? '#2592ff' : '#ff2592')
     },
     'filter': ['==', '$type', 'Point']
   });
