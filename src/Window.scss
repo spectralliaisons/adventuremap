@@ -1,4 +1,4 @@
-$phone: 500px;
+$phone: 450px;
 
 .mapboxgl-marker {
     cursor: pointer;
@@ -22,14 +22,21 @@ $phone: 500px;
         position: relative;
         background: #fff;
         border-radius: 3px;
-        box-shadow: 0 1px 2px rgba(0,0,0,.1);
+        box-shadow: 0 1px 2px rgba(255, 167, 167, 0.1);
         padding: 10px 10px 3px;
         pointer-events: auto;
-        width: $phone;
+        max-width: $phone;
         @media screen and (max-width: $phone) {
             width: 100%;
         }
         .labels {
+            .bordr {
+                border-bottom: solid;
+                border-width: 2px;
+                margin-bottom: 8px;
+                margin-top: 15px;
+                color: #d6d6d6;
+            }
             .icon {
                 display: flex;
                 align-items: center;
@@ -41,11 +48,7 @@ $phone: 500px;
             .icon.link {
                 cursor: pointer;
                 color: #49aaff;
-                border-bottom: solid;
-                border-width: 2px;
-                border-color: #f2f2f2;
                 padding-top: 10px;
-                padding-bottom: 15px;
             }
         }
         h3 {
@@ -59,17 +62,19 @@ $phone: 500px;
             justify-content: center;
         }
         #scroll {
-            max-width: 100%;
-            @media screen and (min-width: $phone) {
-                max-width: 400px;
-            }
             overflow: scroll;
             display: block;
+            margin-top: 8px;
+            margin-bottom: 9px;
             img {
-                margin-top: 8px;
-                margin-bottom: 8px;
                 height: 400px;
                 max-width: none;
+            }
+            img.bordr {
+                border: solid !important;
+                border-width: 2px !important;
+                border-radius: 6px !important;
+                color: #a2a2a2;
             }
         }
         audio {

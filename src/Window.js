@@ -56,7 +56,10 @@ const Location = ({location}) => {
   const lng = location.loc.lng.toFixed(4);
   const url = `https://www.google.com/maps/search/?api=1&query=${location.loc.lat},${location.loc.lng}`;
   return (
-    <div className="icon link"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
+    <div className="loc">
+      <div className="icon link"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
+      <div className="bordr"></div>
+    </div>
   )
 }
 
@@ -72,17 +75,21 @@ const Date = ({date}) => {
 }
 
 const Image = ({srcLg, srcSm, label}) => {
+  return (
+    <div className="center">
+      <a id="scroll" href={srcLg} target="_blank" rel="noreferrer">
+        <ImageContent srcLg={srcLg} srcSm={srcSm} label={label}/>
+      </a>
+    </div>
+  )
+}
+
+const ImageContent = ({srcLg, srcSm, label}) => {
   if (srcSm == null || srcLg == null) {
-    return <div></div>
+    return (<div></div>)
   }
   else {
-    return (
-      <div className="center">
-        <a id="scroll" href={srcLg} target="_blank" rel="noreferrer">
-          <img src={srcSm} href={srcLg} alt={label}/>
-        </a>
-      </div>
-    )
+    return <img className="bordr" src={srcSm} href={srcLg} alt={label}/>
   }
 }
 
