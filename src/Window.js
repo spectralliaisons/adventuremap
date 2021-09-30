@@ -33,11 +33,11 @@ const paintWindow = (map, place) => location => {
   window.addEventListener('resize', resizePopup, true);
 };
 
-const resizePopup = () => {
-  let el = document.getElementsByClassName("mapboxgl-popup-content")[0];
-  if (el != null) {
-    let x = window.innerWidth/2 - el.clientWidth/2;
-    el.style = `transform:translate(${x}px, 0px)`;
+const resizePopup = (el0) => {
+  let el1 = el0.target._content || document.getElementsByClassName("mapboxgl-popup-content")[0];
+  if (el1 != null) {
+    let x = window.innerWidth/2 - el1.clientWidth/2;
+    el1.style = `transform:translate(${x}px, 0px)`;
   }
 };
 

@@ -29,7 +29,6 @@ const paintMultimediaMarkers = (map, place, {locations}) => _.each(locations, pa
 // paint geojson data
 const paintData = (map, place) => layer => data => {
   const lID = `layer-${place}-${layer}`;
-  console.log(`Map paintData layer ${lID}`);
   map.addSource(lID, {
     type: 'geojson',
     data: data
