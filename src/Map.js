@@ -120,6 +120,17 @@ const Map = () => {
       zoom: 5
     });
 
+    // User location
+    map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true,
+      showUserHeading: true
+      })
+    );
+
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
