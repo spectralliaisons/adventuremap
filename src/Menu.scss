@@ -1,21 +1,31 @@
+$phone: 450px;
+
 #menu.loading {
   overflow: hidden;
   height: 56px;
 }
 #menu {
   display: inline-block;
-  position: absolute;
   top: 0;
   left: 0;
-  margin: 12px;
-  background-color: #404040;
   z-index: 4 !important;
   min-width: 195px;
+  position: absolute;
+  margin: 12px;
+  background-color: #404040;
+  @media screen and (max-width: $phone) {
+    background-color: unset;
+    position: relative;
+    margin: unset;
+    max-width: 230px;
+  }
   #places {
     overflow: hidden;
-    color: #ffffff;
-    font-weight: bold;
     transition: height 0.5s;
+    color: #eee;
+    @media screen and (max-width: $phone) {
+      font-weight: bold;
+    }
     li {
       cursor: pointer;
     }
@@ -24,6 +34,9 @@
     }
     li.loaded {
         color: #76dbff;
+        @media screen and (max-width: $phone) {
+          color: #404040;
+        }
     }
   }
   
@@ -42,6 +55,9 @@
     transition: .5s ease-in-out;
     cursor: pointer;
     pointer-events: all;
+    @media screen and (max-width: $phone) {
+      left: -65px;
+    }
   }
   
   #hamburger span {

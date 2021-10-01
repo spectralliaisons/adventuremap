@@ -47,6 +47,8 @@ $phone: 450px;
         max-width: $phone;
         @media screen and (max-width: $phone) {
             width: 100%;
+            height: 100%;
+            overflow: scroll;
         }
         .labels {
             .bordr {
