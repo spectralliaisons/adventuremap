@@ -17,6 +17,10 @@ $phone: 450px;
     margin: unset;
     max-width: 230px;
   }
+
+  #places.loading {
+    display: none;
+  }
   #places {
     overflow: hidden;
     transition: height 0.5s;
@@ -79,7 +83,6 @@ $phone: 450px;
   
   /* circle background */
   #hamburger span:nth-child(1) {
-      background: #f22876;
       background-image: url("./rsc/topography.png");
       width:100%;
       height:100%;
@@ -89,8 +92,7 @@ $phone: 450px;
   }
   
   #hamburger span:nth-child(1):hover {
-  /*    background: #e20000;*/
-      transform: scale(1.10);
+    transform: scale(1.10);
   }
   
   /* hamburger line 1 */
@@ -160,11 +162,6 @@ $phone: 450px;
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-
-  .spin {
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
   }
 
   #hamburger.loading span:nth-child(2) {

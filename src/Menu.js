@@ -29,18 +29,25 @@ const Menu = ({paintPlace, places}) => {
                 <span></span>
                 <span></span>
             </div>
-            <div id='places' style={placesStyl}>
-                <ol style={olStyl}>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
+            <div id="places" className={menuState} style={placesStyl}>
+                <ol style={olStyl}>{places.map(({disp,id}) => 
+                    <div key={id}>
+                        <Item paintPlace={paintPlace} closeMenu={toggle} disp={disp} id={id}/>
+                    </div>
+                )}</ol>
             </div>
         </div>
     );
 };
 
-const Item = ({paintPlace, disp, id}) => {
+const Item = ({paintPlace, closeMenu, disp, id}) => {
     const [loaded, setLoaded] = useState("unloaded");
 
     function fetch() {
-        paintPlace(id).then(() => setLoaded("loaded"));
+        paintPlace(id).then(() => {
+            setLoaded("loaded");
+            closeMenu();
+        });
     }
 
     return (
