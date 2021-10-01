@@ -12,9 +12,7 @@ $phone: 450px;
   min-width: 195px;
   position: absolute;
   margin: 12px;
-  background-color: #404040;
   @media screen and (max-width: $phone) {
-    background-color: unset;
     position: relative;
     margin: unset;
     max-width: 230px;
@@ -23,20 +21,19 @@ $phone: 450px;
     overflow: hidden;
     transition: height 0.5s;
     color: #eee;
-    @media screen and (max-width: $phone) {
-      font-weight: bold;
-    }
-    li {
-      cursor: pointer;
-    }
-    li:hover {
-      opacity: 0.6;
-    }
-    li.loaded {
-        color: #76dbff;
-        @media screen and (max-width: $phone) {
-          color: #404040;
-        }
+    font-weight: bold;
+    background-color: #404040;
+    margin-top: -25px;
+    ol {
+      li {
+        cursor: pointer;
+      }
+      li:hover {
+        opacity: 0.6;
+      }
+      li.loaded {
+          color: #76dbff;
+      }
     }
   }
   
@@ -87,6 +84,8 @@ $phone: 450px;
       width:100%;
       height:100%;
       border-radius: 50%;
+      border: solid #404040;
+      border-width: 3px;
   }
   
   #hamburger span:nth-child(1):hover {

@@ -3,6 +3,7 @@ import './Menu.scss';
 
 const fontSz = 14;
 const padding = 6;
+const listPaddingTop = 18;
 
 const Menu = ({paintPlace, places}) => {
 
@@ -15,10 +16,11 @@ const Menu = ({paintPlace, places}) => {
         else {setMenuState("open");}
     }
 
-    const styl = {
-        height:`${(menuState === "open" ? (places.length*(fontSz+padding*2)-padding*3) : 0)}px`,
+    const placesStyl = {
+        height:`${(menuState === "open" ? (places.length*(fontSz+padding*2)-padding*3+listPaddingTop) : 0)}px`,
         padding: `0px ${padding}px 0px ${padding}px`
     };
+    const olStyl = {paddingTop: `${listPaddingTop}px`};
     return (
         <div id='menu' className={menuState}>
             <div id="hamburger" className={menuState} onClick={toggle}>
@@ -27,8 +29,8 @@ const Menu = ({paintPlace, places}) => {
                 <span></span>
                 <span></span>
             </div>
-            <div id='places' style={styl}>
-                <ol>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
+            <div id='places' style={placesStyl}>
+                <ol style={olStyl}>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
             </div>
         </div>
     );
