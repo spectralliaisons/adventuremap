@@ -1,4 +1,5 @@
 $phone: 450px;
+$bg: #423b31;
 
 #menu.loading {
   overflow: hidden;
@@ -26,7 +27,7 @@ $phone: 450px;
     transition: height 0.5s;
     color: #eee;
     font-weight: bold;
-    background-color: #404040;
+    background-color: $bg;
     margin-top: -25px;
     ol {
       li {
@@ -66,7 +67,7 @@ $phone: 450px;
     position: absolute;
     height: 0.23em;
     width: 50%;
-    background: #666;
+    background: $bg;
     border-radius: 2.5em;
     opacity: 1;
     left: 0;
@@ -87,7 +88,7 @@ $phone: 450px;
       width:100%;
       height:100%;
       border-radius: 50%;
-      border: solid #404040;
+      border: solid $bg;
       border-width: 3px;
   }
   

@@ -1,5 +1,10 @@
 $phone: 450px;
 
+@font-face {
+    font-family: font;
+    src: url(../src/rsc/RobotoMono-Regular.ttf);
+}
+
 .mapboxgl-marker {
     background-size: cover;
     width: 20px;
@@ -25,6 +30,7 @@ $phone: 450px;
 
 .mapboxgl-popup {
     max-width: unset !important;
+    font-family: font;
 }
 
 .mapboxgl-popup.media {
@@ -39,16 +45,17 @@ $phone: 450px;
     }
     .mapboxgl-popup-content {
         position: relative;
-        background: #fff;
         border-radius: 3px;
         box-shadow: 0 1px 2px rgba(255, 167, 167, 0.1);
         padding: 10px 10px 3px;
         pointer-events: auto;
         max-width: $phone;
+        background: #fffc;
         @media screen and (max-width: $phone) {
             width: 100%;
             height: 100%;
             overflow: scroll;
+            background: #ffffffe8;
         }
         .labels {
             .bordr {
@@ -73,6 +80,7 @@ $phone: 450px;
             }
         }
         h3 {
+            font-family: font;
             font-size: 18px;
             text-align: center;
             font-weight: bold;
@@ -106,11 +114,12 @@ $phone: 450px;
             scale : 2.4;
             right: 15px;
             top: 5px;
+            transition: scale .5s;
         }
         .mapboxgl-popup-close-button:hover {
             display: block;
             background-color: unset;
-            opacity: 0.4;
+            scale: 3;
         }
     }
 }
