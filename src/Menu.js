@@ -1,13 +1,38 @@
 import React, {useState} from 'react';
 import './Menu.scss';
 
+const fontSz = 14;
+const padding = 6;
+
 const Menu = ({paintPlace, places}) => {
 
+    const [menuState, setMenuState] = useState("loading");
+
+    if (menuState === "loading" && places.length > 0) {setMenuState("open");}
+
+    function toggle() {
+        if (menuState === "open") {setMenuState("closed");} 
+        else {setMenuState("open");}
+    }
+
+    const styl = {
+        height:`${(menuState === "open" ? (places.length*(fontSz+padding*2)-padding*3) : 0)}px`,
+        padding: `0px ${padding}px 0px ${padding}px`
+    };
     return (
-        <ol>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
+        <div id='menu' className={menuState}>
+            <div id="hamburger" className={menuState} onClick={toggle}>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div id='places' style={styl}>
+                <ol>{places.map(({disp,id}) => <div key={id}><Item paintPlace={paintPlace} disp={disp} id={id}/></div>)}</ol>
+            </div>
+        </div>
     );
 };
-
 
 const Item = ({paintPlace, disp, id}) => {
     const [loaded, setLoaded] = useState("unloaded");
@@ -17,7 +42,7 @@ const Item = ({paintPlace, disp, id}) => {
     }
 
     return (
-        <li id={id} className={loaded} onClick={fetch}>{disp}</li>
+        <li id={id} className={loaded} style={{fontSize:`${fontSz}px`}} onClick={fetch}>{disp}</li>
     );
 };
 

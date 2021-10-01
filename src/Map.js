@@ -109,7 +109,7 @@ const Map = () => {
   const mapContainerRef = useRef(null);
 
   const [map, setMap] = useState(null);
-  const [places, setPlaces] = useState([{disp:"loading...",id:""}]);
+  const [places, setPlaces] = useState([]);
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -134,9 +134,7 @@ const Map = () => {
 
   return (
     <div>
-      <div className='sidebar'>
-        <Menu paintPlace={paintPlace(map)} places={places} />
-      </div>
+      <Menu paintPlace={paintPlace(map)} places={places} />
       <div className='map-container' ref={mapContainerRef} />
     </div>
   );
