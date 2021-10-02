@@ -1,7 +1,5 @@
 @use 'Common' as common;
 
-$bg: #2b251ad6;
-
 #menu.loading {
   overflow: hidden;
   height: 56px;
@@ -28,7 +26,7 @@ $bg: #2b251ad6;
     transition: height 0.5s;
     color: #eee;
     font-weight: bold;
-    background-color: $bg;
+    background-color: common.$bg;
     margin-top: -25px;
     min-width: 230px;
     ol {
@@ -69,7 +67,7 @@ $bg: #2b251ad6;
     position: absolute;
     height: 0.23em;
     width: 50%;
-    background: $bg;
+    background: common.$bg;
     border-radius: 2.5em;
     opacity: 1;
     left: 0;
@@ -90,7 +88,7 @@ $bg: #2b251ad6;
       width:100%;
       height:100%;
       border-radius: 50%;
-      border: solid $bg;
+      border: solid common.$bg;
       border-width: 3px;
   }
   

@@ -19,15 +19,16 @@ const colorPoly = '#000000';
 const colorRiver = '#00bcff';
 const colorTrack = '#ff2592';
 
-const paintPlace = (map, cb) => place => 
+const paintPlace = (map, success, fail) => place => 
   loadPlace(place, paintData(map, place))
     .then(({json, paint}) => {
       moveTo(map, json);
       if (paint) {
         paintMultimediaMarkers(map, place, json);
-        cb(place);
+        success(place);
       }
-    });
+    })
+    .catch((err) => fail(true))
 
 const moveTo = (map, {zoom, locations, center}) => {
   const pos = _.findWhere(locations, {"label":center}).loc;
@@ -123,11 +124,13 @@ const Map = () => {
   const [map, setMap] = useState(null);
   const [places, setPlaces] = useState([]);
   const [legendVisible, setLegendVisible] = useState(false);
+  const [error, setError] = useState(false);
 
   const doPaintPlace = (m) => paintPlace(m, (place) => {
+    setError(false);
     setLegendVisible(true);
     Nav.setHash(place);
-  });
+  }, () => setError(true));
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -153,7 +156,10 @@ const Map = () => {
       .once('load', () => fetchPlaces().then((res) => {
         setPlaces(res);
         setMap(map);
-        Nav.connect({paintPlace:doPaintPlace(map)});
+        Nav.connect({
+          paintPlace:doPaintPlace(map),
+          setError:setError
+        });
       }));
 
     // Clean up on unmount
@@ -166,9 +172,25 @@ const Map = () => {
         <Menu paintPlace={doPaintPlace(map)} places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack}/>
       </div>
+      <Error visible={error} />
       <div className='map-container' ref={mapContainerRef} />
     </div>
   );
 };
+
+const Error = ({visible}) => {
+  if (visible) {
+    return (
+      <div id="center-message">
+        <div id="message-container">
+          <div id="message">that place does not exist</div>
+        </div>
+      </div>
+    )
+  }
+  else {
+    return <div></div>
+  }
+}
 
 export default Map;

@@ -15,7 +15,7 @@ const loadPlace = (place, paintData) => {
           _cache[place] = json;
           _.each(json.layers, _loadLayer(place, paintData));
           return Promise.resolve({json:json, paint:true});
-      });
+      })
   }
   else {
     return Promise.resolve({json:_cache[place], paint:false});

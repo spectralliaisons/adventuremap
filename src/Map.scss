@@ -1,6 +1,28 @@
+@use 'Common' as common;
+
 #my-controls {
   position: absolute;
   height: 100%;
+}
+
+#center-message {
+  display: flex;
+  justify-content: center;
+  top: 30px;
+  position: relative;
+  #message-container {
+    display: flex;
+    justify-content: center;
+    background-color: #ff2f2fd6;
+    z-index: 4;
+    #message {
+      color: #fff;
+      margin: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
 }
 
 .map-container {
@@ -18,7 +40,7 @@
     box-shadow: none;
     padding: 0;
     background: none;
-    background-color: #404040;
+    background-color: common.$bg;
     padding: 2px 8px 2px;
     color: #ffffff;
     font-weight: bold;

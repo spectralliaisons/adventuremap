@@ -1,17 +1,21 @@
-const connect = ({paintPlace}) => {
+const connect = cbs => {
     // If the url currently indicates a place, load it
-    to(window.location.hash, paintPlace);
+    to(cbs, window.location.hash);
 
     window.onhashchange = () => {
-        to(window.location.hash, paintPlace);
+        to(cbs, window.location.hash);
     }
 };
 
-const to = (hash, paintPlace) => {
+const to = ({paintPlace, setError}, hash) => {
     let curr = null;
     if (curr = hash.split("#")[1]) {
         paintPlace(curr).then(() => {
-            document.getElementById(curr).className = "loaded";
+            let el = null;
+            if (el = document.getElementById(curr)) {
+                el.className = "loaded";
+                setError(false);
+            }
         })
     }
 };
