@@ -14,17 +14,7 @@ const paintWindow = (map, place) => location => {
     offset: 25 
   }).setDOMContent(el);
 
-  let marker = document.createElement('div');
-  if (location.aud != null) {
-    marker.className = 'marker-aud';
-  }
-  else if (location.img != null) {
-    marker.className = 'marker-img';
-  }
-  else {
-    marker.className = 'marker-pt'
-  }
-  new mapboxgl.Marker(marker)
+  new mapboxgl.Marker(styledMarker(location))
     .setLngLat([location.loc.lng, location.loc.lat])
     .setPopup(popup)
     .addTo(map);
@@ -33,7 +23,15 @@ const paintWindow = (map, place) => location => {
   window.addEventListener('resize', resizePopup, true);
 };
 
-const resizePopup = (el0) => {
+const styledMarker = location => {
+  let marker = document.createElement('div');
+  if (location.aud != null) {marker.className = 'marker-aud';}
+  else if (location.img != null) {marker.className = 'marker-img';}
+  else {marker.className = 'marker-pt'}
+  return marker;
+};
+
+const resizePopup = el0 => {
   let el1 = el0.target._content || document.getElementsByClassName("mapboxgl-popup-content")[0];
   if (el1 != null) {
     let x = window.innerWidth/2 - el1.clientWidth/2;
