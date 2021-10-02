@@ -18,12 +18,13 @@ const colorPoly = '#000000';
 const colorRiver = '#00bcff';
 const colorTrack = '#ff2592';
 
-const paintPlace = map => place => 
+const paintPlace = (map, cb) => place => 
   loadPlace(place, paintData(map, place))
     .then(({json, paint}) => {
       moveTo(map, json);
       if (paint) {
         paintMultimediaMarkers(map, place, json);
+        cb();
       }
     });
 
@@ -119,6 +120,9 @@ const Map = () => {
 
   const [map, setMap] = useState(null);
   const [places, setPlaces] = useState([]);
+  const [legendVisible, setLegendVisible] = useState(false);
+
+  const doPaintPlace = paintPlace(map, () => setLegendVisible(true));
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -153,8 +157,8 @@ const Map = () => {
   return (
     <div>
       <div id="my-controls">
-        <Menu paintPlace={paintPlace(map)} places={places} />
-        <Legend colorRiver={colorRiver} colorTrack={colorTrack}/>
+        <Menu paintPlace={doPaintPlace} places={places} />
+        <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack}/>
       </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>

@@ -6,7 +6,19 @@
     z-index: 1;
     .item {
       display: flex;
-      height: 20px;
+      height: 25px;
+      margin: 5px;
+      .eg-marker {
+          width: 35px;
+          height: 25px;
+          background-repeat: no-repeat;
+      }
+      #eg-aud {
+          background-image: url(./rsc/circle-aud.svg);
+      }
+      #eg-img {
+        background-image: url(./rsc/circle-img.svg);
+    }
       line {
         stroke-width: 3px;
         stroke-linecap: round;
