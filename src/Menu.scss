@@ -15,20 +15,19 @@
   @media screen and (max-width: common.$phone) {
     position: relative;
     margin: unset;
-    max-width: 230px;
   }
 
   #places.loading {
     display: none;
   }
   #places {
-    overflow: hidden;
+    overflow: scroll;
     transition: height 0.5s;
     color: #eee;
     font-weight: bold;
     background-color: common.$bg;
     margin-top: -25px;
-    min-width: 230px;
+    min-width: 250px;
     ol {
       li {
         cursor: pointer;
