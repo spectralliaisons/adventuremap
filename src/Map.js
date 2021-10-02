@@ -9,6 +9,12 @@ let _ = require('underscore');
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A';
 
+const colorWaterMarker = '#2592ff';
+const colorNonWaterMarker = '#ff2592';
+const colorPoly = '#000000';
+const colorRiver = '#00bcff';
+const colorTrack = '#ff2592';
+
 const paintPlace = map => place => 
   loadPlace(place, paintData(map, place))
     .then(({json, paint}) => {
@@ -49,7 +55,7 @@ const addPoints = (map, layer, kinds) => {
     'source': layer,
     'paint': {
     'circle-radius': 6,
-    'circle-color': (isWaterMarker ? '#2592ff' : '#ff2592')
+    'circle-color': (isWaterMarker ? colorWaterMarker : colorNonWaterMarker)
     },
     'filter': ['==', '$type', 'Point']
   });
@@ -95,15 +101,15 @@ const addPolys = (map, layer) => {
     'type': 'fill',
     'source': layer,
     'paint': {
-      'fill-color': '#000000',
+      'fill-color': colorPoly,
       'fill-opacity': 0.2
     },
     'filter': ['==', '$type', 'Polygon']
   });
 };
 
-const paintRivers = {'line-color': '#00bcff','line-width': 2};
-const paintTrack = {'line-color': '#000000','line-width': 2,'line-opacity':0.6};
+const paintRivers = {'line-color': colorRiver,'line-width': 2};
+const paintTrack = {'line-color': colorTrack,'line-width': 2,'line-opacity':0.6};
 
 const Map = () => {
   const mapContainerRef = useRef(null);
@@ -120,7 +126,7 @@ const Map = () => {
       zoom: 5
     });
 
-    // User location
+    // User location control
     map.addControl(
       new mapboxgl.GeolocateControl({
         positionOptions: {
@@ -131,7 +137,7 @@ const Map = () => {
       })
     );
 
-    // Add navigation control (the +/- zoom buttons)
+    // Navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     map.once('load', () => fetchPlaces().then((res) => {
@@ -141,7 +147,7 @@ const Map = () => {
 
     // Clean up on unmount
     return () => map.remove();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   return (
     <div>

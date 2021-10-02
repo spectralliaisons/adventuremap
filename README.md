@@ -25,15 +25,28 @@ pip install wand
 pip install numpy
 ```
 
+### Node modules
+```
+npm install
+npm start
+```
+
+open http://localhost:3000/
+
 ## Adding a track with images and optional audio:
 
 1. Create a directory for the place in `gps/s3/`. Copy `gps/_PlaceTemplate/` to use as a template.
 
-2. Add any kml files you may have in kml/. Kml can come from your gps and e.g. [caltopo](https://caltopo.com/m/A912).
+2. Add any geojson files you may have in `geojson/`. I convert kml files from my gps and [caltopo](https://caltopo.com/m/A912) to geojson using the VSCode Geo Data Viewer extension (randomfractalsinc.geo-data-viewer). Filename prefix indicates how the data will be rendered (see Map.js `addPoints()`):
+- `river-`: blue line
+- `track-`: pink line (in my case this indicates my travel via physical gps tracker)
+- `cenote-`: blue dot
+- `waypoint-`: pink dot (I use this for manmade points of interest)
+- `ruin-`: pink dot
 
-3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
+3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg/`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
 
-4. Add any audio files you may have in aud/. File name sans extension must match an image with valid GPS coordinates or else will not appear.
+4. Add any audio files you may have in `aud/`. File name sans extension must match an image with valid GPS coordinates or else will not appear.
 
 5. Modify `/info_template.json`, which specifies basic map style for this place: Add a `loc` at where you want to center the map with `label` and match `center` to `label`; e.g.:
 
@@ -58,13 +71,6 @@ pip install numpy
 7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>.
 Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible. Technically, we only need kml to be public (not images, audio, json), but I'd rather let `gpstracker.js` get all resources from one url rather than splitting resources.
 
-8. View `index.html` to see your new favorite map.
+8. View `public/index.html` at `localhost:3000` to see your new favorite map.
 
 <sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose! E.g. to just push media files for a directory named Somewhere in `gps/s3/Somewhere`, run: `rake push:media place=Somewhere`
-
-## Debugging
-
-Add `?clear=true` to the url to load from scratch. `window.gps.state` retains information across page loads like the Google Map (so that layers for multiple places are added all onto the same map) and what places we've already loaded. For debugging purposes, it can be useful to ignore any previous loads and test page loading when you know you have to load all info for a place.
-
-TODO:
-- [ ] Use MapBox instead of Google Maps? GeoJSON will need to be used instead of kml, but [caltopo](https://caltopo.com/m/A912) can export this. Or [convert them](https://mapbox.github.io/togeojson/).
