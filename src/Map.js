@@ -5,6 +5,7 @@ import Menu from './Menu';
 import Legend from './Legend';
 import {paintWindow} from './Window'
 import {fetchPlaces, loadPlace} from './Api';
+import Nav from './Navigation'
 let _ = require('underscore');
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A";
@@ -24,7 +25,7 @@ const paintPlace = (map, cb) => place =>
       moveTo(map, json);
       if (paint) {
         paintMultimediaMarkers(map, place, json);
-        cb();
+        cb(place);
       }
     });
 
@@ -123,7 +124,10 @@ const Map = () => {
   const [places, setPlaces] = useState([]);
   const [legendVisible, setLegendVisible] = useState(false);
 
-  const doPaintPlace = paintPlace(map, () => setLegendVisible(true));
+  const doPaintPlace = (m) => paintPlace(m, (place) => {
+    setLegendVisible(true);
+    Nav.setHash(place);
+  });
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -149,6 +153,7 @@ const Map = () => {
       .once('load', () => fetchPlaces().then((res) => {
         setPlaces(res);
         setMap(map);
+        Nav.connect({paintPlace:doPaintPlace(map)});
       }));
 
     // Clean up on unmount
@@ -158,7 +163,7 @@ const Map = () => {
   return (
     <div>
       <div id="my-controls">
-        <Menu paintPlace={doPaintPlace} places={places} />
+        <Menu paintPlace={doPaintPlace(map)} places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack}/>
       </div>
       <div className='map-container' ref={mapContainerRef} />
