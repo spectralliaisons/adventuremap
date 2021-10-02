@@ -4,10 +4,7 @@
 https://spectralliaisons.github.io/multimap/
 
 ## Overlay gps tracks on Google Maps with pins for photos and audio taken.
-![an image examplar](./rsc/screenshot1.png)
-
-## Click map to add map marker
-![an image examplar](./rsc/screenshot2.png)
+![an image examplar](./screenshot.png)
 
 ## Dependencies
 
@@ -66,11 +63,12 @@ open http://localhost:3000/
 }
 ```
 
-6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, KML on Google Maps. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
+6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
 
-7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>.
-Google Maps API needs kml to be hosted from a publicly-visible location. Even during development, it's necessary to upload your new place directory and make sure it is publicly visible. Technically, we only need kml to be public (not images, audio, json), but I'd rather let `gpstracker.js` get all resources from one url rather than splitting resources.
+7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>. Historically, I used Google Maps API, which used kml instead of geojson and required kml to be hosted from a publicly-visible location. Not sure if this is true after the switch to Mapbox.
 
-8. View `public/index.html` at `localhost:3000` to see your new favorite map.
+8. Set your `mapboxgl.accessToken` in `Map.js`.
+
+9. View `public/index.html` at `localhost:3000` to see your new favorite map.
 
 <sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose! E.g. to just push media files for a directory named Somewhere in `gps/s3/Somewhere`, run: `rake push:media place=Somewhere`
