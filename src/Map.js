@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.scss';
 import Menu from './Menu';
+import Legend from './Legend';
 import {paintWindow} from './Window'
 import {fetchPlaces, loadPlace} from './Api';
 let _ = require('underscore');
@@ -151,7 +152,10 @@ const Map = () => {
 
   return (
     <div>
-      <Menu paintPlace={paintPlace(map)} places={places} />
+      <div id="my-controls">
+        <Menu paintPlace={paintPlace(map)} places={places} />
+        <Legend colorRiver={colorRiver} colorTrack={colorTrack}/>
+      </div>
       <div className='map-container' ref={mapContainerRef} />
     </div>
   );
