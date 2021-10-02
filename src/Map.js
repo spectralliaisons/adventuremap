@@ -65,7 +65,7 @@ const addPoints = (map, layer, kinds) => {
   });
 
   // add tooltips on hover
-  map.on('mousemove', lID, ({ features }) => {
+  const drawTooltip = ({ features }) => {
     if (features.length === 0 ) return;
     const ft = features[0];
     const el = document.createElement('div');
@@ -78,10 +78,11 @@ const addPoints = (map, layer, kinds) => {
     map.on('closeAllPopups', () => { 
       popup.remove(); 
     });
-    map.on('mouseleave', lID, () => {
-      map.fire('closeAllPopups');
-    });
-  });
+    const close = () => map.fire('closeAllPopups');
+    map.on('mouseleave', lID, close);
+  };
+  map.on('mousemove', lID, drawTooltip);
+  map.on('click', lID, drawTooltip);
 };
 
 const addLines = (map, layer, kinds) => {
