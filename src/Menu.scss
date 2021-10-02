@@ -23,14 +23,13 @@ $bg: #2b251ad6;
     display: none;
   }
   #places {
-    overflow: scroll;
+    overflow: hidden;
     transition: height 0.5s;
     color: #eee;
     font-weight: bold;
     background-color: $bg;
     margin-top: -25px;
     min-width: 230px;
-    max-height: 430px;
     ol {
       li {
         cursor: pointer;
