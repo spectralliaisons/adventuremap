@@ -51,6 +51,7 @@ $phone: 450px;
         pointer-events: auto;
         max-width: $phone;
         background: #fffc;
+        overflow: hidden;
         @media screen and (max-width: $phone) {
             width: 100%;
             height: 100%;

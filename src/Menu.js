@@ -16,28 +16,40 @@ const Menu = ({paintPlace, places}) => {
         else {setMenuState("open");}
     }
 
+    return (
+        <div id='menu' className={menuState}>
+            <Hamburger menuState={menuState} toggle={toggle}/>
+            <Places menuState={menuState} paintPlace={paintPlace} places={places} toggle={toggle}/>
+        </div>
+    );
+};
+
+const Hamburger = ({menuState, toggle}) => {
+    return (
+        <div id="hamburger" className={menuState} onClick={toggle}>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    )
+};
+
+const Places = ({menuState, paintPlace, places, toggle}) => {
     const placesStyl = {
         height:`${(menuState === "open" ? (places.length*(fontSz+padding*2)-padding*3+listPaddingTop) : 0)}px`,
         padding: `0px ${padding}px 0px ${padding}px`
     };
     const olStyl = {paddingTop: `${listPaddingTop}px`};
     return (
-        <div id='menu' className={menuState}>
-            <div id="hamburger" className={menuState} onClick={toggle}>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <div id="places" className={menuState} style={placesStyl}>
-                <ol style={olStyl}>{places.map(({disp,id}) => 
-                    <div key={id}>
-                        <Item paintPlace={paintPlace} closeMenu={toggle} disp={disp} id={id}/>
-                    </div>
-                )}</ol>
-            </div>
+        <div id="places" className={menuState} style={placesStyl}>
+            <ol style={olStyl}>{places.map(({disp,id}) => 
+                <div key={id}>
+                    <Item paintPlace={paintPlace} closeMenu={toggle} disp={disp} id={id}/>
+                </div>
+            )}</ol>
         </div>
-    );
+    )
 };
 
 const Item = ({paintPlace, closeMenu, disp, id}) => {
