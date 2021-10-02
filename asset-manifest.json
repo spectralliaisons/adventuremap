@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/multimap/static/css/main.df7d718e.chunk.css",
+    "main.js": "/multimap/static/js/main.38638a73.chunk.js",
+    "main.js.map": "/multimap/static/js/main.38638a73.chunk.js.map",
+    "runtime-main.js": "/multimap/static/js/runtime-main.fb0f8256.js",
+    "runtime-main.js.map": "/multimap/static/js/runtime-main.fb0f8256.js.map",
+    "static/css/2.b692ebb2.chunk.css": "/multimap/static/css/2.b692ebb2.chunk.css",
+    "static/js/2.50f93738.chunk.js": "/multimap/static/js/2.50f93738.chunk.js",
+    "static/js/2.50f93738.chunk.js.map": "/multimap/static/js/2.50f93738.chunk.js.map",
+    "index.html": "/multimap/index.html",
+    "static/css/2.b692ebb2.chunk.css.map": "/multimap/static/css/2.b692ebb2.chunk.css.map",
+    "static/css/main.df7d718e.chunk.css.map": "/multimap/static/css/main.df7d718e.chunk.css.map",
+    "static/js/2.50f93738.chunk.js.LICENSE.txt": "/multimap/static/js/2.50f93738.chunk.js.LICENSE.txt",
+    "static/media/Window.scss": "/multimap/static/media/circle.1fc1b640.svg",
+    "static/media/index.css": "/multimap/static/media/RobotoMono-SemiBold.04a99664.ttf",
+    "static/media/material-icons.css": "/multimap/static/media/material-icons.a7d6a198.woff",
+    "static/media/Menu.scss": "/multimap/static/media/topography.28cdb596.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fb0f8256.js",
+    "static/css/2.b692ebb2.chunk.css",
+    "static/js/2.50f93738.chunk.js",
+    "static/css/main.df7d718e.chunk.css",
+    "static/js/main.38638a73.chunk.js"
+  ]
+}
