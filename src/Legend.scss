@@ -1,0 +1,46 @@
+@use 'Common' as common;
+
+#legend {
+    position: absolute;
+    width: 200px;
+    z-index: 1;
+    pointer-events: none;
+    left: 15px;
+    bottom: 45px;
+    @media screen and (max-width: common.$phone) {
+        left: 5px;
+        bottom: 25px;
+    }
+    .item {
+      display: flex;
+      height: 25px;
+      margin: 5px;
+      @media screen and (max-width: common.$phone) {
+          margin: 2px;
+      }
+      .eg-marker {
+          width: 35px;
+          height: 25px;
+          background-repeat: no-repeat;
+      }
+      #eg-aud {
+          background-image: url(./rsc/circle-aud.svg);
+      }
+      #eg-img {
+        background-image: url(./rsc/circle-img.svg);
+      }
+      line {
+        stroke-width: 3px;
+        stroke-linecap: round;
+      }
+      span {
+        padding-left: 10px;
+        font-size: 14px;
+        @media screen and (max-width: common.$phone) {
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0.6;
+        }
+      }
+    }
+}

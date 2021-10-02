@@ -7,10 +7,11 @@
 
 
 from PIL import Image, ExifTags
-import getexifdata, glob, os, json, io, shutil, logprogress
+from wand.image import Image as WandImage
+import getexifdata, glob, os, json, io, shutil, logprogress, numpy
 
 DIR_PLACES = "../s3/"
-DIR_KML = "kml/"
+DIR_GEODAT = "geojson/"
 DIR_AUD = "aud/"
 DIR_IMG_ORIG = "imgOrig/"
 DIR_IMG_LG = "imgLg/"
@@ -58,7 +59,7 @@ def find_audio_for_img(label):
     return None # no warning needed
 
 def for_img_with_exif(fpath, fnExif, fnNoExif):
-    im = Image.open(fpath)
+    im = get_im(fpath)
     edat = getexifdata.get_exif_data(im)
     lat, lng = getexifdata.get_lat_lon(edat)
     if lat == None or lng == None:
@@ -70,34 +71,21 @@ def for_img_with_exif(fpath, fnExif, fnNoExif):
             fnExif(fpath, im)
         return {"lat":lat, "lng":lng}
 
-def ensure_img_sanity(fpath):
-    print("ensure_img_sanity", fpath)
-    def fnExif(fpath, im):
-        extension = "." + fpath.split(".")[-1]
-        im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
-    def fnNoExif(fpath, im):
-        im.save(base_path + DIR_IMG_ERR + get_fname(fpath).replace(IMG_FORMAT, "") + "_WARNING! no gps data for image" + IMG_FORMAT)
-    for_img_with_exif(fpath, fnExif, fnNoExif)
+def get_im(fpath):
+    try:
+        return Image.open(fpath)
+    except:
+        return as_pil_image(fpath)
+
+# convert HEIF images to PIL format
+def as_pil_image(fpath):
+    wand_im = WandImage(filename=fpath)
+    img_buffer = numpy.asarray(bytearray(wand_im.make_blob(format='png')), dtype='uint8')
+    bytesio = io.BytesIO(img_buffer)
+    return Image.open(bytesio)
 
 def get_gps_for_fpath(fpath):
     return for_img_with_exif(fpath, None, None)
-    
-# def format_img(fpath):
-#     im = Image.open(fpath)
-#     extension = "." + fpath.split(".")[-1]
-#     print("format_img", fpath)
-#     im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
-    
-# def get_gps_for_fpath(fpath):
-#     print("get_gps_for_fpath: " + fpath)
-#     im = Image.open(fpath)
-#     edat = getexifdata.get_exif_data(im)
-#     lat, lng = getexifdata.get_lat_lon(edat)
-#     if lat == None or lng == None:
-#         save_err_img(fpath, "WARNING! no gps data for image")
-#         return None
-#     else:
-#         return {"lat":lat, "lng":lng}
 
 def get_date_for_fpath(fpath):
     im = Image.open(fpath)
@@ -115,8 +103,8 @@ try:
 except NameError:
     to_unicode = str    
 
-def find_kml():
-    return [strip_dir(fpath, "/" + DIR_KML) for fpath in glob.glob(base_path + DIR_KML + "*.kml")]
+def find_geodat():
+    return [strip_dir(fpath, "/" + DIR_GEODAT) for fpath in glob.glob(base_path + DIR_GEODAT + "*.geojson")]
 
 def reorient_img(fileName, height):
     # thanks storm_to : http://stackoverflow.com/questions/4228530/pil-thumbnail-is-rotating-my-image 
@@ -166,6 +154,15 @@ def ensure_audio_img_match():
 def ensure_all_img_sanity():
     [ensure_img_sanity(fpath) for fpath in glob.glob(base_path + DIR_IMG_ORIG + "*")]
 
+def ensure_img_sanity(fpath):
+    print("ensure_img_sanity", fpath)
+    def fnExif(fpath, im):
+        extension = "." + fpath.split(".")[-1]
+        im.save(base_path + DIR_IMG_LG + get_fname(fpath).replace(extension, IMG_FORMAT), exif=im.info["exif"])
+    def fnNoExif(fpath, im):
+        im.save(base_path + DIR_IMG_ERR + get_fname(fpath).replace(IMG_FORMAT, "") + "_WARNING! no gps data for image" + IMG_FORMAT)
+    for_img_with_exif(fpath, fnExif, fnNoExif)
+    
 # only permit location labels that were most likely hand-named image filenames
 def verify_flabel(flabel):
     # invalid label if filename begins with '201' (likely a date)
@@ -191,16 +188,6 @@ def verify_flabel(flabel):
 
 # process every dir in Places/
 placels = glob.glob(DIR_PLACES + "*/")
-
-# create json of all places. initialize with a "place" called "All"
-# all_places = {"places":[{"id":"All", "disp":"All"}]}
-# WJ 2019.10.30 removing "All" tab until I can figure out how to support drawing more kml layers
-# Yucatan_2019 makes there be too many to display and I get a bunch of 400 errors from google
-# TODO: refer to this for possible solution:
-# https://stackoverflow.com/questions/45386187/google-maps-api-kml-layer-limit
-# https://github.com/geocodezip/geoxml3
-# when it's supported again, uncomment this line in navigation.js:
-# window.location.hash = "#All";
 all_places = {"places":[]}
 
 # process each directory
@@ -219,9 +206,9 @@ for base_path in logprogress.log_progress(placels):
     # read json template
     with open(base_path + INPUT_JSON) as data_file:
         data = json.load(data_file)
-        data["layers"] = find_kml()
+        data["layers"] = find_geodat()
 
-        # for every image...
+        # for everyimage...
         files = glob.glob(base_path + DIR_IMG_LG + "*" + IMG_FORMAT)
         for fpath in logprogress.log_progress(files):
             

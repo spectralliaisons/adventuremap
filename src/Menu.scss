@@ -1,0 +1,188 @@
+@use 'Common' as common;
+
+#menu.loading {
+  overflow: hidden;
+  height: 56px;
+}
+#menu {
+  display: inline-block;
+  top: 0;
+  left: 0;
+  z-index: 4 !important;
+  min-width: 195px;
+  position: absolute;
+  margin: 12px;
+  @media screen and (max-width: common.$phone) {
+    position: relative;
+    margin: unset;
+    max-width: 230px;
+  }
+
+  #places.loading {
+    display: none;
+  }
+  #places {
+    overflow: hidden;
+    transition: height 0.5s;
+    color: #eee;
+    font-weight: bold;
+    background-color: common.$bg;
+    margin-top: -25px;
+    min-width: 230px;
+    ol {
+      li {
+        cursor: pointer;
+      }
+      li:hover {
+        opacity: 0.6;
+      }
+      li.loaded {
+          color: #76dbff;
+      }
+    }
+  }
+  
+  #hamburger {
+    width: 2.5em;
+    height: 2.5em;
+    position: relative;
+    margin: 10px auto;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: .5s ease-in-out;
+    -moz-transition: .5s ease-in-out;
+    -o-transition: .5s ease-in-out;
+    transition: .5s ease-in-out;
+    cursor: pointer;
+    pointer-events: all;
+    @media screen and (max-width: common.$phone) {
+      left: -65px;
+    }
+  }
+  
+  #hamburger span {
+    display: block;
+    position: absolute;
+    height: 0.23em;
+    width: 50%;
+    background: common.$bg;
+    border-radius: 2.5em;
+    opacity: 1;
+    left: 0;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: .25s ease-in-out;
+    -moz-transition: .25s ease-in-out;
+    -o-transition: .25s ease-in-out;
+    transition: .25s ease-in-out;
+  }
+  /* Icon 3 */
+  
+  /* circle background */
+  #hamburger span:nth-child(1) {
+      background-image: url("./rsc/topography.png");
+      width:100%;
+      height:100%;
+      border-radius: 50%;
+      border: solid common.$bg;
+      border-width: 3px;
+  }
+  
+  #hamburger span:nth-child(1):hover {
+    transform: scale(1.10);
+  }
+  
+  /* hamburger line 1 */
+  #hamburger span:nth-child(2) {
+    opacity: 1;
+    top: 25%;
+    left: 25%;
+    pointer-events: none;
+  }
+  
+  /* hamburger line 2 */
+  #hamburger span:nth-child(3) {
+    top: 45%;
+    left: 25%;
+    pointer-events: none;
+  }
+  
+  /* hamburger line 3 */
+  #hamburger span:nth-child(4) {
+    top: 65%;
+    left: 25%;
+    pointer-events: none;
+  }
+  
+  /* hamburger line 1 open rotates right */
+  #hamburger.open span:nth-child(2) {
+      -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    top: 40%;
+    left: 40%;
+  }
+  
+  /* hamburger line 2 open rotates left */
+  #hamburger.open span:nth-child(3) {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    top: 40%;
+    left: 10%;
+  }
+  
+  /* hamburger line 3 rotates left (same position as line 2) */
+  #hamburger.open span:nth-child(4) {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    top: 40%;
+    left: 10%;
+  }
+
+  /* hamburger as loader */
+  #hamburger.loading {
+    pointer-events: none;
+    animation: spin 2s linear infinite;
+    -webkit-animation: spin 2s linear infinite;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  #hamburger.loading span:nth-child(2) {
+    width: 0.5em;
+    height: 0.5em;
+    top: 10%;
+    left: 50%;
+  }
+
+  #hamburger.loading span:nth-child(3) {
+    width: 0.5em;
+    height: 0.5em;
+    top: 60%;
+    left: 65%;
+  }
+
+  #hamburger.loading span:nth-child(4) {
+    width: 0.5em;
+    height: 0.5em;
+    top: 50%;
+    left: 10%;
+  }
+}

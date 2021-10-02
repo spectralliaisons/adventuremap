@@ -1,0 +1,54 @@
+@use 'Common' as common;
+
+#my-controls {
+  position: absolute;
+  height: 100%;
+}
+
+#center-message {
+  display: flex;
+  justify-content: center;
+  top: 30px;
+  position: relative;
+  #message-container {
+    display: flex;
+    justify-content: center;
+    background-color: #ff2f2fd6;
+    z-index: 4;
+    #message {
+      color: #fff;
+      margin: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+}
+
+.map-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.mapboxgl-popup.tip {
+  z-index: 4;
+  .mapboxgl-popup-content {
+    border-radius: unset;
+    box-shadow: none;
+    padding: 0;
+    background: none;
+    background-color: common.$bg;
+    padding: 2px 8px 2px;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .mapboxgl-popup-close-button {
+    display: none;
+  }
+  .mapboxgl-popup-tip {
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 
-# S3PATH must match the s3 url in script/global.js window.s3rsc()
-S3PATH = "s3://multimap/"
+# S3PATH must match the s3 url in Map.js
+S3PATH = "s3://multimap-2/"
 PUBLICPATH = "gps/s3/"
 
 # FullAccessUser
@@ -64,10 +64,10 @@ namespace :push do
             infoJSON = "#{place}/info.json"
             sh %{s3cmd put #{infoJSON} #{S3PATH}#{infoJSON} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
             
-            kmlDir = "#{place}/kml/"
-            files = Dir.glob("#{kmlDir}*")
+            geojsonDir = "#{place}/geojson/"
+            files = Dir.glob("#{geojsonDir}*")
             if files.length > 0
-                sh %{s3cmd put #{kmlDir}* #{S3PATH}#{kmlDir} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
+                sh %{s3cmd put #{geojsonDir}* #{S3PATH}#{geojsonDir} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
             end
         end
     end

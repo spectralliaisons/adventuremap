@@ -1,91 +1,0 @@
-Script started on Wed Mar 22 12:02:30 2017
-Unable to find any JVMs matching version "1.6".
---> 95 ms
-ls[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap]2;wesjackson@wj: ~/Sites/multimap]1;..ites/multimap[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004hl[32ml[32ms[39m[32ml[39m[39m [39m [32ml[39m[32ml[32ms[39m[?1l>[?2004l
-]0;wesjackson@wj <ls -G> ~/Sites/multimap]2;ls -G]1;lsLICENSE.md README.md  [1m[36mgps[39;49m[0m        index.html [1m[36mrsc[39;49m[0m        [1m[36mscript[39;49m[0m     [1m[36mstyle[39;49m[0m      typescript
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap]2;wesjackson@wj: ~/Sites/multimap]1;..ites/multimap[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[1m[31mc[0m[39m[0m[32mc[32md[39m [4ms[24m[4ms[4mc[24m[4mc[4mr[24m[4mr[4mi[24m[4mi[4mp[24m[4mp[4mt[24m[?1l>[?2004l
-]0;wesjackson@wj <cd script> ~/Sites/multimap]2;cd script]1;cd[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/script]2;wesjackson@wj: ~/Sites/multimap/script]1;..ltimap/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/script [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[32ml[39m[32ml[32ms[39m[?1l>[?2004l
-]0;wesjackson@wj <ls -G> ~/Sites/multimap/script]2;ls -G]1;ls[1m[36m3rdparty[39;49m[0m      gpstracker.js navigation.js
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/script]2;wesjackson@wj: ~/Sites/multimap/script]1;..ltimap/script[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/script [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[32m.[39m[39m[4m.[4m.[24m[4m.[4m.[4m/[24m[?1l>[?2004l
-]0;wesjackson@wj <../> ~/Sites/multimap/script]2;../]1;../[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap]2;wesjackson@wj: ~/Sites/multimap]1;..ites/multimap[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[1m[31mc[0m[39m[0m[32mc[32md[39m [4mg[24m[4mg[4mp[24m[4mp[4ms[24m[?1l>[?2004l
-]0;wesjackson@wj <cd gps> ~/Sites/multimap]2;cd gps]1;cd[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps]2;wesjackson@wj: ~/Sites/multimap/gps]1;../multimap/gps[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[32ml[39m[32ml[32ms[39m[?1l>[?2004l
-]0;wesjackson@wj <ls -G> ~/Sites/multimap/gps]2;ls -G]1;ls[1m[36mPlaces[39;49m[0m [1m[36mpython[39;49m[0m
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps]2;wesjackson@wj: ~/Sites/multimap/gps]1;../multimap/gps[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[4mp[24m[4mp[4my[24m[4mp[4my[4mt[24m[4mt[4mh[24m[4mh[4mo[24m[24m[32mp[24m[32my[24m[32mt[24m[32mh[24m[32mo[32mn[39m[?1l>[?2004l
-]0;wesjackson@wj <python> ~/Sites/multimap/gps]2;python]1;pythonPython 3.5.2 |Anaconda 4.2.0 (x86_64)| (default, Jul  2 2016, 17:52:12) 
-[GCC 4.2.1 Compatible Apple LLVM 4.2 (clang-425.0.28)] on darwin
-Type "help", "copyright", "credits" or "license" for more information.
-[?1034h>>> ls
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-NameError: name 'ls' is not defined
->>> exit9)
-  File "<stdin>", line 1
-    exit9)
-         ^
-SyntaxError: invalid syntax
->>> exit()
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps]2;wesjackson@wj: ~/Sites/multimap/gps]1;../multimap/gps[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[1m[31mc[0m[39m[0m[32mc[32md[39m [4mp[24m[4mp[4my[24m[4my[4mt[24m[4mt[4mh[24m[4mh[4mo[24m[4mo[4mn[24m[?1l>[?2004l
-]0;wesjackson@wj <cd python> ~/Sites/multimap/gps]2;cd python]1;cd[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps/python]2;wesjackson@wj: ~/Sites/multimap/gps/python]1;..ap/gps/python[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps/python [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[32ml[39m[32ml[32ms[39m[?1l>[?2004l
-]0;wesjackson@wj <ls -G> ~/Sites/multimap/gps/python]2;ls -G]1;ls[1m[36m__pycache__[39;49m[0m           create gps info.ipynb getexifdata.py        logprogress.py
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps/python]2;wesjackson@wj: ~/Sites/multimap/gps/python]1;..ap/gps/python[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps/python [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[1m[31mj[0m[39m[1m[31mj[1m[31mu[0m[39m[1m[31mj[1m[31mu[1m[31mp[0m[39m[1m[31mp[1m[31my[0m[39m[1m[31my[1m[31mt[0m[39m[1m[31mt[1m[31me[0m[39m[0m[32mj[0m[32mu[0m[32mp[0m[32my[0m[32mt[0m[32me[32mr[39m notebook[?1l>[?2004l
-]0;wesjackson@wj <jupyter notebook> ~/Sites/multimap/gps/python]2;jupyter notebook]1;jupyter[32m[I 12:03:00.858 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
-[32m[I 12:03:01.344 NotebookApp](B[m [nb_conda] enabled
-[32m[I 12:03:01.421 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
-[33m[W 12:03:01.422 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
-[32m[I 12:03:01.507 NotebookApp](B[m [nb_anacondacloud] enabled
-[32m[I 12:03:01.516 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/multimap/gps/python
-[32m[I 12:03:01.516 NotebookApp](B[m 0 active kernels 
-[32m[I 12:03:01.516 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
-[32m[I 12:03:01.516 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-[32m[I 12:03:22.505 NotebookApp](B[m Kernel started: 1b5b8f94-038f-4ae0-b38d-ab1cf1d01852
-[32m[I 12:04:07.377 NotebookApp](B[m Kernel restarted: 1b5b8f94-038f-4ae0-b38d-ab1cf1d01852
-[32m[I 12:05:22.486 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 12:07:22.480 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 12:07:38.187 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 12:07:43.299 NotebookApp](B[m Kernel restarted: 1b5b8f94-038f-4ae0-b38d-ab1cf1d01852
-[32m[I 12:09:22.487 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 12:26:09.810 NotebookApp](B[m Kernel restarted: 1b5b8f94-038f-4ae0-b38d-ab1cf1d01852
-[32m[I 12:27:22.457 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 12:29:26.137 NotebookApp](B[m Saving file at /create gps info.ipynb
-^C[32m[I 12:57:32.625 NotebookApp](B[m interrupted
-Serving notebooks from local directory: /Users/wesjackson/Sites/multimap/gps/python
-1 active kernels 
-The Jupyter Notebook is running at: http://localhost:8888/
-Shutdown this notebook server (y/[n])? y
-[C 12:57:34.222 NotebookApp] Shutdown confirmed
-[32m[I 12:57:34.222 NotebookApp](B[m Shutting down kernels
-[32m[I 12:57:34.734 NotebookApp](B[m Kernel shutdown: 1b5b8f94-038f-4ae0-b38d-ab1cf1d01852
-[1m[7m%[27m[1m[0m                                                                                                                                                                               ]0;wesjackson@wj ~/Sites/multimap/gps/python]2;wesjackson@wj: ~/Sites/multimap/gps/python]1;..ap/gps/python[0m[27m[24m[J[39m[0m[49m[40m[39m wesjackson@wj [44m[30m[30m ~/Sites/multimap/gps/python [43m[34m[30m  master ● [49m[33m[39m [K[?1h=[?2004h[32mjupyter[39m notebook[?1l>[?2004l
-]0;wesjackson@wj <jupyter notebook> ~/Sites/multimap/gps/python]2;jupyter notebook]1;jupyter[32m[I 12:57:38.775 NotebookApp](B[m [nb_conda_kernels] enabled, 2 kernels found
-[32m[I 12:57:39.164 NotebookApp](B[m [nb_conda] enabled
-[32m[I 12:57:39.234 NotebookApp](B[m [nb_anacondacloud] enabled
-[32m[I 12:57:39.300 NotebookApp](B[m ✓ nbpresent HTML export ENABLED
-[33m[W 12:57:39.300 NotebookApp](B[m ✗ nbpresent PDF export DISABLED: No module named 'nbbrowserpdf'
-[32m[I 12:57:39.306 NotebookApp](B[m Serving notebooks from local directory: /Users/wesjackson/Sites/multimap/gps/python
-[32m[I 12:57:39.306 NotebookApp](B[m 0 active kernels 
-[32m[I 12:57:39.306 NotebookApp](B[m The Jupyter Notebook is running at: http://localhost:8888/
-[32m[I 12:57:39.307 NotebookApp](B[m Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-[32m[I 12:57:46.831 NotebookApp](B[m Kernel started: c1bfff69-66f9-422f-b752-9509eafc4454
-[32m[I 12:57:54.001 NotebookApp](B[m Kernel restarted: c1bfff69-66f9-422f-b752-9509eafc4454
-[32m[I 12:59:49.161 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 13:02:08.420 NotebookApp](B[m Kernel restarted: c1bfff69-66f9-422f-b752-9509eafc4454
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[32m[I 13:03:46.817 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 13:05:46.809 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 14:38:14.654 NotebookApp](B[m Kernel restarted: c1bfff69-66f9-422f-b752-9509eafc4454
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[IPKernelApp] WARNING | Widget Javascript not detected.  It may not be installed properly. Did you enable the widgetsnbextension? If not, then run "jupyter nbextension enable --py --sys-prefix widgetsnbextension"
-[32m[I 14:39:47.322 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 14:41:47.453 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 17:22:15.158 NotebookApp](B[m Kernel restarted: c1bfff69-66f9-422f-b752-9509eafc4454
-[32m[I 17:23:46.515 NotebookApp](B[m Saving file at /create gps info.ipynb
-[32m[I 17:25:46.516 NotebookApp](B[m Saving file at /create gps info.ipynb

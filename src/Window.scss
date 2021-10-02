@@ -1,0 +1,126 @@
+@use 'Common' as common;
+
+@font-face {
+    font-family: font;
+    src: url(../src/rsc/RobotoMono-Regular.ttf);
+}
+
+.mapboxgl-marker {
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.marker-aud {
+    background-image: url('./rsc/circle-aud.svg');
+    z-index: 2;
+}
+.marker-img {
+    background-image: url('./rsc/circle-img.svg');
+    z-index: 1;
+}
+.marker-pt {
+    background-image: url('./rsc/circle.svg');
+    z-index: 1;
+    width: 12px;
+    height: 12px;
+}
+
+.mapboxgl-popup {
+    max-width: unset !important;
+    font-family: font;
+}
+
+.mapboxgl-popup.media {
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    transform: unset !important;
+    .mapboxgl-popup-tip {
+        display: none;
+    }
+    .mapboxgl-popup-content {
+        position: relative;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(255, 167, 167, 0.1);
+        padding: 10px 10px 3px;
+        pointer-events: auto;
+        max-width: common.$phone;
+        background: #fffc;
+        overflow: hidden;
+        @media screen and (max-width: common.$phone) {
+            width: 100%;
+            height: 100%;
+            overflow: scroll;
+            background: #ffffffe8;
+        }
+        .labels {
+            .bordr {
+                border-bottom: solid;
+                border-width: 2px;
+                margin-bottom: 8px;
+                margin-top: 15px;
+                color: #c8c8c8;
+            }
+            .icon {
+                display: flex;
+                align-items: center;
+                font-weight: bold;
+                font-size: 14px;
+                width: 100%;
+                margin-bottom: 7px;
+            }
+            .icon.link {
+                cursor: pointer;
+                color: #49aaff;
+                padding-top: 10px;
+            }
+        }
+        h3 {
+            font-family: font;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            max-width: 300px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+        #scroll {
+            overflow: scroll;
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 9px;
+            img {
+                height: 400px;
+                max-width: none;
+            }
+            img.bordr {
+                border: solid !important;
+                border-width: 2px !important;
+                border-radius: 6px !important;
+                color: #a2a2a2;
+            }
+        }
+        audio {
+            width: 100%;
+        }
+        .mapboxgl-popup-close-button {
+            display: block;
+            scale : 2.4;
+            right: 15px;
+            top: 5px;
+            transition: scale .5s;
+        }
+        .mapboxgl-popup-close-button:hover {
+            display: block;
+            background-color: unset;
+            scale: 3;
+        }
+    }
+}

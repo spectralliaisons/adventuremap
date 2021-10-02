@@ -1,0 +1,16 @@
+@font-face {
+  font-family: font;
+  src: url(../src/rsc/RobotoMono-SemiBold.ttf);
+}
+
+body {
+  margin: 0;
+  font-family: font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
