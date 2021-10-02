@@ -4,6 +4,7 @@
     bottom: 45px;
     left: 15px;
     z-index: 1;
+    pointer-events: none;
     .item {
       display: flex;
       height: 25px;
