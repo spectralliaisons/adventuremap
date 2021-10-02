@@ -1,4 +1,4 @@
-$phone: 450px;
+@use 'Common' as common;
 
 #legend {
     position: absolute;
@@ -7,7 +7,7 @@ $phone: 450px;
     pointer-events: none;
     left: 15px;
     bottom: 45px;
-    @media screen and (max-width: $phone) {
+    @media screen and (max-width: common.$phone) {
         left: 5px;
         bottom: 25px;
     }
@@ -15,7 +15,7 @@ $phone: 450px;
       display: flex;
       height: 25px;
       margin: 5px;
-      @media screen and (max-width: $phone) {
+      @media screen and (max-width: common.$phone) {
           margin: 2px;
       }
       .eg-marker {
@@ -36,7 +36,7 @@ $phone: 450px;
       span {
         padding-left: 10px;
         font-size: 14px;
-        @media screen and (max-width: $phone) {
+        @media screen and (max-width: common.$phone) {
             font-size: 12px;
             font-weight: bold;
             opacity: 0.6;

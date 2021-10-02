@@ -1,4 +1,5 @@
-$phone: 450px;
+@use 'Common' as common;
+
 $bg: #2b251ad6;
 
 #menu.loading {
@@ -13,7 +14,7 @@ $bg: #2b251ad6;
   min-width: 195px;
   position: absolute;
   margin: 12px;
-  @media screen and (max-width: $phone) {
+  @media screen and (max-width: common.$phone) {
     position: relative;
     margin: unset;
     max-width: 230px;
@@ -58,7 +59,7 @@ $bg: #2b251ad6;
     transition: .5s ease-in-out;
     cursor: pointer;
     pointer-events: all;
-    @media screen and (max-width: $phone) {
+    @media screen and (max-width: common.$phone) {
       left: -65px;
     }
   }
