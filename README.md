@@ -72,3 +72,6 @@ open http://localhost:3000/
 9. View `public/index.html` at `localhost:3000` to see your new favorite map.
 
 <sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose! E.g. to just push media files for a directory named Somewhere in `gps/s3/Somewhere`, run: `rake push:media place=Somewhere`
+
+### Production build
+`npm run deploy` (I follow steps for deploying to Github Pages in the [React deployment docs](https://create-react-app.dev/docs/deployment))
