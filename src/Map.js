@@ -6,6 +6,7 @@ import Legend from './Legend';
 import {paintWindow} from './Window'
 import {fetchPlaces, loadPlace} from './Api';
 import Nav from './Navigation'
+import { gt } from 'lodash';
 let _ = require('underscore');
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A";
@@ -18,6 +19,8 @@ const colorNonWaterMarker = '#ff2592';
 const colorPoly = '#000000';
 const colorRiver = '#00bcff';
 const colorTrack = '#ff2592';
+
+let tip = null;
 
 const paintPlace = (map, success, fail) => place => 
   loadPlace(place, paintData(map, place))
@@ -46,7 +49,7 @@ const paintData = (map, place) => layer => data => {
     data: data
   });
   
-  const kinds = lID.split("-");
+  const kinds = layer.replace(".geojson", "").split("-");
   addPoints(map, lID, kinds);
   addLines(map, lID, kinds);
   addPolys(map, lID);
@@ -65,30 +68,43 @@ const addPoints = (map, layer, kinds) => {
     },
     'filter': ['==', '$type', 'Point']
   });
+  map.on('mousemove', lID, drawTooltip(map, lID));
+  map.on('click', lID, drawTooltip(map, lID));
+  map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
+};
 
-  // add tooltips on hover
-  const drawTooltip = ({ features }) => {
-    if (features.length === 0 ) return;
-    const ft = features[0];
-    const el = document.createElement('div');
-    el.textContent = ft.properties.name;
-    const popup = new mapboxgl.Popup({ offset: [0, -15] })
-      .setLngLat(ft.geometry.coordinates)
-      .setDOMContent(el)
-      .addTo(map);
-    el.parentNode.parentNode.className += ' tip';
-    map.on('closeAllPopups', () => { 
-      popup.remove(); 
-    });
-    const close = () => map.fire('closeAllPopups');
-    map.on('mouseleave', lID, close);
-  };
-  map.on('mousemove', lID, drawTooltip);
-  map.on('click', lID, drawTooltip);
+// add tooltips on hover
+const drawTooltip = (map, lID) => ({ lngLat, features }) => {
+  if (features.length === 0 ) return;
+
+  if (tip != null) {
+    tip.remove();
+    tip = null;
+  }
+  const ft = features[0];
+  const coord = ft.geometry.type == "Polygon" ? lngLat.wrap() : ft.geometry.coordinates;
+  
+  const el = document.createElement('div');
+  el.textContent = ft.properties.name;
+
+  tip = new mapboxgl.Popup({offset: [0, -15]})
+    .setLngLat(coord)
+    .setDOMContent(el)
+    .addTo(map);
+
+  el.parentNode.parentNode.className += ' tip';
+
+  map.on('closeAllPopups', () => { 
+    if (tip != null) {
+      tip.remove();
+    }
+    tip = null;
+  });
 };
 
 const addLines = (map, layer, kinds) => {
   const isTrack = kinds.indexOf("track") !== -1;
+  const isSmRiver = kinds.indexOf("sm") !== -1;
   map.addLayer({
     'id': `${layer}-lines`,
     'type': 'line',
@@ -97,26 +113,38 @@ const addLines = (map, layer, kinds) => {
       'line-join': 'round',
       'line-cap': 'round'
     },
-    'paint': (isTrack ? paintTrack : paintRivers),
+    'paint': (isTrack ? paintTrack : paintRivers(isSmRiver)),
     'filter': ['==', '$type', 'LineString']
   });
 };
 
 const addPolys = (map, layer) => {
   map.addLayer({
-    'id': `${layer}-polygons`,
+    'id':  `${layer}-outline`,
+    'type': 'line',
+    'source': layer,
+    'paint': paintPoly,
+    'filter': ['==', '$type', 'Polygon']
+  });
+  const lID = `${layer}-area`;
+  map.addLayer({
+    'id': lID,
     'type': 'fill',
     'source': layer,
     'paint': {
       'fill-color': colorPoly,
-      'fill-opacity': 0.2
+      'fill-opacity': 0.0
     },
     'filter': ['==', '$type', 'Polygon']
   });
+  map.on('mousemove', lID, drawTooltip(map));
+  map.on('click', lID, drawTooltip(map));
+  map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
 };
 
-const paintRivers = {'line-color': colorRiver,'line-width': 2};
-const paintTrack = {'line-color': colorTrack,'line-width': 2,'line-opacity':0.6};
+const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
+const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
+const paintPoly = { 'line-color': colorPoly, 'line-width': 2, 'line-opacity':0.25 };
 
 const Map = () => {
   const mapContainerRef = useRef(null);

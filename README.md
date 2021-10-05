@@ -3,8 +3,11 @@
 ## See it in action
 https://spectralliaisons.github.io/multimap/
 
-## Overlay gps tracks on Google Maps with pins for photos and audio taken.
-![an image examplar](./screenshot.png)
+## Overlay gps tracks on Mapbox with markers places where photos and audio were taken, and colorized points for other locations.
+![an image examplar](./screenshot1.png)
+
+## Areas indicated via geojson polygons are also supported; e.g. California watersheds:
+![an image examplar](./screenshot2.png)
 
 ## Dependencies
 
