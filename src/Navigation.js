@@ -1,12 +1,3 @@
-const connect = cbs => {
-    // If the url currently indicates a place, load it
-    to(cbs, window.location.hash);
-
-    window.onhashchange = () => {
-        to(cbs, window.location.hash);
-    }
-};
-
 const to = ({paintPlace, setError}, hash) => {
     let curr = null;
     if (curr = hash.split("#")[1]) {
@@ -20,9 +11,16 @@ const to = ({paintPlace, setError}, hash) => {
     }
 };
 
-const setHash = (place) => window.location.hash = place;
+const out = {
+    connect : cbs => {
+        // If the url currently indicates a place, load it
+        to(cbs, window.location.hash);
+    
+        window.onhashchange = () => {
+            to(cbs, window.location.hash);
+        }
+    },
+    setHash : (place) => window.location.hash = place
+};
 
-export default {
-    connect: connect,
-    setHash: setHash
-}
+export default out;

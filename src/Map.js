@@ -5,8 +5,7 @@ import Menu from './Menu';
 import Legend from './Legend';
 import {paintWindow} from './Window'
 import {fetchPlaces, loadPlace} from './Api';
-import Nav from './Navigation'
-import { gt } from 'lodash';
+import Nav from './Navigation';
 let _ = require('underscore');
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A";
@@ -82,7 +81,7 @@ const drawTooltip = (map, lID) => ({ lngLat, features }) => {
     tip = null;
   }
   const ft = features[0];
-  const coord = ft.geometry.type == "Polygon" ? lngLat.wrap() : ft.geometry.coordinates;
+  const coord = ft.geometry.type === "Polygon" ? lngLat.wrap() : ft.geometry.coordinates;
   
   const el = document.createElement('div');
   el.textContent = ft.properties.name;
