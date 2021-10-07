@@ -39,10 +39,17 @@ open http://localhost:3000/
 
 2. Add any geojson files you may have in `geojson/`. I convert kml files from my gps and [caltopo](https://caltopo.com/m/A912) to geojson using the VSCode Geo Data Viewer extension (randomfractalsinc.geo-data-viewer). Filename prefix indicates how the data will be rendered (see Map.js `addPoints()`):
 - `river-`: blue line
+- `river-sm-`: thin blue line (no, not that one! -- e.g. to help differentiate river systems)
 - `track-`: pink line (in my case this indicates my travel via physical gps tracker)
 - `cenote-`: blue dot
 - `waypoint-`: pink dot (I use this for manmade points of interest)
 - `ruin-`: pink dot
+
+### e.g. differentiated river system
+![an image examplar](./screenshot3.png)
+
+### e.g. differentiating water from archeological features. Note how cenotes form the rim of the Chicxulub impact crater!
+![an image examplar](./screenshot4.png)
 
 3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg/`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
 
