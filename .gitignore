@@ -1,3 +1,6 @@
 node_modules/*
-.DS_Store
+*.DS_Store
 gps/s3/*
+build/*
+gps/python/.ipynb_checkpoints/process_places-checkpoint.ipynb
+gps/python/__pycache__/*
