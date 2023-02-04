@@ -4,4 +4,5 @@ gps/s3/*
 build/*
 gps/python/.ipynb_checkpoints/process_places-checkpoint.ipynb
 gps/python/__pycache__/*
+gps/python/process_places.html
 package-lock.json
