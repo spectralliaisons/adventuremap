@@ -2,6 +2,7 @@
 # S3PATH must match the s3 url in Map.js
 S3PATH = "s3://multimap-2/"
 PUBLICPATH = "gps/s3/"
+DIR_PREFIX_IGNORE = "_"
 
 # FullAccessUser
 CREDS = "--access_key=#{ENV['S3_ACCESS_KEY']} --secret_key=#{ENV['S3_SECRET_KEY']}"
@@ -10,7 +11,7 @@ MEDIA = ['aud', 'imgLg', 'imgSm']
 
 def places
     puts "ENV PLACE: #{ENV['place']}"
-    default = Dir.glob("#{PUBLICPATH}*").select {|f| File.directory? f}
+    default = Dir.glob("#{PUBLICPATH}*").select {|f| File.directory?(f) && !f.start_with?("#{PUBLICPATH}#{DIR_PREFIX_IGNORE}")}
     if default.include? "#{PUBLICPATH}#{ENV['place']}"
         ["#{PUBLICPATH}#{ENV['place']}"]
     else
