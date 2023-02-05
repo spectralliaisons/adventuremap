@@ -11,7 +11,7 @@ let _ = require('underscore');
 mapboxgl.accessToken = "pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2lxcHR0dG51MDJoZGZxbmhneTB0aW5oOSJ9.RX4c1qW-bwPCptphF_mr_A";
 
 const mapStyle = "mapbox://styles/edoardschooner/cku8yh0id5za818rmtnwt7zzo";
-const attribution = "© Wes Jackson 2021 ~ Love and water are never wasted; they are the efflux of our inner nature";
+const attribution = `© Wes Jackson ${new Date().getFullYear()} ~ Love and water are never wasted; they are the efflux of our inner nature`;
 
 const colorWaterMarker = '#2592ff';
 const colorNonWaterMarker = '#ff2592';
