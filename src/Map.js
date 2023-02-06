@@ -4,7 +4,7 @@ import './Map.scss';
 import Menu from './Menu';
 import Legend from './Legend';
 import {paintWindow} from './Window'
-import {fetchPlaces, loadPlace} from './Api';
+import {s3} from './S3';
 import Nav from './Navigation';
 let _ = require('underscore');
 
@@ -16,24 +16,10 @@ const colorTrack = '#ff2592';
 
 let tip = null;
 
-const paintPlace = (config, map, success, fail) => place => 
-  loadPlace(config, place, paintData(map, place))
-    .then(({json, paint}) => {
-      moveTo(map, json);
-      if (paint) {
-        paintMultimediaMarkers(config, map, place, json);
-        success(place);
-      }
-    })
-    .catch((err) => fail(true))
-
 const moveTo = (map, {zoom, locations, center}) => {
   const pos = _.findWhere(locations, {"label":center}).loc;
   map.flyTo({center:[pos.lng, pos.lat], zoom: zoom});
 };
-
-// paint custom markers for photos & audio 
-const paintMultimediaMarkers = (config, map, place, {locations}) => _.each(locations, paintWindow(config, map, place));
 
 // paint geojson data
 const paintData = (map, place) => layer => data => {
@@ -141,6 +127,7 @@ const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0
 const paintPoly = { 'line-color': colorPoly, 'line-width': 2, 'line-opacity':0.25 };
 
 const Map = ({config}) => {
+  const {s3rsc, loadPlace, fetchPlaces} = s3(config);
   mapboxgl.accessToken = config.map.accessToken;
 
   const mapContainerRef = useRef(null);
@@ -150,7 +137,21 @@ const Map = ({config}) => {
   const [legendVisible, setLegendVisible] = useState(false);
   const [error, setError] = useState(false);
 
-  const doPaintPlace = (m) => paintPlace(config, m, (place) => {
+  const paintPlace = (m, success, fail) => place => 
+    loadPlace(place, paintData(m, place))
+      .then(({json, paint}) => {
+        moveTo(m, json);
+        if (paint) {
+          paintMultimediaMarkers(m, place, json);
+          success(place);
+        }
+      })
+      .catch((err) => fail(true));
+  
+  // paint custom markers for photos & audio 
+  const paintMultimediaMarkers = (m, place, {locations}) => _.each(locations, paintWindow(s3rsc, m, place));
+  
+  const doPaintPlace = (m) => paintPlace(m, (place) => {
     setError(false);
     setLegendVisible(true);
     Nav.setHash(place);
@@ -177,7 +178,7 @@ const Map = ({config}) => {
       .addControl(new mapboxgl.AttributionControl({compact: true,customAttribution: config.map.attribution}))
       .addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}))
       .addControl(new mapboxgl.NavigationControl(), 'top-right')
-      .once('load', () => fetchPlaces(config).then((res) => {
+      .once('load', () => fetchPlaces().then((res) => {
         setPlaces(res);
         setMap(map);
         Nav.connect({

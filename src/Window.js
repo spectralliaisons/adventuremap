@@ -1,12 +1,11 @@
 import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
-import {s3rsc} from './Api';
 import 'material-icons/iconfont/material-icons.css';
 import './Window.scss';
 
-const paintWindow = (config, map, place) => location => {
+const paintWindow = (s3rsc, map, place) => location => {
   const el = document.createElement('div');
-  ReactDOM.render(<Window config={config} place={place} location={location}/>, el);
+  ReactDOM.render(<Window s3rsc={s3rsc} place={place} location={location}/>, el);
 
   const popup = new mapboxgl.Popup({ 
     className: 'media', 
@@ -39,9 +38,9 @@ const resizePopup = el0 => {
   }
 };
 
-const Window = ({config, place, location}) => {
-  const srcLg = location.img ? s3rsc(config, `${place}/imgLg/${location.img}`) : null;
-  const srcSm = location.img ? s3rsc(config, `${place}/imgSm/${location.img}`) : null;
+const Window = ({s3rsc, place, location}) => {
+  const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
+  const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
   const label = location.label || "";
 
   return (
@@ -54,7 +53,7 @@ const Window = ({config, place, location}) => {
           <h3>{label}</h3>
         </div>
         <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
-        <Sound config={config} place={place} src={location.aud} />
+        <Sound s3rsc={s3rsc} place={place} src={location.aud} />
       </div>
   );
 };
@@ -69,7 +68,7 @@ const Location = ({location}) => {
       <div className="bordr"></div>
     </div>
   )
-}
+};
 
 const Date = ({date}) => {
   if (date == null) {
@@ -80,7 +79,7 @@ const Date = ({date}) => {
       <div className="icon"><span className="material-icons">schedule</span>{date}</div>
     )
   }
-}
+};
 
 const Image = ({srcLg, srcSm, label}) => {
   return (
@@ -90,7 +89,7 @@ const Image = ({srcLg, srcSm, label}) => {
       </a>
     </div>
   )
-}
+};
 
 const ImageContent = ({srcLg, srcSm, label}) => {
   if (srcSm == null || srcLg == null) {
@@ -99,18 +98,18 @@ const ImageContent = ({srcLg, srcSm, label}) => {
   else {
     return <img className="bordr" src={srcSm} href={srcLg} alt={label}/>
   }
-}
+};
 
-const Sound = ({config, place, src}) => {
+const Sound = ({s3rsc, place, src}) => {
   if (src == null) {
     return <div></div>
   }
   else {
-    const url = s3rsc(config, `${place}/aud/${src}`);
+    const url = s3rsc(`${place}/aud/${src}`);
     return (
       <audio controls><source src={url} type="audio/mpeg"/>Your browser does not support audio!</audio>
     )
   }
-}
+};
 
-export {paintWindow}
+export {paintWindow};
