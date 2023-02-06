@@ -1,19 +1,19 @@
 let _ = require('underscore');
 
-const s3rsc = where => `https://s3-us-west-2.amazonaws.com/multimap-2/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+const s3rsc = (config, where) => `${config.s3.bucketUrl}/gps/s3/${where}?rev=${(new Date()).getTime()}`;
 
 let _cache = {};
 
-const fetchPlaces = () =>
-  _fetchJSON("all_rivers")
+const fetchPlaces = (config) =>
+  _fetchJSON(config, "all_rivers")
     .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
 
-const loadPlace = (place, paintData) => {
+const loadPlace = (config, place, paintData) => {
   if (_cache[place] == null) {
-    return _fetchJSON(`${place}/info`)
+    return _fetchJSON(config, `${place}/info`)
       .then(json => {
           _cache[place] = json;
-          _.each(json.layers, _loadLayer(place, paintData));
+          _.each(json.layers, _loadLayer(config, place, paintData));
           return Promise.resolve({json:json, paint:true});
       })
   }
@@ -22,8 +22,8 @@ const loadPlace = (place, paintData) => {
   }
 };
 
-const _fetchJSON = which =>
-  fetch(s3rsc(`${which}.json`))
+const _fetchJSON = (config, which) =>
+  fetch(s3rsc(config, `${which}.json`))
     .then(res => {
       if (res.ok) {
         return(res.json());
@@ -33,8 +33,8 @@ const _fetchJSON = which =>
       }
     });
 
-const _loadLayer = (place, paintData) => layer => 
-  fetch(s3rsc(`${place}/geojson/${layer}`))
+const _loadLayer = (config, place, paintData) => layer => 
+  fetch(s3rsc(config, `${place}/geojson/${layer}`))
     .then((res) => res.json())
     .then(paintData(layer))
 

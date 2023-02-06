@@ -73,11 +73,11 @@ open http://localhost:3000/
 }
 ```
 
-6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/. Info.json is loaded in  `script/gpstracker.js `. 
+6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/.
 
 7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>. Historically, I used Google Maps API, which used kml instead of geojson and required kml to be hosted from a publicly-visible location. Not sure if this is true after the switch to Mapbox.
 
-8. Set your `mapboxgl.accessToken` in `Map.js`.
+8. Configure your site's settings in `src/Config.js`: this contains your `mapboxgl.accessToken`, s3 bucket url, and other parameters.
 
 9. View `public/index.html` at `localhost:3000` to see your new favorite map.
 

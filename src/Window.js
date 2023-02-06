@@ -4,9 +4,9 @@ import {s3rsc} from './Api';
 import 'material-icons/iconfont/material-icons.css';
 import './Window.scss';
 
-const paintWindow = (map, place) => location => {
+const paintWindow = (config, map, place) => location => {
   const el = document.createElement('div');
-  ReactDOM.render(<Window place={place} location={location}/>, el);
+  ReactDOM.render(<Window config={config} place={place} location={location}/>, el);
 
   const popup = new mapboxgl.Popup({ 
     className: 'media', 
@@ -39,9 +39,9 @@ const resizePopup = el0 => {
   }
 };
 
-const Window = ({place, location}) => {
-  const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
-  const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
+const Window = ({config, place, location}) => {
+  const srcLg = location.img ? s3rsc(config, `${place}/imgLg/${location.img}`) : null;
+  const srcSm = location.img ? s3rsc(config, `${place}/imgSm/${location.img}`) : null;
   const label = location.label || "";
 
   return (
@@ -54,7 +54,7 @@ const Window = ({place, location}) => {
           <h3>{label}</h3>
         </div>
         <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
-        <Sound place={place} src={location.aud} />
+        <Sound config={config} place={place} src={location.aud} />
       </div>
   );
 };
@@ -101,12 +101,12 @@ const ImageContent = ({srcLg, srcSm, label}) => {
   }
 }
 
-const Sound = ({place, src}) => {
+const Sound = ({config, place, src}) => {
   if (src == null) {
     return <div></div>
   }
   else {
-    const url = s3rsc(`${place}/aud/${src}`);
+    const url = s3rsc(config, `${place}/aud/${src}`);
     return (
       <audio controls><source src={url} type="audio/mpeg"/>Your browser does not support audio!</audio>
     )
