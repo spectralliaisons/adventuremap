@@ -1,5 +1,6 @@
 let _ = require('underscore');
 let _cache = {};
+let _filter_local_places = (p) => window.location.host === "localhost:3000" || !p.local;
 
 const s3 = ({s3}) => {
 
@@ -7,7 +8,13 @@ const s3 = ({s3}) => {
 
   const fetchPlaces = () =>
     _fetchJSON("all_rivers")
-      .then(({places}) => Promise.resolve(_.sortBy(places, "disp")));
+      .then(({places}) => {
+        const dat = _.chain(places)
+          .filter(_filter_local_places)
+          .sortBy("disp")
+          .value();
+        return Promise.resolve(dat);
+      });
 
   const loadPlace = (place, paintData) => {
     if (_cache[place] == null) {

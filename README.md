@@ -59,6 +59,7 @@ open http://localhost:3000/
 
 ```
 {
+  "local":true,
   "zoom":15,
   "center":"head of the russian river",
   "mapType":"hybrid",
@@ -72,6 +73,8 @@ open http://localhost:3000/
   ]
 }
 ```
+
+`local` is an optional property that only shows this place in the menu during development (at localhost:3000).
 
 6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/.
 

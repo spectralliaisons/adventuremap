@@ -11,6 +11,7 @@ from wand.image import Image as WandImage
 import getexifdata, glob, os, json, io, shutil, logprogress, numpy
 
 DIR_PLACES = "../s3/"
+DIR_PREFIX_IGNORE = DIR_PLACES + "_"
 DIR_GEODAT = "geojson/"
 DIR_AUD = "aud/"
 DIR_IMG_ORIG = "imgOrig/"
@@ -34,6 +35,9 @@ BLACKLIST_FLABEL_PREFIX = ["IMG", "MVIMG", "PANO"]
 ###
 ### helper functions
 ###
+
+def valid_place(path):
+    return not path.startswith(DIR_PREFIX_IGNORE)
 
 # if dir exists, clear it
 def init_dir(path):
@@ -187,11 +191,12 @@ def verify_flabel(flabel):
 
 
 # process every dir in Places/
-placels = glob.glob(DIR_PLACES + "*/")
+placels = [x for x in logprogress.log_progress(glob.glob(DIR_PLACES + "*/")) if valid_place(x)]
+# placels = ['../s3/Yuba_River/'] # or process one place
 all_places = {"places":[]}
 
 # process each directory
-for base_path in logprogress.log_progress(placels):
+for base_path in placels:
 
     print("processing place: " + base_path)
     
