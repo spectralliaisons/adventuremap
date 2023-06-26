@@ -10,7 +10,7 @@ let _ = require('underscore');
 
 const colorWaterMarker = '#2592ff';
 const colorNonWaterMarker = '#ff2592';
-const colorPoly = '#000000';
+const colorPoly = '#ff0000';
 const colorRiver = '#00bcff';
 const colorTrack = '#ff2592';
 
@@ -113,7 +113,7 @@ const addPolys = (map, layer) => {
     'source': layer,
     'paint': {
       'fill-color': colorPoly,
-      'fill-opacity': 0.0
+      'fill-opacity': 0.1
     },
     'filter': ['==', '$type', 'Polygon']
   });
@@ -135,7 +135,7 @@ const Map = ({config}) => {
   const [map, setMap] = useState(null);
   const [places, setPlaces] = useState([]);
   const [legendVisible, setLegendVisible] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   const paintPlace = (m, success, fail) => place => 
     loadPlace(place, paintData(m, place))
@@ -146,16 +146,16 @@ const Map = ({config}) => {
           success(place);
         }
       })
-      .catch((err) => fail(true));
+      .catch((err) => fail("That place does not exist."));
   
   // paint custom markers for photos & audio 
   const paintMultimediaMarkers = (m, place, {locations}) => _.each(locations, paintWindow(s3rsc, m, place));
   
   const doPaintPlace = (m) => paintPlace(m, (place) => {
-    setError(false);
+    setError(null);
     setLegendVisible(true);
     Nav.setHash(place);
-  }, () => setError(true));
+  }, setError);
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -179,12 +179,15 @@ const Map = ({config}) => {
       .addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}))
       .addControl(new mapboxgl.NavigationControl(), 'top-right')
       .once('load', () => fetchPlaces().then((res) => {
-        setPlaces(res);
-        setMap(map);
-        Nav.connect({
-          paintPlace:doPaintPlace(map),
-          setError:setError
-        });
+        if (res == null) setError("Could not fetch places.")
+        else {
+          setPlaces(res);
+          setMap(map);
+          Nav.connect({
+            paintPlace:doPaintPlace(map),
+            setError:setError
+          });
+        }
       }));
 
     // Clean up on unmount
@@ -197,18 +200,18 @@ const Map = ({config}) => {
         <Menu paintPlace={doPaintPlace(map)} places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack}/>
       </div>
-      <Error visible={error} />
+      <Error message={error} />
       <div className='map-container' ref={mapContainerRef} />
     </div>
   );
 };
 
-const Error = ({visible}) => {
-  if (visible) {
+const Error = ({message}) => {
+  if (message != null) {
     return (
       <div id="center-message">
         <div id="message-container">
-          <div id="message">that place does not exist</div>
+          <div id="message">{message}</div>
         </div>
       </div>
     )

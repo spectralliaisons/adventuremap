@@ -5,7 +5,7 @@ const to = ({paintPlace, setError}, hash) => {
             let el = null;
             if (el = document.getElementById(curr)) {
                 el.className = "loaded";
-                setError(false);
+                setError(null);
             }
         })
     }
