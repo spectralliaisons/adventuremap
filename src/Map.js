@@ -28,7 +28,7 @@ const paintData = (map, place, setModalHtml) => layer => data => {
     type: 'geojson',
     data: data
   });
-  
+
   const kinds = layer.replace(".geojson", "").split("-");
   addPoints(map, lID, kinds, setModalHtml);
   addPolys(map, lID, setModalHtml);
@@ -48,25 +48,28 @@ const addPoints = (map, layer, kinds, setModalHtml) => {
     },
     'filter': ['==', '$type', 'Point']
   });
+  addListeners(map, lID, setModalHtml);
+};
+
+const addListeners = (map, lID, setModalHtml) => {
   map.on('mousemove', lID, drawTooltip(map, lID));
   map.on('click', lID, drawDescription(map, lID, setModalHtml));
   map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
 };
 
 const drawDescription = (map, lID, setModalHtml) => ({ lngLat, features }) => {
-  setModalHtml(null);
+  if (setModalHtml !== undefined) setModalHtml(null);
   if (features.length === 0 ) return;
   
   const content = features[0].properties.description;
   if (content !== undefined && content.length > 0) {
-    setModalHtml(content);
+    if (setModalHtml !== undefined) setModalHtml(content);
   }
   else {
     drawTooltip(map, lID)({lngLat, features});
   }
 };
 
-// add tooltips on hover
 const drawTooltip = (map, lID) => ({ lngLat, features }) => {
   if (features.length === 0 ) return;
 
@@ -75,7 +78,7 @@ const drawTooltip = (map, lID) => ({ lngLat, features }) => {
     tip = null;
   }
   const ft = features[0];
-  const coord = ft.geometry.type === "Polygon" ? lngLat.wrap() : ft.geometry.coordinates;
+  const coord = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
   
   const el = document.createElement('div');
   el.textContent = ft.properties.name;
@@ -98,8 +101,9 @@ const drawTooltip = (map, lID) => ({ lngLat, features }) => {
 const addLines = (map, layer, kinds) => {
   const isTrack = kinds.indexOf("track") !== -1;
   const isSmRiver = kinds.indexOf("sm") !== -1;
+  const lID = `${layer}-lines`;
   map.addLayer({
-    'id': `${layer}-lines`,
+    'id': lID,
     'type': 'line',
     'source': layer,
     'layout': {
@@ -109,6 +113,7 @@ const addLines = (map, layer, kinds) => {
     'paint': (isTrack ? paintTrack : paintRivers(isSmRiver)),
     'filter': ['==', '$type', 'LineString']
   });
+  addListeners(map, lID);
 };
 
 const addPolys = (map, layer, setModalHtml) => {
@@ -130,9 +135,7 @@ const addPolys = (map, layer, setModalHtml) => {
     },
     'filter': ['==', '$type', 'Polygon']
   });
-  map.on('mousemove', lID, drawTooltip(map));
-  map.on('click', lID, drawDescription(map, lID, setModalHtml));
-  map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
+  addListeners(map, lID, setModalHtml);
 };
 
 const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );

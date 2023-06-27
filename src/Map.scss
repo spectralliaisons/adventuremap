@@ -35,10 +35,10 @@
     #modal {
       position: relative;
       z-index: 1;
-      background-color: rgba(255,255,255,85%);
+      background-color: #ffffff;
       filter: common.$shadow;
       padding: 3px;
-      @media screen and (max-width:800px) {
+      @media screen and (max-width:600px), (max-height:800px) {
         width: 100%;
         height: 100%;
       }
@@ -46,7 +46,9 @@
         cursor: pointer;
         border-radius: 50%;
         position: absolute;
+        top: 0px;
         right: 0px;
+        background-color: #ffffff;
       }
       .material-icons:hover {
         opacity:0.5;
@@ -54,19 +56,33 @@
       #content {
         font-size: 16px;
         overflow-y: auto;
-        @media screen and (min-height:800px) {
-          max-height: calc(100vh - 120px);
+        width: 400px;
+        max-height: 650px;
+        @media screen and (max-width:600px), (max-height:800px) {
+          width: 100%;
+          max-height: 100vh;
+        }
+        .subt {
+          font-size: 12px;
+          line-height: normal;
+          font-style: italic;
+        }
+        .col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        table {
+          width: unset !important;
         }
         a {
           color: blue;
         }
-        #grid {
+        img {
           width: 400px;
-          display: flex;
-          flex-direction: column;
-          img {
-            width: 400px;
-            padding: 2px;
+          padding: 2px;
+          @media screen and (max-width:600px), (max-height:800px) {
+            width: 100vw;
           }
         }
       }
