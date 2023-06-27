@@ -45,15 +45,13 @@ const Window = ({s3rsc, place, location}) => {
 
   return (
       <div>
-        <div className="labels">
-          <Location location={location}/>
-          <Date date={location.date} />
-        </div>
+        <Location location={location}/>
         <div className="center">
           <h3>{label}</h3>
         </div>
         <Image srcLg={srcLg} srcSm={srcSm} label={label}/>
         <Sound s3rsc={s3rsc} place={place} src={location.aud} />
+        <Date date={location.date} />
       </div>
   );
 };
@@ -75,8 +73,9 @@ const Date = ({date}) => {
     return <div></div>
   }
   else {
+    const formatted = date.split(" ")[0].replaceAll(":", "/");
     return (
-      <div className="icon"><span className="material-icons">schedule</span>{date}</div>
+      <div className="icon date">{formatted}</div>
     )
   }
 };

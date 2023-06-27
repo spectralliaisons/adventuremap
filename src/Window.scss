@@ -50,35 +50,31 @@
         padding: 10px 10px 3px;
         pointer-events: auto;
         max-width: common.$phone;
+        width: fit-content;
         background: #fffc;
-        overflow: hidden;
+        // overflow: hidden;
         @media screen and (max-width: common.$phone) {
             width: 100%;
             height: 100%;
             overflow: scroll;
             background: #ffffffe8;
         }
-        .labels {
-            .bordr {
-                border-bottom: solid;
-                border-width: 2px;
-                margin-bottom: 8px;
-                margin-top: 15px;
-                color: #c8c8c8;
-            }
-            .icon {
-                display: flex;
-                align-items: center;
-                font-weight: bold;
-                font-size: 14px;
-                width: 100%;
-                margin-bottom: 7px;
-            }
-            .icon.link {
-                cursor: pointer;
-                color: #49aaff;
-                padding-top: 10px;
-            }
+        .icon {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            font-size: 14px;
+        }
+        .icon.link {
+            cursor: pointer;
+            color: #49aaff;
+            padding-top: 10px;
+        }
+        .icon.date {
+            position: absolute;
+            bottom: -20px;
+            translate: 12px -40px;
+            color: white;
         }
         h3 {
             font-family: font;
