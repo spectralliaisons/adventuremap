@@ -22,7 +22,7 @@ const moveTo = (map, {zoom, locations, center}) => {
 };
 
 // paint geojson data
-const paintData = (map, place) => layer => data => {
+const paintData = (map, place, setModalHtml) => layer => data => {
   const lID = `layer-${place}-${layer}`;
   map.addSource(lID, {
     type: 'geojson',
@@ -30,12 +30,12 @@ const paintData = (map, place) => layer => data => {
   });
   
   const kinds = layer.replace(".geojson", "").split("-");
-  addPoints(map, lID, kinds);
+  addPoints(map, lID, kinds, setModalHtml);
+  addPolys(map, lID, setModalHtml);
   addLines(map, lID, kinds);
-  addPolys(map, lID);
 };
 
-const addPoints = (map, layer, kinds) => {
+const addPoints = (map, layer, kinds, setModalHtml) => {
   const isWaterMarker = kinds.indexOf("cenote") !== -1 || kinds.indexOf("river") !== -1;
   const lID = `${layer}-points`;
   map.addLayer({
@@ -49,8 +49,21 @@ const addPoints = (map, layer, kinds) => {
     'filter': ['==', '$type', 'Point']
   });
   map.on('mousemove', lID, drawTooltip(map, lID));
-  map.on('click', lID, drawTooltip(map, lID));
+  map.on('click', lID, drawDescription(map, lID, setModalHtml));
   map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
+};
+
+const drawDescription = (map, lID, setModalHtml) => ({ lngLat, features }) => {
+  setModalHtml(null);
+  if (features.length === 0 ) return;
+  
+  const content = features[0].properties.description;
+  if (content !== undefined && content.length > 0) {
+    setModalHtml(content);
+  }
+  else {
+    drawTooltip(map, lID)({lngLat, features});
+  }
 };
 
 // add tooltips on hover
@@ -98,7 +111,7 @@ const addLines = (map, layer, kinds) => {
   });
 };
 
-const addPolys = (map, layer) => {
+const addPolys = (map, layer, setModalHtml) => {
   map.addLayer({
     'id':  `${layer}-outline`,
     'type': 'line',
@@ -118,7 +131,7 @@ const addPolys = (map, layer) => {
     'filter': ['==', '$type', 'Polygon']
   });
   map.on('mousemove', lID, drawTooltip(map));
-  map.on('click', lID, drawTooltip(map));
+  map.on('click', lID, drawDescription(map, lID, setModalHtml));
   map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
 };
 
@@ -136,17 +149,20 @@ const Map = ({config}) => {
   const [places, setPlaces] = useState([]);
   const [legendVisible, setLegendVisible] = useState(false);
   const [error, setError] = useState(null);
+  const [modalHtml, setModalHtml] = useState(null);
+  const [desc, setDesc] = useState(null);
 
   const paintPlace = (m, success, fail) => place => 
-    loadPlace(place, paintData(m, place))
+    loadPlace(place, paintData(m, place, setModalHtml))
       .then(({json, paint}) => {
         moveTo(m, json);
         if (paint) {
           paintMultimediaMarkers(m, place, json);
+          setDesc(json.desc);
           success(place);
         }
       })
-      .catch((err) => fail("That place does not exist."));
+      .catch(() => fail("That place does not exist."));
   
   // paint custom markers for photos & audio 
   const paintMultimediaMarkers = (m, place, {locations}) => _.each(locations, paintWindow(s3rsc, m, place));
@@ -198,10 +214,12 @@ const Map = ({config}) => {
     <div>
       <div id="my-controls">
         <Menu paintPlace={doPaintPlace(map)} places={places} />
-        <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack}/>
+        <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack} />
       </div>
       <Error message={error} />
+      <Desc html={desc} />
       <div className='map-container' ref={mapContainerRef} />
+      <Modal html={modalHtml} close={()=>setModalHtml(null)} />
     </div>
   );
 };
@@ -219,6 +237,37 @@ const Error = ({message}) => {
   else {
     return <div></div>
   }
-}
+};
+
+const Desc = ({html}) => {
+  if (html != null) {
+    return (
+      <div id="desc-container">
+        <div id="desc" dangerouslySetInnerHTML={{ __html: html }}></div>
+      </div>
+    )
+  }
+  else {
+    return <div></div>
+  }
+};
+
+const Modal = ({html, close}) => {
+  if (html != null) {
+    return (
+      <div id="modal-container">
+        <div id="scroller">
+          <div id="modal">
+            <span className="material-icons" onClick={close}>close</span>
+            <div id="content" dangerouslySetInnerHTML={{ __html: html }}></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  else {
+    return <div></div>
+  }
+};
 
 export default Map;
