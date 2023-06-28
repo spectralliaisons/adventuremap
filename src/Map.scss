@@ -1,5 +1,10 @@
 @use 'Common' as common;
 
+@font-face {
+  font-family: font;
+  src: url(../src/rsc/RobotoMono-Regular.ttf);
+}
+
 #my-controls {
   position: absolute;
   height: 100%;
@@ -34,7 +39,7 @@
     height: 100%;
     #modal {
       position: relative;
-      z-index: 1;
+      z-index: 4;
       background-color: #ffffff;
       filter: common.$shadow;
       padding: 3px;
@@ -42,8 +47,15 @@
         width: 100%;
         height: 100%;
       }
+      .icon {
+        display: flex;
+        width: 100%;
+        height: unset;
+      }
       .material-icons {
         cursor: pointer;
+      }
+      .material-icons.close {
         border-radius: 50%;
         position: absolute;
         top: 0px;
@@ -72,6 +84,12 @@
           flex-direction: column;
           align-items: center;
         }
+        #date {
+          translate: 8px -4px;
+          color: white;
+          position: absolute;
+          margin-top: -25px;
+        }
         table {
           width: unset !important;
         }
@@ -80,10 +98,13 @@
         }
         img {
           width: 400px;
-          padding: 2px;
+          padding-top: 3px;
           @media screen and (max-width:600px), (max-height:800px) {
             width: 100vw;
           }
+        }
+        audio {
+          width: 100%;
         }
       }
     }    
@@ -99,7 +120,7 @@
     bottom: 0px;
     filter: common.$shadow;
     background-color: #ffffff;
-    z-index: 2;
+    z-index: 5;
     a {
       color: blue;
     }
@@ -122,8 +143,34 @@
   right: 0;
 }
 
+.marker-aud {
+  background-image: url('./rsc/circle-aud.svg');
+  z-index: 2;
+}
+.marker-img {
+  background-image: url('./rsc/circle-img.svg');
+  z-index: 1;
+}
+
 .mapboxgl-ctrl-top-right {
   z-index: unset;
+}
+
+.mapboxgl-marker {
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mapboxgl-popup {
+  max-width: unset !important;
+  font-family: font;
+}
+
+.mapboxgl-popup.media {
+  display: none;
 }
 
 .mapboxgl-popup.tip {

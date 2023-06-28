@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import './Map.scss';
 import Menu from './Menu';
 import Legend from './Legend';
-import {paintWindow} from './Window'
+import {paintMarker} from './Marker'
 import {s3} from './S3';
 import Nav from './Navigation';
 let _ = require('underscore');
@@ -160,15 +160,12 @@ const Map = ({config}) => {
       .then(({json, paint}) => {
         moveTo(m, json);
         if (paint) {
-          paintMultimediaMarkers(m, place, json);
+          _.each(json.locations, paintMarker(s3rsc, m, place, setModalHtml));
           setDesc(json.desc);
           success(place);
         }
       })
       .catch(() => fail("That place does not exist."));
-  
-  // paint custom markers for photos & audio 
-  const paintMultimediaMarkers = (m, place, {locations}) => _.each(locations, paintWindow(s3rsc, m, place));
   
   const doPaintPlace = (m) => paintPlace(m, (place) => {
     setError(null);
@@ -261,7 +258,7 @@ const Modal = ({html, close}) => {
       <div id="modal-container">
         <div id="scroller">
           <div id="modal">
-            <span className="material-icons" onClick={close}>close</span>
+            <span className="material-icons close" onClick={close}>close</span>
             <div id="content" dangerouslySetInnerHTML={{ __html: html }}></div>
           </div>
         </div>
