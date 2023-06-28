@@ -4,10 +4,10 @@
 https://spectralliaisons.github.io/multimap/
 
 ## Overlay gps tracks on Mapbox with markers places where photos and audio were taken, and colorized points for other locations.
-![an image examplar](./screenshot1.png)
+![an image examplar](./misc/screenshot1.png)
 
 ## Areas indicated via geojson polygons are also supported; e.g. California watersheds:
-![an image examplar](./screenshot2.png)
+![an image examplar](./misc/screenshot2.png)
 
 ## Dependencies
 
@@ -46,13 +46,13 @@ open http://localhost:3000/
 - `ruin-`: pink dot
 
 ### e.g. differentiated river system
-![an image examplar](./screenshot3.png)
+![an image examplar](./misc/screenshot3.png)
 
 ### e.g. differentiating water from archeological features. Note how cenotes form the rim of the Chicxulub impact crater!
-![an image examplar](./screenshot4.png)
+![an image examplar](./misc/screenshot4.png)
 
 ### geojson feature properties may include an HTML "description" property that will be displayed in a modal window when the feature is clicked; e.g. rendering information from [East Bay Hill People](https://eastbayhillpeople.com/map/).
-![an image examplar](./screenshot5.png)
+![an image examplar](./misc/screenshot5.png)
 
 3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg/`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image.
 
