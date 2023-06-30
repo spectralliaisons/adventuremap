@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
 import './Menu.scss';
+let _ = require('underscore');
 
 const fontSz = 14;
 const padding = 6;
 const listPaddingTop = 18;
 
-const Menu = ({paintPlace, places}) => {
+const Menu = ({places}) => {
 
     const [menuState, setMenuState] = useState("loading");
 
-    if (menuState === "loading" && places.length > 0) {setMenuState("open");}
+    if (menuState === "loading" && _.size(places) > 0) {setMenuState("open");}
 
     function toggle() {
         if (menuState === "open") {setMenuState("closed");} 
@@ -19,7 +20,7 @@ const Menu = ({paintPlace, places}) => {
     return (
         <div id='menu' className={menuState}>
             <Hamburger menuState={menuState} toggle={toggle}/>
-            <Places menuState={menuState} paintPlace={paintPlace} places={places} toggle={toggle}/>
+            <Places menuState={menuState} places={places} />
         </div>
     );
 };
@@ -35,35 +36,34 @@ const Hamburger = ({menuState, toggle}) => {
     )
 };
 
-const Places = ({menuState, paintPlace, places, toggle}) => {
+const Places = ({menuState, places}) => {
+    const placesLs = _.chain(places)
+        .keys()
+        .map(pID => {
+            const o = places[pID];
+            return {id:pID, disp:o.disp, className:o.loaded ? "loaded" : "unloaded"};
+        })
+        .sortBy("disp")
+        .value();
     const placesStyl = {
-        height:`${(menuState === "open" ? (places.length*(fontSz+padding*2)-padding*3+listPaddingTop) : 0)}px`,
+        height:`${(menuState === "open" ? (placesLs.length*(fontSz+padding*2)-padding*3+listPaddingTop) : 0)}px`,
         padding: `0px ${padding}px 0px ${padding}px`
     };
     const olStyl = {paddingTop: `${listPaddingTop}px`};
     return (
         <div id="places" className={menuState} style={placesStyl}>
-            <ol style={olStyl}>{places.map(({disp,id}) => 
-                <div key={id}>
-                    <Item paintPlace={paintPlace} closeMenu={toggle} disp={disp} id={id}/>
+            <ol style={olStyl}>{placesLs.map(p => 
+                <div key={p.id}>
+                    <Item id={p.id} className={p.className} disp={p.disp} />
                 </div>
             )}</ol>
         </div>
     )
 };
 
-const Item = ({paintPlace, closeMenu, disp, id}) => {
-    const [loaded, setLoaded] = useState("unloaded");
-
-    function fetch() {
-        paintPlace(id).then(() => {
-            setLoaded("loaded");
-            closeMenu();
-        });
-    }
-
+const Item = ({id, className, disp}) => {
     return (
-        <li id={id} className={loaded} style={{fontSize:`${fontSz}px`}} onClick={fetch}>{disp}</li>
+        <li id={id} className={className} style={{fontSize:`${fontSz}px`}}><a href={"#"+id}>{disp}</a></li>
     );
 };
 

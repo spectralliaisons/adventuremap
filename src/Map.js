@@ -5,7 +5,6 @@ import Menu from './Menu';
 import Legend from './Legend';
 import {paintMarker} from './Marker'
 import {s3} from './S3';
-import Nav from './Navigation';
 let _ = require('underscore');
 
 const colorWaterMarker = '#2592ff';
@@ -14,173 +13,185 @@ const colorPoly = '#ff0000';
 const colorRiver = '#00bcff';
 const colorTrack = '#ff2592';
 
-let tip = null;
-
-const moveTo = (map, {zoom, locations, center}) => {
-  const pos = _.findWhere(locations, {"label":center}).loc;
-  map.flyTo({center:[pos.lng, pos.lat], zoom: zoom});
-};
-
-// paint geojson data
-const paintData = (map, place, setModalHtml) => layer => data => {
-  const lID = `layer-${place}-${layer}`;
-  map.addSource(lID, {
-    type: 'geojson',
-    data: data
-  });
-
-  const kinds = layer.replace(".geojson", "").split("-");
-  addPoints(map, lID, kinds, setModalHtml);
-  addPolys(map, lID, setModalHtml);
-  addLines(map, lID, kinds);
-};
-
-const addPoints = (map, layer, kinds, setModalHtml) => {
-  const isWaterMarker = kinds.indexOf("cenote") !== -1 || kinds.indexOf("river") !== -1;
-  const lID = `${layer}-points`;
-  map.addLayer({
-    'id': lID,
-    'type': 'circle',
-    'source': layer,
-    'paint': {
-    'circle-radius': 6,
-    'circle-color': (isWaterMarker ? colorWaterMarker : colorNonWaterMarker)
-    },
-    'filter': ['==', '$type', 'Point']
-  });
-  addListeners(map, lID, setModalHtml);
-};
-
-const addListeners = (map, lID, setModalHtml) => {
-  map.on('mousemove', lID, drawTooltip(map, lID));
-  map.on('click', lID, drawDescription(map, lID, setModalHtml));
-  map.on('mouseleave', lID, () => map.fire('closeAllPopups'));
-};
-
-const drawDescription = (map, lID, setModalHtml) => ({ lngLat, features }) => {
-  if (setModalHtml !== undefined) setModalHtml(null);
-  if (features.length === 0 ) return;
-  
-  const content = features[0].properties.description;
-  if (content !== undefined && content.length > 0) {
-    if (setModalHtml !== undefined) setModalHtml(content);
-  }
-  else {
-    drawTooltip(map, lID)({lngLat, features});
-  }
-};
-
-const drawTooltip = (map, lID) => ({ lngLat, features }) => {
-  if (features.length === 0 ) return;
-
-  if (tip != null) {
-    tip.remove();
-    tip = null;
-  }
-  const ft = features[0];
-  const coord = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
-  
-  const el = document.createElement('div');
-  el.textContent = ft.properties.name;
-
-  tip = new mapboxgl.Popup({offset: [0, -15]})
-    .setLngLat(coord)
-    .setDOMContent(el)
-    .addTo(map);
-
-  el.parentNode.parentNode.className += ' tip';
-
-  map.on('closeAllPopups', () => { 
-    if (tip != null) {
-      tip.remove();
-    }
-    tip = null;
-  });
-};
-
-const addLines = (map, layer, kinds) => {
-  const isTrack = kinds.indexOf("track") !== -1;
-  const isSmRiver = kinds.indexOf("sm") !== -1;
-  const lID = `${layer}-lines`;
-  map.addLayer({
-    'id': lID,
-    'type': 'line',
-    'source': layer,
-    'layout': {
-      'line-join': 'round',
-      'line-cap': 'round'
-    },
-    'paint': (isTrack ? paintTrack : paintRivers(isSmRiver)),
-    'filter': ['==', '$type', 'LineString']
-  });
-  addListeners(map, lID);
-};
-
-const addPolys = (map, layer, setModalHtml) => {
-  map.addLayer({
-    'id':  `${layer}-outline`,
-    'type': 'line',
-    'source': layer,
-    'paint': paintPoly,
-    'filter': ['==', '$type', 'Polygon']
-  });
-  const lID = `${layer}-area`;
-  map.addLayer({
-    'id': lID,
-    'type': 'fill',
-    'source': layer,
-    'paint': {
-      'fill-color': colorPoly,
-      'fill-opacity': 0.1
-    },
-    'filter': ['==', '$type', 'Polygon']
-  });
-  addListeners(map, lID, setModalHtml);
-};
-
-const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
-const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
 const paintPoly = { 'line-color': colorPoly, 'line-width': 2, 'line-opacity':0.25 };
+const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
+const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
+
+const hashToPlace = () => window.location.hash.split("#")[1];
 
 const Map = ({config}) => {
-  const {s3rsc, loadPlace, fetchPlaces} = s3(config);
   mapboxgl.accessToken = config.map.accessToken;
+  const {s3rsc, loadPlace, fetchPlaces} = s3(config);
 
+  const fetchPlacesRef = useRef(fetchPlaces);
+  const map = useRef(null);
+  const tipRef = useRef(null);
   const mapContainerRef = useRef(null);
-
-  const [map, setMap] = useState(null);
-  const [places, setPlaces] = useState([]);
+  const attributionRef = useRef(config.map.attribution);
+  const styleRef = useRef(config.map.mapStyle);
+  const centerRef = useRef(config.map.center);
+  const zoomRef = useRef(config.map.zoom);
+  
+  const [places, setPlaces] = useState(null);
   const [legendVisible, setLegendVisible] = useState(false);
   const [error, setError] = useState(null);
   const [modalHtml, setModalHtml] = useState(null);
   const [desc, setDesc] = useState(null);
-
-  const paintPlace = (m, success, fail) => place => 
-    loadPlace(place, paintData(m, place, setModalHtml))
-      .then(({json, paint}) => {
-        moveTo(m, json);
-        if (paint) {
-          _.each(json.locations, paintMarker(s3rsc, m, place, setModalHtml));
-          setDesc(json.desc);
-          success(place);
-        }
-      })
-      .catch(() => fail("That place does not exist."));
   
-  const doPaintPlace = (m) => paintPlace(m, (place) => {
-    setError(null);
-    setLegendVisible(true);
-    Nav.setHash(place);
-  }, setError);
+  const paintPlaceRef = useRef((place, initialPlaces) => {
+    const paintData = place => lID0 => data => {
+      if (place == null) return;
+      const lID1 = `layer-${place}-${lID0}`;
+      map.current.addSource(lID1, {
+        type: 'geojson',
+        data: data
+      });
+    
+      const kinds = lID0.replace(".geojson", "").split("-");
+      addPoints(lID1, kinds);
+      addPolys(lID1);
+      addLines(lID1, kinds);
+    };
+    
+    const addPoints = (lID0, kinds) => {
+      const isWaterMarker = kinds.indexOf("cenote") !== -1 || kinds.indexOf("river") !== -1;
+      const lID1 = `${lID0}-points`;
+      map.current.addLayer({
+        'id': lID1,
+        'type': 'circle',
+        'source': lID0,
+        'paint': {
+        'circle-radius': 6,
+        'circle-color': (isWaterMarker ? colorWaterMarker : colorNonWaterMarker)
+        },
+        'filter': ['==', '$type', 'Point']
+      });
+      addListeners(lID1);
+    };
+    
+    const addListeners = lID => {
+      map.current.on('mousemove', lID, drawTooltip);
+      map.current.on('click', lID, drawDescription);
+      map.current.on('mouseleave', lID, () => map.current.fire('closeAllPopups'));
+    };
+    
+    const drawDescription = ({lngLat, features}) => {
+      setModalHtml(null);
+      if (features.length === 0 ) return;
+      
+      const content = features[0].properties.description;
+      if (content !== undefined && content.length > 0) {
+        setModalHtml(content);
+      }
+      else {
+        drawTooltip({lngLat, features});
+      }
+    };
+    
+    const drawTooltip = ({lngLat, features}) => {
+      if (features.length === 0 ) return;
+    
+      if (tipRef.current != null) {
+        tipRef.current.remove();
+      }
+      const ft = features[0];
+      const coord = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
+      
+      const el = document.createElement('div');
+      el.textContent = ft.properties.name;
+    
+      tipRef.current = new mapboxgl.Popup({offset: [0, -15]})
+        .setLngLat(coord)
+        .setDOMContent(el)
+        .addTo(map.current);
+    
+      el.parentNode.parentNode.className += ' tip';
+    
+      map.current.on('closeAllPopups', () => { 
+        if (tipRef.current != null) {
+          tipRef.current.remove();
+        }
+      });
+    };
+    
+    const addPolys = lID0 => {
+      map.current.addLayer({
+        'id':  `${lID0}-outline`,
+        'type': 'line',
+        'source': lID0,
+        'paint': paintPoly,
+        'filter': ['==', '$type', 'Polygon']
+      });
+      const lID1 = `${lID0}-area`;
+      map.current.addLayer({
+        'id': lID1,
+        'type': 'fill',
+        'source': lID0,
+        'paint': {
+          'fill-color': colorPoly,
+          'fill-opacity': 0.1
+        },
+        'filter': ['==', '$type', 'Polygon']
+      });
+      addListeners(lID1);
+    };
+    
+    const addLines = (lID0, kinds) => {
+      const isTrack = kinds.indexOf("track") !== -1;
+      const isSmRiver = kinds.indexOf("sm") !== -1;
+      const lID1 = `${lID0}-lines`;
+      map.current.addLayer({
+        'id': lID1,
+        'type': 'line',
+        'source': lID0,
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': (isTrack ? paintTrack : paintRivers(isSmRiver)),
+        'filter': ['==', '$type', 'LineString']
+      });
+      addListeners(lID1);
+    };
+
+    return loadPlace(place, paintData(place, setModalHtml))
+      .then(({json, paint}) => {
+        if (paint) {
+          // first time setting places, hash indicates no place in particular
+          if (place == null && initialPlaces != null)
+            setPlaces(initialPlaces);
+          else {
+            // hash indicates a specific place, may be first load or not
+            setPlaces(prev0 => {
+              const prev1 = prev0 || initialPlaces;
+              return ({...prev1, [place]:({...prev1[place], loaded:true})})
+            });
+            if (json != null) _.each(json.locations, paintMarker(s3rsc, map.current, place, setModalHtml));
+          }
+        }
+        if (json == null)
+          setDesc(null);
+        else {
+          const pos = _.findWhere(json.locations, {"label":json.center}).loc;
+          map.current.flyTo({center:[pos.lng, pos.lat], zoom: json.zoom});
+          setDesc(json.desc);
+        }
+        setError(null);
+        setLegendVisible(true);
+      })
+      .catch(() => setError("That place does not exist."))
+    });
 
   // Initialize map when component mounts
   useEffect(() => {
-    const map = new mapboxgl.Map({
+    if (map.current) return;
+
+    map.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: config.map.mapStyle,
+        style: styleRef.current,
         attributionControl: false,
-        center: config.map.center,
-        zoom: config.map.zoom
+        center: centerRef.current,
+        zoom: zoomRef.current
       })
       .addControl(
         new mapboxgl.GeolocateControl({
@@ -191,29 +202,31 @@ const Map = ({config}) => {
         showUserHeading: true
         })
       )
-      .addControl(new mapboxgl.AttributionControl({compact: true,customAttribution: config.map.attribution}))
+      .addControl(new mapboxgl.AttributionControl({compact: true, customAttribution: attributionRef.current}))
       .addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}))
       .addControl(new mapboxgl.NavigationControl(), 'top-right')
-      .once('load', () => fetchPlaces().then((res) => {
-        if (res == null) setError("Could not fetch places.")
-        else {
-          setPlaces(res);
-          setMap(map);
-          Nav.connect({
-            paintPlace:doPaintPlace(map),
-            setError:setError
-          });
-        }
-      }));
+      .once('load', () => {
+        fetchPlacesRef.current().then((res) => {
+          if (res == null) setError("Could not fetch places.")
+          else {
+            const doLoad = initialPlaces => {
+              let curr = hashToPlace();
+              paintPlaceRef.current(curr, initialPlaces);
+            }
+            doLoad(res);
+            window.onhashchange = () => doLoad();
+          }
+        });
+      });
 
     // Clean up on unmount
-    return () => map.remove();
-  }, []); 
+    return () => map.current.remove();
+  }, []);
 
   return (
     <div>
       <div id="my-controls">
-        <Menu paintPlace={doPaintPlace(map)} places={places} />
+        <Menu places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack} />
       </div>
       <Error message={error} />

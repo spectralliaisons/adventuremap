@@ -12,21 +12,26 @@ const s3 = ({s3}) => {
         const dat = _.chain(places)
           .filter(_filter_local_places)
           .sortBy("disp")
+          .map((p,i) => _.extend(p, {i}))
+          .reduce(((acc, {disp, id, i}) => _.extend(acc, {[id]:{disp, i, loaded:false}})), {})
           .value();
         return Promise.resolve(dat);
       });
 
   const loadPlace = (place, paintData) => {
-    if (_cache[place] == null) {
+    if (place != null && _cache[place] == null) {
       return _fetchJSON(`${place}/info`)
         .then(json => {
             _cache[place] = json;
-            _.each(json.layers, _loadLayer(place, paintData));
+            _.each(json.layers, layer => 
+              fetch(s3rsc(`${place}/geojson/${layer}`))
+                .then((res) => res.json())
+                .then(paintData(layer)));
             return Promise.resolve({json:json, paint:true});
         })
     }
     else {
-      return Promise.resolve({json:_cache[place], paint:false});
+      return Promise.resolve({json:_cache[place], paint:place == null});
     }
   };
 
@@ -40,11 +45,6 @@ const s3 = ({s3}) => {
           return Promise.reject(`Unable to fetch ${which}.json`);
         }
       });
-
-  const _loadLayer = (place, paintData) => layer => 
-    fetch(s3rsc(`${place}/geojson/${layer}`))
-      .then((res) => res.json())
-      .then(paintData(layer));
   
   return {s3rsc, fetchPlaces, loadPlace};
 };
