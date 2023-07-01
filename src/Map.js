@@ -9,11 +9,12 @@ let _ = require('underscore');
 
 const colorWaterMarker = '#2592ff';
 const colorNonWaterMarker = '#ff2592';
-const colorPoly = '#ff0000';
+const colorPolyFill = '#ff6c6c';//'#ffffff';
+const colorPolyStroke = '#ff6c6c'
 const colorRiver = '#00bcff';
-const colorTrack = '#ff2592';
+const colorTrack = colorNonWaterMarker;
 
-const paintPoly = { 'line-color': colorPoly, 'line-width': 2, 'line-opacity':0.25 };
+const paintPoly = { 'line-color': colorPolyStroke, 'line-width': 1, 'line-opacity':1 };
 const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
 const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
 
@@ -25,7 +26,7 @@ const Map = ({config}) => {
 
   const fetchPlacesRef = useRef(fetchPlaces);
   const map = useRef(null);
-  const tipRef = useRef(null);
+  const hoveredFtRef = useRef(null), selectedFtRef = useRef(null);
   const mapContainerRef = useRef(null);
   const attributionRef = useRef(config.map.attribution);
   const styleRef = useRef(config.map.mapStyle);
@@ -77,11 +78,14 @@ const Map = ({config}) => {
     
     const drawDescription = ({lngLat, features}) => {
       setModalHtml(null);
-      if (features.length === 0 ) return;
-      
+      console.log(features[0])
+      if (features.length === 0 || features[0].layer.type === "line" ) return;
       const content = features[0].properties.description;
       if (content !== undefined && content.length > 0) {
-        setModalHtml(content);
+        if (features.length === 0 ) return;
+        const ft = features[0];
+        const loc = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
+        setModalHtml({loc, html:content});
       }
       else {
         drawTooltip({lngLat, features});
@@ -91,25 +95,26 @@ const Map = ({config}) => {
     const drawTooltip = ({lngLat, features}) => {
       if (features.length === 0 ) return;
     
-      if (tipRef.current != null) {
-        tipRef.current.remove();
+      if (hoveredFtRef.current != null) {
+        hoveredFtRef.current.remove();
       }
       const ft = features[0];
+      if (ft.properties.name == null || ft.properties.name.length === 0) return;
       const coord = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
       
       const el = document.createElement('div');
       el.textContent = ft.properties.name;
     
-      tipRef.current = new mapboxgl.Popup({offset: [0, -15]})
+      hoveredFtRef.current = new mapboxgl.Popup({offset: [0, -15]})
         .setLngLat(coord)
         .setDOMContent(el)
         .addTo(map.current);
     
-      el.parentNode.parentNode.className += ' tip';
+      el.parentNode.parentNode.className += ' tip hovered';
     
       map.current.on('closeAllPopups', () => { 
-        if (tipRef.current != null) {
-          tipRef.current.remove();
+        if (hoveredFtRef.current != null) {
+          hoveredFtRef.current.remove();
         }
       });
     };
@@ -128,7 +133,7 @@ const Map = ({config}) => {
         'type': 'fill',
         'source': lID0,
         'paint': {
-          'fill-color': colorPoly,
+          'fill-color': colorPolyFill,
           'fill-opacity': 0.1
         },
         'filter': ['==', '$type', 'Polygon']
@@ -154,7 +159,7 @@ const Map = ({config}) => {
       addListeners(lID1);
     };
 
-    return loadPlace(place, paintData(place, setModalHtml))
+    return loadPlace(place, paintData(place))
       .then(({json, paint}) => {
         if (paint) {
           // first time setting places, hash indicates no place in particular
@@ -181,6 +186,20 @@ const Map = ({config}) => {
       })
       .catch(() => setError("That place does not exist."))
     });
+  
+  useEffect(() => {
+    if (modalHtml != null) {
+      console.log(modalHtml.loc)
+      const r = 15, s = 2;
+      selectedFtRef.current = new mapboxgl.Popup({offset: [0, r*1.25+s/2]})
+        .setLngLat(modalHtml.loc)
+        .setHTML(`<svg class='tip selected' width='${r*2}' height='${r*2}'><circle fill='${colorTrack}' fill-opacity='0.25' stroke-width='${s}' stroke='${colorTrack}' r='${r}' cx='${r}' cy='${r}'></circle></svg>`)
+        .addTo(map.current);
+    }
+    else if (selectedFtRef.current != null) {
+      selectedFtRef.current.remove();
+    }
+  }, [modalHtml]);
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -272,7 +291,7 @@ const Modal = ({html, close}) => {
         <div id="scroller">
           <div id="modal">
             <span className="material-icons close" onClick={close}>close</span>
-            <div id="content" dangerouslySetInnerHTML={{ __html: html }}></div>
+            <div id="content" dangerouslySetInnerHTML={{ __html: html.html }}></div>
           </div>
         </div>
       </div>

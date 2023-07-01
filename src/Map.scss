@@ -1,4 +1,4 @@
-@use 'Common' as common;
+@import 'Common';
 
 @font-face {
   font-family: font;
@@ -38,12 +38,11 @@
     justify-content: center;
     height: 100%;
     #modal {
+      @include window;
       position: relative;
       z-index: 4;
-      background-color: #ffffff;
-      filter: common.$shadow;
       padding: 3px;
-      @media screen and (max-width:600px), (max-height:800px) {
+      @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
         width: 100%;
         height: 100%;
       }
@@ -58,9 +57,8 @@
       .material-icons.close {
         border-radius: 50%;
         position: absolute;
-        top: 0px;
-        right: 0px;
-        background-color: #ffffff;
+        top: 2px;
+        right: -2px;
       }
       .material-icons:hover {
         opacity:0.5;
@@ -70,7 +68,7 @@
         overflow-y: auto;
         width: 400px;
         max-height: 650px;
-        @media screen and (max-width:600px), (max-height:800px) {
+        @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
           width: 100%;
           max-height: 100vh;
         }
@@ -94,12 +92,12 @@
           width: unset !important;
         }
         a {
-          color: blue;
+          color: $track;
         }
         img {
           width: 400px;
           padding-top: 3px;
-          @media screen and (max-width:600px), (max-height:800px) {
+          @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
             width: 100vw;
           }
         }
@@ -116,17 +114,16 @@
   justify-content: center;
   width:100%;
   #desc {
+    @include window;
     position:absolute;
     bottom: 0px;
-    filter: common.$shadow;
-    background-color: #ffffff;
     z-index: 5;
     a {
-      color: blue;
+      color: $track;
     }
     padding: 10px 10px 35px 10px;
     width:100%;
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $fullscreen-height) {
       width: unset;
       margin: 0px 40px 5px 120px;
       border-radius: 50px;
@@ -173,21 +170,30 @@
   display: none;
 }
 
-.mapboxgl-popup.tip {
-  z-index: 4;
-  .mapboxgl-popup-content {
-    border-radius: unset;
-    box-shadow: none;
-    padding: 0;
-    background: none;
-    background-color: common.$light;
-    padding: 2px 8px 2px;
-    font-weight: bold;
+.mapboxgl-popup-close-button {
+  display: none;
+}
+.mapboxgl-popup-tip {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  border-radius: unset;
+  box-shadow: none;
+  padding: 0;
+  background: none;
+
+  .tip.selected {
+    overflow: visible;
   }
-  .mapboxgl-popup-close-button {
-    display: none;
-  }
-  .mapboxgl-popup-tip {
-    display: none;
-  }
+}
+.mapboxgl-popup.tip.hovered {
+  @include window;
+  padding: 2px 8px 2px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.mapboxgl-ctrl-attrib-inner {
+  z-index: 6;
 }

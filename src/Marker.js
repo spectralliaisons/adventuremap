@@ -11,13 +11,15 @@ const paintMarker = (s3rsc, map, place, setModalHtml) => location => {
     offset: 25 
   }).setDOMContent(el);
 
+  const loc = [location.loc.lng, location.loc.lat];
+
   new mapboxgl.Marker(styledMarker(location))
-    .setLngLat([location.loc.lng, location.loc.lat])
+    .setLngLat(loc)
     .setPopup(popup)
     .addTo(map);
 
   const html = ReactDomServer.renderToString(<Window s3rsc={s3rsc} place={place} location={location}/>);
-  popup.on('open', () => setModalHtml(html));
+  popup.on('open', () => setModalHtml({loc, html:html}));
 };
 
 const styledMarker = location => {
@@ -46,7 +48,7 @@ const Location = ({location}) => {
   const lat = location.loc.lat.toFixed(4);
   const lng = location.loc.lng.toFixed(4);
   const url = `https://www.google.com/maps/search/?api=1&query=${location.loc.lat},${location.loc.lng}`;
-  return <div className="icon link"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
+  return <div className="icon"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
 };
 
 const Image = ({srcLg, srcSm, label, date}) => {
