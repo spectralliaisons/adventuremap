@@ -51,22 +51,20 @@
         width: 100%;
         height: unset;
       }
-      .material-icons {
-        cursor: pointer;
-      }
       .material-icons.close {
+        cursor: pointer;
         border-radius: 50%;
         position: absolute;
         top: 2px;
         right: -2px;
       }
-      .material-icons:hover {
+      .material-icons.close:hover {
         opacity:0.5;
       }
       #content {
         font-size: 16px;
         overflow-y: auto;
-        width: 400px;
+        width: $size-thumbnail;
         max-height: 650px;
         @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
           width: 100%;
@@ -95,7 +93,7 @@
           color: $track;
         }
         img {
-          width: 400px;
+          width: $size-thumbnail;
           padding-top: 3px;
           @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
             width: 100vw;

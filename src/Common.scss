@@ -1,6 +1,9 @@
 $phone: 450px;
 $fullscreen-width: 600px;
 $fullscreen-height: 800px;
+
+$size-thumbnail:400px;
+
 $dark: #1a1a1ad6;
 $track: #ff2592;
 
@@ -8,8 +11,5 @@ $track: #ff2592;
     filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.4));
     background-color: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(8px);
-}
-
-* {
     color: $dark;
 }
