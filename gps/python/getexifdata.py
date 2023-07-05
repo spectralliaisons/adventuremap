@@ -1,68 +1,44 @@
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
-def get_exif_data(image):
-    """Returns a dictionary from the exif data of an PIL Image item. Also converts the GPS Tags"""
-    exif_data = {}
-    info = image._getexif()
+def get_exif_data(im):
+    exif = {}
+    info = im._getexif()
+    
     if info:
         for tag, value in info.items():
-            decoded = TAGS.get(tag, tag)
-            if decoded == "GPSInfo":
-                gps_data = {}
-                for t in value:
-                    sub_decoded = GPSTAGS.get(t, t)
-                    gps_data[sub_decoded] = value[t]
-
-                exif_data[decoded] = gps_data
+            k0 = TAGS.get(tag, tag)
+            if k0 != "GPSInfo":
+                exif[k0] = value
             else:
-                exif_data[decoded] = value
-
-    return exif_data
-
-def _get_if_exist(data, key):
-    if key in data:
-        return data[key]
-		
-    return None
-	
-def _convert_to_degress(value):
-    """Helper function to convert the GPS coordinates stored in the EXIF to degress in float format"""
-    d = value[0]
-    m = value[1]
-    s = value[2]
+                exif[k0] = {GPSTAGS.get(t, t): value[t] for t in value}
     
+    return exif
+
+
+def _get(data, key):
+    return data[key] if key in data else None
+
+def _to_decimal(value):
+    [d, m, s] = value
     return d + (m / 60.0) + (s / 3600.0)
 
-def get_lat_lon(exif_data):
-    """Returns the latitude and longitude, if available, from the provided exif_data (obtained through get_exif_data above)"""
-    lat = None
-    lon = None
+def get_lat_lng(exif):
+    if "GPSInfo" in exif:
+        gps = exif["GPSInfo"]
 
-    if "GPSInfo" in exif_data:		
-        gps_info = exif_data["GPSInfo"]
+        _lat = _get(gps, "GPSLatitude")
+        _lng = _get(gps, "GPSLongitude")
+        
+        _latRef = _get(gps, "GPSLatitudeRef")
+        _lngRef = _get(gps, "GPSLongitudeRef")
+        
+        if _lat and _latRef and _lng and _lngRef:
+            lat = _to_decimal(_lat) if _latRef == "N" else 0 - _to_decimal(_lat)
+            lng = _to_decimal(_lng) if _lngRef == "E" else 0 - _to_decimal(_lng)
+            return (lat, lng)
+     
+    return (None, None)
 
-        gps_latitude = _get_if_exist(gps_info, "GPSLatitude")
-        gps_latitude_ref = _get_if_exist(gps_info, 'GPSLatitudeRef')
-        gps_longitude = _get_if_exist(gps_info, 'GPSLongitude')
-        gps_longitude_ref = _get_if_exist(gps_info, 'GPSLongitudeRef')
-
-        if gps_latitude and gps_latitude_ref and gps_longitude and gps_longitude_ref:
-            lat = _convert_to_degress(gps_latitude)
-            if gps_latitude_ref != "N":                     
-                lat = 0 - lat
-
-            lon = _convert_to_degress(gps_longitude)
-            if gps_longitude_ref != "E":
-                lon = 0 - lon
-
-    return lat, lon
-
-
-################
-# Example ######
-################
-# if __name__ == "__main__":
-#     image = ... # load an image through PIL's Image object
-#     exif_data = get_exif_data(image)
-#     print get_lat_lon(exif_data)
+def get_date(exif):
+    return exif.get('DateTimeOriginal') or exif.get('DateTime') or ""
