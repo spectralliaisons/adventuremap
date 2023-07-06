@@ -4,12 +4,13 @@ import './Map.scss';
 import Menu from './Menu';
 import Legend from './Legend';
 import {paintMarker} from './Marker'
+import StyleSelector from './StyleSelector'
 import {s3} from './S3';
 let _ = require('underscore');
 
 const colorWaterMarker = '#2592ff';
 const colorNonWaterMarker = '#ff2592';
-const colorPolyFill = '#ff6c6c';//'#ffffff';
+const colorPolyFill = '#ff6c6c';
 const colorPolyStroke = '#ff6c6c'
 const colorRiver = '#00bcff';
 const colorTrack = colorNonWaterMarker;
@@ -26,13 +27,15 @@ const Map = ({config}) => {
 
   const fetchPlacesRef = useRef(fetchPlaces);
   const map = useRef(null);
+  const mapStyles = useRef(config.map.mapStyles);
   const hoveredFtRef = useRef(null), selectedFtRef = useRef(null);
   const mapContainerRef = useRef(null);
   const attributionRef = useRef(config.map.attribution);
-  const styleRef = useRef(config.map.mapStyle);
   const centerRef = useRef(config.map.center);
   const zoomRef = useRef(config.map.zoom);
+  const mapData = useRef({});
   
+  const [style, setStyle] = useState(mapStyles.current[0].url);
   const [places, setPlaces] = useState(null);
   const [legendVisible, setLegendVisible] = useState(false);
   const [error, setError] = useState(null);
@@ -42,16 +45,22 @@ const Map = ({config}) => {
   const paintPlaceRef = useRef((place, initialPlaces) => {
     const paintData = place => lID0 => data => {
       if (place == null) return;
-      const lID1 = `layer-${place}-${lID0}`;
-      map.current.addSource(lID1, {
-        type: 'geojson',
-        data: data
-      });
-    
-      const kinds = lID0.replace(".geojson", "").split("-");
-      addPoints(lID1, kinds);
-      addPolys(lID1);
-      addLines(lID1, kinds);
+      mapData.current[lID0] = () => {
+        const lID1 = `layer-${place}-${lID0}`;
+        map.current.addSource(lID1, {
+          type: 'geojson',
+          data: data
+        });
+      
+        const kinds = lID0.replace(".geojson", "").split("-");
+        addPoints(lID1, kinds);
+        addPolys(lID1);
+        addLines(lID1, kinds);
+      }
+      mapData.current[lID0]();
+
+      // Reload this data if map style changes
+      map.current.on('style.load', mapData.current[lID0]);
     };
     
     const addPoints = (lID0, kinds) => {
@@ -78,7 +87,6 @@ const Map = ({config}) => {
     
     const drawDescription = ({lngLat, features}) => {
       setModalHtml(null);
-      console.log(features[0])
       if (features.length === 0 || features[0].layer.type === "line" ) return;
       const content = features[0].properties.description;
       if (content !== undefined && content.length > 0) {
@@ -189,7 +197,6 @@ const Map = ({config}) => {
   
   useEffect(() => {
     if (modalHtml != null) {
-      console.log(modalHtml.loc)
       const r = 15, s = 2;
       selectedFtRef.current = new mapboxgl.Popup({offset: [0, r*1.25+s/2]})
         .setLngLat(modalHtml.loc)
@@ -207,10 +214,10 @@ const Map = ({config}) => {
 
     map.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: styleRef.current,
-        attributionControl: false,
         center: centerRef.current,
-        zoom: zoomRef.current
+        zoom: zoomRef.current,
+        attributionControl: false,
+        projection: 'globe'
       })
       .addControl(
         new mapboxgl.GeolocateControl({
@@ -242,12 +249,15 @@ const Map = ({config}) => {
     return () => map.current.remove();
   }, []);
 
+  useEffect(() => map.current.setStyle(style), [style]);
+
   return (
     <div>
       <div id="my-controls">
         <Menu places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack} />
       </div>
+      <StyleSelector options={mapStyles.current} style={style} setStyle={setStyle} />
       <Error message={error} />
       <Desc html={desc} />
       <div className='map-container' ref={mapContainerRef} />

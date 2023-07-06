@@ -1,0 +1,41 @@
+@import 'Common';
+
+#styles {
+    z-index: 1;
+    position: absolute;
+    top:200px;
+    right:10px;
+    text-align: right;
+
+    .material-icons {
+        cursor: pointer;
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 2px;
+        color: $dark;
+        border: 2px solid #dddddd;
+    }
+    .material-icons:hover {
+        background-color: #e4e4e4;
+    }
+
+    ol {
+        @include window;
+        padding: 5px;
+        border-radius:2px;
+        li {
+            cursor: pointer;
+        }
+        li:hover {
+            opacity: 0.5;
+        }
+        li.selected {
+            color: $track;
+        }
+    }
+  }
+  #styles.closed {
+    ol {
+        visibility: hidden;
+    }
+  }
