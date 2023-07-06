@@ -3,26 +3,32 @@
 #styles {
     z-index: 1;
     position: absolute;
-    top:200px;
-    right:10px;
+    top: 184px;
+    right: 10px;
     text-align: right;
 
-    .material-icons {
-        cursor: pointer;
-        background-color: #ffffff;
-        border-radius: 5px;
-        padding: 2px;
-        color: $dark;
-        border: 2px solid #dddddd;
+    $size: 29px;
+
+    .mapboxgl-ctrl-group {
+        width: $size;
+        right: 0px;
+        position: absolute;
+
+        .mapboxgl-ctrl-icon {
+            text-align: center;
+        }
     }
-    .material-icons:hover {
-        background-color: #e4e4e4;
+
+    .material-icons {
+        font-size: $size;
+        scale: 0.85;
     }
 
     ol {
         @include window;
         padding: 5px;
-        border-radius:2px;
+        border-radius: 2px;
+        translate: 0px 33px;
         li {
             cursor: pointer;
         }

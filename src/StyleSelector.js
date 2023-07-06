@@ -12,7 +12,9 @@ const StyleSelector = ({options, style, setStyle}) => {
 
     return (
         <div id="styles" className={state}>
-            <span className="material-icons close" onClick={toggle}>layers</span>
+            <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
+                <button class="mapboxgl-ctrl-icon" onClick={toggle}><span className="material-icons close">layers</span></button>
+            </div>
             <ol>{options.map(({name, url}) => 
                 <div key={name}>
                     <li className={style === url ? "selected" : ""} onClick={() => setStyle(url)}>{name}</li>
