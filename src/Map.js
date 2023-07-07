@@ -93,7 +93,7 @@ const Map = ({config}) => {
         if (features.length === 0 ) return;
         const ft = features[0];
         const loc = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
-        if (content.indexOf('http') == 0) content = `<a href='${content}' target='_blank'>${content}</a>`;
+        if (content.indexOf('http') === 0) content = `<a href='${content}' target='_blank'>${content}</a>`;
         setModalHtml({loc, html:content});
       }
       else {
