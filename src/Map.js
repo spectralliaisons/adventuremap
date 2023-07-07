@@ -15,7 +15,7 @@ const colorPolyStroke = '#ff6c6c'
 const colorRiver = '#00bcff';
 const colorTrack = colorNonWaterMarker;
 
-const paintPoly = { 'line-color': colorPolyStroke, 'line-width': 1, 'line-opacity':1 };
+const paintPoly = { 'line-color': colorPolyStroke, 'line-width': 1, 'line-opacity':0.85 };
 const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
 const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
 
@@ -88,11 +88,12 @@ const Map = ({config}) => {
     const drawDescription = ({lngLat, features}) => {
       setModalHtml(null);
       if (features.length === 0 || features[0].layer.type === "line" ) return;
-      const content = features[0].properties.description;
+      let content = features[0].properties.description;
       if (content !== undefined && content.length > 0) {
         if (features.length === 0 ) return;
         const ft = features[0];
         const loc = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
+        if (content.indexOf('http') == 0) content = `<a href='${content}' target='_blank'>${content}</a>`;
         setModalHtml({loc, html:content});
       }
       else {
@@ -106,12 +107,12 @@ const Map = ({config}) => {
       if (hoveredFtRef.current != null) {
         hoveredFtRef.current.remove();
       }
-      const ft = features[0];
-      if (ft.properties.name == null || ft.properties.name.length === 0) return;
+      const ft = features[0], name = ft.properties["name"] || ft.properties["Name"];
+      if (name == null || name.length === 0) return;
       const coord = ft.geometry.type === "Point" ? ft.geometry.coordinates : lngLat.wrap();
       
       const el = document.createElement('div');
-      el.textContent = ft.properties.name;
+      el.textContent = name;
     
       hoveredFtRef.current = new mapboxgl.Popup({offset: [0, -15]})
         .setLngLat(coord)
