@@ -1,18 +1,9 @@
 @import 'Common';
 
 #styles {
-    z-index: 1;
-    position: absolute;
-    top: 184px;
-    right: 10px;
-    text-align: right;
-
-    $size: 29px;
 
     .mapboxgl-ctrl-group {
-        width: $size;
-        right: 0px;
-        position: absolute;
+        margin: unset;
 
         .mapboxgl-ctrl-icon {
             text-align: center;
@@ -20,7 +11,7 @@
     }
 
     .material-icons {
-        font-size: $size;
+        font-size: 29px;
         scale: 0.85;
     }
 
@@ -31,6 +22,7 @@
         translate: 0px 33px;
         li {
             cursor: pointer;
+            display: flex;
         }
         li:hover {
             opacity: 0.5;

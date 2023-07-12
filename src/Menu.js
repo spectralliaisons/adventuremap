@@ -26,13 +26,14 @@ const Menu = ({places}) => {
 };
 
 const Hamburger = ({menuState, toggle}) => {
+    const label = `${menuState === "open" ? "Close" : "Open"} map navigation menu.`;
     return (
-        <div id="hamburger" className={menuState} onClick={toggle}>
+        <button id="hamburger" className={menuState} onClick={toggle} title={label} aria-label={label}>
             <span></span>
             <span></span>
             <span></span>
             <span></span>
-        </div>
+        </button>
     )
 };
 
@@ -62,8 +63,9 @@ const Places = ({menuState, places}) => {
 };
 
 const Item = ({id, className, disp}) => {
+    const label = `Show map of ${disp}.`;
     return (
-        <li id={id} className={className} style={{fontSize:`${fontSz}px`}}><a href={"#"+id}>{disp}</a></li>
+        <li id={id} className={className} style={{fontSize:`${fontSz}px`}}><a href={"#"+id} title={label} aria-label={label}>{disp}</a></li>
     );
 };
 

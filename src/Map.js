@@ -4,7 +4,7 @@ import './Map.scss';
 import Menu from './Menu';
 import Legend from './Legend';
 import {paintMarker} from './Marker'
-import StyleSelector from './StyleSelector'
+import MapStyleControl from './MapStyleControl'
 import {s3} from './S3';
 let _ = require('underscore');
 
@@ -35,7 +35,6 @@ const Map = ({config}) => {
   const zoomRef = useRef(config.map.zoom);
   const mapData = useRef({});
   
-  const [style, setStyle] = useState(mapStyles.current[0].url);
   const [places, setPlaces] = useState(null);
   const [legendVisible, setLegendVisible] = useState(false);
   const [error, setError] = useState(null);
@@ -232,6 +231,7 @@ const Map = ({config}) => {
       .addControl(new mapboxgl.AttributionControl({compact: true, customAttribution: attributionRef.current}))
       .addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}))
       .addControl(new mapboxgl.NavigationControl(), 'top-right')
+      .addControl(new MapStyleControl(mapStyles.current), 'top-right')
       .once('load', () => {
         fetchPlacesRef.current().then((res) => {
           if (res == null) setError("Could not fetch places.")
@@ -250,15 +250,12 @@ const Map = ({config}) => {
     return () => map.current.remove();
   }, []);
 
-  useEffect(() => map.current.setStyle(style), [style]);
-
   return (
     <div>
       <div id="my-controls">
         <Menu places={places} />
         <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack} />
       </div>
-      <StyleSelector options={mapStyles.current} style={style} setStyle={setStyle} />
       <Error message={error} />
       <Desc html={desc} />
       <div className='map-container' ref={mapContainerRef} />
