@@ -74,6 +74,7 @@
           font-size: 12px;
           line-height: normal;
           font-style: italic;
+          width: 100%;
         }
         .col {
           display: flex;
@@ -92,10 +93,10 @@
         a {
           color: $track;
         }
-        img {
+        img, iframe {
           width: $size-thumbnail;
           padding-top: 3px;
-          @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
+          @media screen and (max-width:$fullscreen-width) {
             width: 100vw;
           }
         }
