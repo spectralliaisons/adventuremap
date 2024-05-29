@@ -1,35 +1,36 @@
 import React from 'react';
 import './Legend.scss';
 
-const Legend = ({visible, colorRiver, colorTrack}) => {
+const Legend = ({available, visible, colorRiver, colorTrack}) => {
     if (visible) {
+        const addClass = (which) => `item ${available.indexOf(which) === -1 ? 'unavailable' : ''}`;
         return (
             <div id="legend">
-                <div className="item">
+                <div className={addClass("aud")}>
                     <div id="eg-aud" className="eg-marker"/>
                     <span>sound</span>
                 </div>
-                <div className="item">
+                <div className={addClass("img")}>
                     <div id="eg-img" className="eg-marker"/>
                     <span>photo</span>
                 </div>
-                <div className="item">
+                <div className={addClass("water")}>
                     <Point color={colorRiver}/>
                     <span>water feature</span>
                 </div>
-                <div className="item">
+                <div className={addClass("human")}>
                     <Point color={colorTrack}/>
                     <span>human feature</span>
                 </div>
-                <div className="item">
+                <div className={addClass("other")}>
                     <Point color={"#000000"}/>
                     <span>other feature</span>
                 </div>
-                <div className="item">
+                <div className={addClass("river")}>
                     <Line color={colorRiver}/>
                     <span>river</span>
                 </div>
-                <div className="item">
+                <div className={addClass("route")}>
                     <Line color={colorTrack}/>
                     <span>my route</span>
                 </div>

@@ -35,6 +35,7 @@ const Map = ({config}) => {
   const paintTrackRef = useRef(config.map.paintTrack);
   const paintRiversSmRef = useRef(config.map.paintRiversSm);
   const paintRiversLgRef = useRef(config.map.paintRiversLg);
+  const legendRef = useRef(config.map.legend);
 
   const mapData = useRef({});
   
@@ -263,7 +264,7 @@ const Map = ({config}) => {
     <div>
       <div id="my-controls">
         <Menu places={places} />
-        <Legend visible={legendVisible} colorRiver={colorRiverRef.current} colorTrack={colorTrackRef.current} />
+        <Legend available={legendRef.current} visible={legendVisible} colorRiver={colorRiverRef.current} colorTrack={colorTrackRef.current} />
       </div>
       <Error message={error} />
       <Desc html={desc} />

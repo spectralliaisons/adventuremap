@@ -28,7 +28,8 @@ const config = {
         paintPoly: { 'line-color': '#CF664F', 'line-width': 1, 'line-opacity':0.85 }, // ff6c6c
         paintTrack: { 'line-color': '#B04D5B', 'line-width': 2, 'line-opacity':0.6}, // ff2592
         paintRiversSm: { 'line-color': '#4A4672', 'line-width': 1, 'line-opacity': 0.6}, // 00bcff
-        paintRiversLg: { 'line-color': '#4A4672', 'line-width': 2, 'line-opacity': 1.0} // 00bcff
+        paintRiversLg: { 'line-color': '#4A4672', 'line-width': 2, 'line-opacity': 1.0}, // 00bcff
+        legend: ['img', 'river', 'route'] //['aud', 'img', 'water', 'human', 'other', 'river', 'route']
     }
 }
 
