@@ -8,17 +8,6 @@ import MapStyleControl from './MapStyleControl'
 import {s3} from './S3';
 let _ = require('underscore');
 
-const colorWaterMarker = '#2592ff';
-const colorNonWaterMarker = '#ff2592';
-const colorPolyFill = '#ff6c6c';
-const colorPolyStroke = '#ff6c6c'
-const colorRiver = '#00bcff';
-const colorTrack = colorNonWaterMarker;
-
-const paintPoly = { 'line-color': colorPolyStroke, 'line-width': 1, 'line-opacity':0.85 };
-const paintTrack = { 'line-color': colorTrack, 'line-width': 2, 'line-opacity':0.6} ;
-const paintRivers = sm => ({ 'line-color': colorRiver, 'line-width': (sm ? 1 : 2), 'line-opacity': (sm ? 0.6 : 1.0)} );
-
 const hashToPlace = () => window.location.hash.split("#")[1];
 
 const Map = ({config}) => {
@@ -27,12 +16,26 @@ const Map = ({config}) => {
 
   const fetchPlacesRef = useRef(fetchPlaces);
   const map = useRef(null);
-  const mapStyles = useRef(config.map.mapStyles);
+  const mapStylesRef = useRef(config.map.mapStyles);
   const hoveredFtRef = useRef(null), selectedFtRef = useRef(null);
   const mapContainerRef = useRef(null);
   const attributionRef = useRef(config.map.attribution);
   const centerRef = useRef(config.map.center);
   const zoomRef = useRef(config.map.zoom);
+  const geolocationRef = useRef(config.map.geolocation);
+  const circleRadiusRef = useRef(config.map.circleRadius);
+  const circleStrokeWidthRef = useRef(config.map.circleStrokeWidth);
+  const circleStrokeColorRef = useRef(config.map.circleStrokeColor);
+  const colorWaterMarkerRef = useRef(config.map.colorWaterMarker);
+  const colorNonWaterMarkerRef = useRef(config.map.colorNonWaterMarker);
+  const colorPolyFillRef = useRef(config.map.colorPolyFill);
+  const colorRiverRef = useRef(config.map.colorRiver);
+  const colorTrackRef = useRef(config.map.colorTrack);
+  const paintPolyRef = useRef(config.map.paintPoly);
+  const paintTrackRef = useRef(config.map.paintTrack);
+  const paintRiversSmRef = useRef(config.map.paintRiversSm);
+  const paintRiversLgRef = useRef(config.map.paintRiversLg);
+
   const mapData = useRef({});
   
   const [places, setPlaces] = useState(null);
@@ -70,8 +73,10 @@ const Map = ({config}) => {
         'type': 'circle',
         'source': lID0,
         'paint': {
-        'circle-radius': 6,
-        'circle-color': (isWaterMarker ? colorWaterMarker : colorNonWaterMarker)
+          'circle-radius': circleRadiusRef.current,
+          'circle-stroke-width': circleStrokeWidthRef.current,
+          'circle-stroke-color': circleStrokeColorRef.current,
+          'circle-color': (isWaterMarker ? colorWaterMarkerRef.current : colorNonWaterMarkerRef.current)
         },
         'filter': ['==', '$type', 'Point']
       });
@@ -132,7 +137,7 @@ const Map = ({config}) => {
         'id':  `${lID0}-outline`,
         'type': 'line',
         'source': lID0,
-        'paint': paintPoly,
+        'paint': paintPolyRef.current,
         'filter': ['==', '$type', 'Polygon']
       });
       const lID1 = `${lID0}-area`;
@@ -141,7 +146,7 @@ const Map = ({config}) => {
         'type': 'fill',
         'source': lID0,
         'paint': {
-          'fill-color': colorPolyFill,
+          'fill-color': colorPolyFillRef.current,
           'fill-opacity': 0.1
         },
         'filter': ['==', '$type', 'Polygon']
@@ -161,7 +166,7 @@ const Map = ({config}) => {
           'line-join': 'round',
           'line-cap': 'round'
         },
-        'paint': (isTrack ? paintTrack : paintRivers(isSmRiver)),
+        'paint': (isTrack ? paintTrackRef.current : isSmRiver ? paintRiversSmRef.current : paintRiversLgRef.current),
         'filter': ['==', '$type', 'LineString']
       });
       addListeners(lID1);
@@ -200,7 +205,7 @@ const Map = ({config}) => {
       const r = 15, s = 2;
       selectedFtRef.current = new mapboxgl.Popup({offset: [0, r*1.25+s/2]})
         .setLngLat(modalHtml.loc)
-        .setHTML(`<svg class='tip selected' width='${r*2}' height='${r*2}'><circle fill='${colorTrack}' fill-opacity='0.25' stroke-width='${s}' stroke='${colorTrack}' r='${r}' cx='${r}' cy='${r}'></circle></svg>`)
+        .setHTML(`<svg class='tip selected' width='${r*2}' height='${r*2}'><circle fill='${colorTrackRef.current}' fill-opacity='0.25' stroke-width='${s}' stroke='${colorTrackRef.current}' r='${r}' cx='${r}' cy='${r}'></circle></svg>`)
         .addTo(map.current);
     }
     else if (selectedFtRef.current != null) {
@@ -217,21 +222,12 @@ const Map = ({config}) => {
         center: centerRef.current,
         zoom: zoomRef.current,
         attributionControl: false,
-        projection: 'globe'
+        projection: 'globe',
+        style: mapStylesRef.current[0].url
       })
-      .addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true,
-        showUserHeading: true
-        })
-      )
       .addControl(new mapboxgl.AttributionControl({compact: true, customAttribution: attributionRef.current}))
       .addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}))
       .addControl(new mapboxgl.NavigationControl(), 'top-right')
-      .addControl(new MapStyleControl(mapStyles.current), 'top-right')
       .once('load', () => {
         fetchPlacesRef.current().then((res) => {
           if (res == null) setError("Could not fetch places.")
@@ -246,6 +242,19 @@ const Map = ({config}) => {
         });
       });
 
+      if (geolocationRef.current)
+        map.current.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true,
+          showUserHeading: true
+          })
+        );
+      
+      if (mapStylesRef.current.length > 1) map.current.addControl(new MapStyleControl(mapStylesRef.current), 'top-right');
+
     // Clean up on unmount
     return () => map.current.remove();
   }, []);
@@ -254,7 +263,7 @@ const Map = ({config}) => {
     <div>
       <div id="my-controls">
         <Menu places={places} />
-        <Legend visible={legendVisible} colorRiver={colorRiver} colorTrack={colorTrack} />
+        <Legend visible={legendVisible} colorRiver={colorRiverRef.current} colorTrack={colorTrackRef.current} />
       </div>
       <Error message={error} />
       <Desc html={desc} />

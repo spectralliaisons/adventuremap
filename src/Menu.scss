@@ -39,6 +39,9 @@
       }
     }
   }
+  #places.open {
+    min-height: 60px;
+  }
   
   #hamburger {
     display: flex;

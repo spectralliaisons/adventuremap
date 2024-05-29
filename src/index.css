@@ -1,6 +1,6 @@
 @font-face {
   font-family: font;
-  src: url(../src/rsc/RobotoMono-SemiBold.ttf);
+  src: url(../src/rsc/Aclonica-Regular.ttf);
 }
 
 body {
@@ -11,6 +11,5 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: font;
 }
