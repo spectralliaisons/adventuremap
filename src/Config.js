@@ -13,6 +13,7 @@ const config = {
                 "url":"mapbox://styles/edoardschooner/clwr7skwh00xr01pp5luy4z3l"
             }
         ],
+        showLocations: false, // true
         center: [-119.509444, 37.229722],
         zoom: 5,
         attribution : `© Wes Jackson ${new Date().getFullYear()} ~ Love and water are never wasted; they are the efflux of our inner nature`,

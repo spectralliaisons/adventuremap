@@ -2,7 +2,7 @@ import ReactDomServer from 'react-dom/server'
 import mapboxgl from 'mapbox-gl';
 import 'material-icons/iconfont/material-icons.css';
 
-const paintMarker = (s3rsc, map, place, setModalHtml) => location => {
+const paintMarker = (s3rsc, map, place, setModalHtml, showLocations) => location => {
   const el = document.createElement('div');
 
   const popup = new mapboxgl.Popup({ 
@@ -18,56 +18,72 @@ const paintMarker = (s3rsc, map, place, setModalHtml) => location => {
     .setPopup(popup)
     .addTo(map);
 
-  const html = ReactDomServer.renderToString(<Window s3rsc={s3rsc} place={place} location={location}/>);
+  const html = ReactDomServer.renderToString(<Window s3rsc={s3rsc} place={place} location={location} showLocations={showLocations}/>);
   popup.on('open', () => setModalHtml({loc, html:html}));
 };
 
 const styledMarker = location => {
   let marker = document.createElement('div');
-  if (location.aud != null) {marker.className = 'marker-aud';}
+  if (location.link != null) {
+    marker.className = 'material-icons marker-link';
+    marker.textContent = location.link.icon;
+  }
+  else if (location.aud != null) {marker.className = 'marker-aud';}
   else if (location.img != null) {marker.className = 'marker-img';}
   return marker;
 };
 
-const Window = ({s3rsc, place, location}) => {
+const Window = ({s3rsc, place, location, showLocations}) => {
   const label = location.label || "";
-  const srcLg = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
-  const srcSm = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : null;
+  const linkImgSrc = location.link ? location.link.src : null;
+  const linkDestination = location.link ? location.link.destination : null;
+  const linkText = location.link ? location.link.text : null;
+  const imgDestination = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
+  const imgSrc = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : linkImgSrc;
   const date = location.date ? location.date.split(" ")[0].replaceAll(":", ".") : null;
   return (
       <div>
-        <Location location={location}/>
+        <Location visible={showLocations} location={location}/>
         <h3>{label}</h3>
-        <Image srcLg={srcLg} srcSm={srcSm} label={label} date={date} />
-        <Sound s3rsc={s3rsc} place={place} src={location.aud} />
+        <div className="center">
+          <div>
+            <Image destination={imgDestination} imgSrc={imgSrc} label={label} date={date}/>
+            <ExternalLink destination={linkDestination} text={linkText}/>
+          </div>
+        </div>
+        <Sound s3rsc={s3rsc} place={place} src={location.aud}/>
+        <ExternalVideo src={location.video}/>
       </div>
   );
 };
 
-const Location = ({location}) => {
-  const lat = location.loc.lat.toFixed(4);
-  const lng = location.loc.lng.toFixed(4);
-  const url = `https://www.google.com/maps/search/?api=1&query=${location.loc.lat},${location.loc.lng}`;
-  return <div className="icon"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
+const Location = ({location, showLocations}) => {
+  if (!showLocations) return <div></div>
+  else {
+    const lat = location.loc.lat.toFixed(4);
+    const lng = location.loc.lng.toFixed(4);
+    const url = `https://www.google.com/maps/search/?api=1&query=${location.loc.lat},${location.loc.lng}`;
+    return <div className="icon"><span className="material-icons">map</span><a href={url} target="_">{lat},{lng}</a></div>
+  }
 };
 
-const Image = ({srcLg, srcSm, label, date}) => {
+const Image = ({destination, imgSrc, label, date}) => {
   return (
-    <a href={srcLg} target="_blank" rel="noreferrer">
-      <ImageContent srcLg={srcLg} srcSm={srcSm} label={label} date={date} />
+    <a href={destination} target="_blank" rel="noreferrer">
+      <ImageContent destination={destination} imgSrc={imgSrc} label={label} date={date} />
     </a>
   )
 };
 
-const ImageContent = ({srcLg, srcSm, label, date}) => {
-  if (srcSm == null || srcLg == null) {
+const ImageContent = ({destination, imgSrc, label, date}) => {
+  if (imgSrc == null) {
     return (<div></div>)
   }
   else {
     const formatted = date;
     return (
       <div>
-        <img src={srcSm} href={srcLg} alt={label} />
+        <img src={imgSrc} href={destination} alt={label} />
         <div id="date">{formatted}</div>
       </div>
     )
@@ -82,6 +98,27 @@ const Sound = ({s3rsc, place, src}) => {
     const url = s3rsc(`${place}/aud/${src}`);
     return (
       <audio controls><source src={url} type="audio/mpeg"/>Your browser does not support audio!</audio>
+    )
+  }
+};
+
+const ExternalLink = ({destination, text}) => {
+  if (destination == null || text == null) {
+    return <div></div>
+  }
+  else return (
+    <a className="link" href={destination} target="_blank" rel="noreferrer">{text}</a>
+  )
+};
+
+const ExternalVideo = ({src}) => {
+  if (src == null) {
+    return <div></div>
+  }
+  else {
+    const url = `https://www.youtube.com/embed/${src}`;
+    return (
+      <iframe width="400" height="225" src={url} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
     )
   }
 };

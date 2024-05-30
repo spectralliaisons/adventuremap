@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import './Menu.scss';
 let _ = require('underscore');
 
-const fontSz = 14;
-const padding = 6;
+const fontSz = 18;
+const padding = 12;
 const listPaddingTop = 18;
 
 const Menu = ({places}) => {

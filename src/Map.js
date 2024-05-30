@@ -22,6 +22,7 @@ const Map = ({config}) => {
   const attributionRef = useRef(config.map.attribution);
   const centerRef = useRef(config.map.center);
   const zoomRef = useRef(config.map.zoom);
+  const showLocationsRef = useRef(config.map.showLocations);
   const geolocationRef = useRef(config.map.geolocation);
   const circleRadiusRef = useRef(config.map.circleRadius);
   const circleStrokeWidthRef = useRef(config.map.circleStrokeWidth);
@@ -185,7 +186,7 @@ const Map = ({config}) => {
               const prev1 = prev0 || initialPlaces;
               return ({...prev1, [place]:({...prev1[place], loaded:true})})
             });
-            if (json != null) _.each(json.locations, paintMarker(s3rsc, map.current, place, setModalHtml));
+            if (json != null) _.each(json.locations, paintMarker(s3rsc, map.current, place, setModalHtml, showLocationsRef.current));
           }
         }
         if (json == null)
@@ -198,7 +199,10 @@ const Map = ({config}) => {
         setError(null);
         setLegendVisible(true);
       })
-      .catch(() => setError("That place does not exist."))
+      .catch((err) => {
+        console.log(err);
+        setError("That place does not exist.");
+      });
     });
   
   useEffect(() => {

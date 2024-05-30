@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: font;
-  src: url(../src/rsc/Aclonica-Regular.ttf);
+  src: url(../src/rsc/Montserrat-VariableFont_wght.ttf);
 }
 
 #my-controls {
@@ -42,6 +42,7 @@
       position: relative;
       z-index: 4;
       padding: 3px;
+      background-color: #e0e3fa;
       @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
         width: 100%;
         height: 100%;
@@ -55,8 +56,8 @@
         cursor: pointer;
         border-radius: 50%;
         position: absolute;
-        top: 2px;
-        right: -2px;
+        right: 0px;
+        padding: 10px;
       }
       .material-icons.close:hover {
         opacity:0.5;
@@ -64,11 +65,27 @@
       #content {
         font-size: 16px;
         overflow-y: auto;
-        width: $size-thumbnail;
-        max-height: 650px;
+        // width: $size-thumbnail;
+        // max-height: 650px;
+        width: 80vw;
+        max-width: 600px;
+        max-height: 80vh;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
         @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
           width: 100%;
           max-height: 100vh;
+        }
+        h3 {
+          font-family: font;
+          font-weight: 500;
+          font-style: normal;
+          font-size: 20px;
+          color: #494672;
+          padding-top: 15px;
+          padding-bottom: 5px;
         }
         .subt {
           font-size: 12px;
@@ -87,6 +104,33 @@
           position: absolute;
           margin-top: -25px;
         }
+        .center {
+          // display: flex;
+          // justify-content: center;
+          // padding: 15px;
+          // position: relative;
+          // bottom: 66px;
+          display: flex;
+          justify-content: center;
+        }
+        .link {
+          background-color: #cf664f;
+          // border-radius: 300px;
+          display: block;
+          padding: 21px 34px;
+          // max-width: 165px;
+          position: relative;
+          bottom: 66px;
+          font-family: font;
+          color: #fff;
+          font-size: 24px;
+          font-weight: 500;
+          font-style: normal;
+          text-transform: uppercase;
+        }
+        .link:hover {
+          opacity: 0.8;
+        }
         table {
           width: unset !important;
         }
@@ -96,6 +140,7 @@
         img, iframe {
           width: $size-thumbnail;
           padding-top: 3px;
+          filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.5));
           @media screen and (max-width:$fullscreen-width) {
             width: 100vw;
           }
@@ -147,6 +192,14 @@
   background-image: url('./rsc/circle-img.svg');
   z-index: 1;
 }
+.marker-link {
+  background-color: #cf664f;
+  z-index: 2;
+  filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.4));
+  padding: 8px;
+  color: #e0e3fa;
+  font-size: 45px !important;
+}
 
 .mapboxgl-ctrl-top-right {
   z-index: unset;
@@ -154,8 +207,8 @@
 
 .mapboxgl-marker {
   background-size: cover;
-  width: 20px;
-  height: 20px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
 }
