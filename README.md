@@ -62,23 +62,37 @@ open http://localhost:3000/
 
 ```
 {
-  "local":true,
-  "zoom":15,
-  "center":"head of the russian river",
-  "mapType":"hybrid",
-  "locations":[
+  "local": true,
+  "zoom": 15,
+  "center": "head of the russian river",
+  "locations": [
     {
-      "label":"head of the russian river",
-      "loc":{"lat": 39.3816387, "lng": -123.2364948},
-      "img":null,
-      "aud":null
+      "label": "head of the russian river",
+      "loc": {"lat": 39.3816387, "lng": -123.2364948},
+      "img": null,
+      "aud": null,
+      "link": null
     }
   ],
-  "desc":"<div>You can add html here for an informational footer.</div>"
+  "desc": "<div>You can add html here for an informational footer.</div>"
 }
 ```
 
+`img` is an optional property specifying an image name in the `imgOrig/` directory; if the image doesn't contain a geolocation in its metadata, a marker can still be placed for it at the location specified by `loc`.
+
 `local` is an optional property that only shows this place in the menu during development (at localhost:3000).
+
+`link` is an optional property that can allow a specified image to function as a link with specified text; e.g, taking the form:
+```
+{
+  "text": "TAKE ME AWAY",
+  "icon": "{{material icon key}}",
+  "src": "{{url of an image to be placed on the map at the geolocation specified by `loc`}}",
+  "destination": "{{url of link destination}}"
+}
+```
+
+If no `img` is specified but `link` specifies `src` and `destination`, then an image will still be shown at the specified location. The image will be from the `src` url. Nothing happens if the user clicks the image.
 
 6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/.
 
