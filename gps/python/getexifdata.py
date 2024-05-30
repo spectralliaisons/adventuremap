@@ -3,15 +3,19 @@ from PIL.ExifTags import TAGS, GPSTAGS
 
 def get_exif_data(im):
     exif = {}
-    info = im._getexif()
     
-    if info:
-        for tag, value in info.items():
-            k0 = TAGS.get(tag, tag)
-            if k0 != "GPSInfo":
-                exif[k0] = value
-            else:
-                exif[k0] = {GPSTAGS.get(t, t): value[t] for t in value}
+    try:
+        info = im._getexif()
+
+        if info:
+            for tag, value in info.items():
+                k0 = TAGS.get(tag, tag)
+                if k0 != "GPSInfo":
+                    exif[k0] = value
+                else:
+                    exif[k0] = {GPSTAGS.get(t, t): value[t] for t in value}
+    except AttributeError:
+        pass
     
     return exif
 
