@@ -1,3 +1,5 @@
+@import 'custom/overrides';
+
 $phone: 450px;
 $fullscreen-width: 600px;
 $fullscreen-height: 800px;
@@ -5,7 +7,6 @@ $fullscreen-height: 800px;
 $size-thumbnail:400px;
 
 $dark: #1a1a1ad6;
-$track: #4A4672;
 
 @mixin window {
     filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.4));

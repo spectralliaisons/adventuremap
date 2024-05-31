@@ -1,6 +1,6 @@
 import React from 'react';
 import Map from './Map';
-import {config} from './Config';
+import {config} from './custom/Config';
 
 function App() {
   return (

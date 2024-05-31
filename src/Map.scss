@@ -1,10 +1,5 @@
 @import 'Common';
 
-@font-face {
-  font-family: font;
-  src: url(../src/rsc/Montserrat-VariableFont_wght.ttf);
-}
-
 #my-controls {
   position: absolute;
   height: 100%;
@@ -21,7 +16,7 @@
     background-color: #ff2f2fd6;
     z-index: 4;
     #message {
-      color: #fff;
+      color: white;
       margin: 20px;
       text-align: center;
       font-weight: bold;
@@ -42,7 +37,6 @@
       position: relative;
       z-index: 4;
       padding: 3px;
-      background-color: #e0e3fa;
       @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
         width: 100%;
         height: 100%;
@@ -56,8 +50,8 @@
         cursor: pointer;
         border-radius: 50%;
         position: absolute;
-        right: 0px;
-        padding: 10px;
+        top: 2px;
+        right: -2px;
       }
       .material-icons.close:hover {
         opacity:0.5;
@@ -65,15 +59,8 @@
       #content {
         font-size: 16px;
         overflow-y: auto;
-        // width: $size-thumbnail;
-        // max-height: 650px;
-        width: 80vw;
-        max-width: 600px;
-        max-height: 80vh;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
+        width: $size-thumbnail;
+        max-height: 650px;
         @media screen and (max-width:$fullscreen-width), (max-height:$fullscreen-height) {
           width: 100%;
           max-height: 100vh;
@@ -105,24 +92,17 @@
           margin-top: -25px;
         }
         .center {
-          // display: flex;
-          // justify-content: center;
-          // padding: 15px;
-          // position: relative;
-          // bottom: 66px;
           display: flex;
           justify-content: center;
         }
         .link {
           background-color: #cf664f;
-          // border-radius: 300px;
           display: block;
           padding: 21px 34px;
-          // max-width: 165px;
           position: relative;
           bottom: 66px;
           font-family: font;
-          color: #fff;
+          color: white;
           font-size: 24px;
           font-weight: 500;
           font-style: normal;
@@ -140,7 +120,6 @@
         img, iframe {
           width: $size-thumbnail;
           padding-top: 3px;
-          filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.5));
           @media screen and (max-width:$fullscreen-width) {
             width: 100vw;
           }
@@ -207,8 +186,8 @@
 
 .mapboxgl-marker {
   background-size: cover;
-  width: 60px;
-  height: 60px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   cursor: pointer;
 }
