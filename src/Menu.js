@@ -2,10 +2,6 @@ import React, {useState} from 'react';
 import './Menu.scss';
 let _ = require('underscore');
 
-const fontSz = 18;
-const padding = 12;
-const listPaddingTop = 18;
-
 const Menu = ({places}) => {
 
     const [menuState, setMenuState] = useState("loading");
@@ -46,14 +42,9 @@ const Places = ({menuState, places}) => {
         })
         .sortBy("disp")
         .value();
-    const placesStyl = {
-        height:`${(menuState === "open" ? (placesLs.length*(fontSz+padding*2)-padding*3+listPaddingTop) : 0)}px`,
-        padding: `0px ${padding}px 0px ${padding}px`
-    };
-    const olStyl = {paddingTop: `${listPaddingTop}px`};
     return (
-        <div id="places" className={menuState} style={placesStyl}>
-            <ol style={olStyl}>{placesLs.map(p => 
+        <div id="places" className={menuState}>
+            <ol>{placesLs.map(p => 
                 <div key={p.id}>
                     <Item id={p.id} className={p.className} disp={p.disp} />
                 </div>
@@ -65,7 +56,7 @@ const Places = ({menuState, places}) => {
 const Item = ({id, className, disp}) => {
     const label = `Show map of ${disp}.`;
     return (
-        <li id={id} className={className} style={{fontSize:`${fontSz}px`}}><a href={"#"+id} title={label} aria-label={label}>{disp}</a></li>
+        <li id={id} className={className}><a href={"#"+id} title={label} aria-label={label}>{disp}</a></li>
     );
 };
 

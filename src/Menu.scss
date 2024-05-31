@@ -23,13 +23,14 @@
   #places {
     @include window;
     overflow: scroll;
-    transition: height 0.5s;
+    height: 0px;
     font-weight: 500;
     margin-top: -25px;
     min-width: 250px;
     ol {
       li {
         cursor: pointer;
+        padding: 5px 0px 5px 12px;
       }
       li:hover {
         opacity: 0.6;
@@ -44,6 +45,7 @@
   }
   #places.open {
     min-height: 60px;
+    height: 100%;
   }
   
   #hamburger {
