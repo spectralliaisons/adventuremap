@@ -1,11 +1,11 @@
+# Requires env variables:
+# rscS3Path: S3 bucket for map resources (json, images, geojson, audio)
+# rscCFID: CloudFront ID for the bucket at rscS3Path
+# siteS3Path: S3 bucket for the website build
+# siteCFID: CloudFront ID for the bucket at siteS3Path
 
-# S3PATH must match the s3 url in Map.js
-S3PATH = "s3://multimap-2/"
 PUBLICPATH = "gps/s3/"
 DIR_PREFIX_IGNORE = "_"
-
-# FullAccessUser
-CREDS = "--access_key=#{ENV['S3_ACCESS_KEY']} --secret_key=#{ENV['S3_SECRET_KEY']}"
 
 MEDIA = ['aud', 'imgLg', 'imgSm']
 
@@ -33,7 +33,7 @@ end
 namespace :push do
     
     desc "push all places' media files, kml, json to s3"
-    task :all => ['push:info', 'push:media']
+    task :all => ['push:info', 'push:media', 'push:invalidate']
     
     desc "push all places' media files to s3"
     task :media do
@@ -47,7 +47,7 @@ namespace :push do
                 files = Dir.glob("#{dirPath}*")
                 puts "files.length #{files.length}"
                 if files.length > 0
-                    sh %{s3cmd put #{dirPath}* #{S3PATH}#{dirPath} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
+                    sh %{aws s3 sync #{dirPath} #{ENV['rscS3Path']}#{dirPath}}
                 end
             end
         end
@@ -57,18 +57,18 @@ namespace :push do
     task :info do
         
         allPlacesJSON = "#{PUBLICPATH}all_rivers.json"
-        sh %{s3cmd put #{allPlacesJSON} #{S3PATH}#{allPlacesJSON} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
+        sh %{aws s3 cp #{allPlacesJSON} #{ENV['rscS3Path']}#{allPlacesJSON}}
         
         places.each do |place|
             puts "----------------- push place: #{place}"
             
             infoJSON = "#{place}/info.json"
-            sh %{s3cmd put #{infoJSON} #{S3PATH}#{infoJSON} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
-            
+            sh %{aws s3 cp #{infoJSON} #{ENV['rscS3Path']}#{infoJSON}}
+
             geojsonDir = "#{place}/geojson/"
             files = Dir.glob("#{geojsonDir}*")
             if files.length > 0
-                sh %{s3cmd put #{geojsonDir}* #{S3PATH}#{geojsonDir} #{CREDS} --acl-public --add-header "Cache-Control: public, must-revalidate, proxy-revalidate"}
+                sh %{aws s3 sync #{geojsonDir} #{ENV['rscS3Path']}#{geojsonDir}}
             end
         end
     end
@@ -76,8 +76,25 @@ namespace :push do
     desc "initialize s3 bucket"
     task :init do
         
-        sh %{s3cmd del #{S3PATH}#{PUBLICPATH} #{CREDS} --recursive}
+        sh %{aws s3 rm #{ENV['rscS3Path']}#{PUBLICPATH} --recursive}
         
+    end
+
+    desc "clear cached S3 content for the map by invalidating the CloudFront files"
+    task :invalidate do
+
+        sh %{aws cloudfront create-invalidation --distribution-id #{ENV['rscCFID']} --paths "/#{PUBLICPATH}*"}
+
+    end
+
+    desc "build the website and upload it"
+    task :site do
+
+        sh %{npm run build}
+        sh %{aws s3 rm #{ENV['siteS3Path']} --recursive}
+        sh %{aws s3 sync build #{ENV['siteS3Path']}}
+        sh %{aws cloudfront create-invalidation --distribution-id #{ENV['siteCFID']} --paths "/*"}
+
     end
 
 end
