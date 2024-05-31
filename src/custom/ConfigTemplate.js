@@ -17,7 +17,7 @@ const config = {
         center: [-119.509444, 37.229722],
         zoom: 5,
         attribution : `{{e.g. your copyright here -- this is shown if you hover your cursor over the mapbox info at the bottom right}}`,
-        geolocation: false,
+        geolocation: true,
         circleRadius: 6,
         circleStrokeWidth: 0,
         circleStrokeColor: '#ffffff',
@@ -30,7 +30,7 @@ const config = {
         paintTrack: { 'line-color': '#ff2592', 'line-width': 2, 'line-opacity':0.6},
         paintRiversSm: { 'line-color': '#00bcff', 'line-width': 1, 'line-opacity': 0.6},
         paintRiversLg: { 'line-color': '#00bcff', 'line-width': 2, 'line-opacity': 1.0},
-        legend: ['aud', 'img', 'water', 'human', 'other', 'river', 'route']
+        legend: {'aud':true, 'img':true, 'water':true, 'human':true, 'other':true, 'river':true, 'route':true}
     }
 }
 

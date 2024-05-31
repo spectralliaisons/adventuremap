@@ -13,24 +13,24 @@ const config = {
                 "url":"mapbox://styles/edoardschooner/clwr7skwh00xr01pp5luy4z3l"
             }
         ],
-        showLocations: false, // true
+        showLocations: false,
         center: [-119.509444, 37.229722],
         zoom: 5,
         attribution : `© Wes Jackson ${new Date().getFullYear()} ~ Love and water are never wasted; they are the efflux of our inner nature`,
         geolocation: false,
-        circleRadius: 12, // 6
-        circleStrokeWidth: 2, // 0
+        circleRadius: 12,
+        circleStrokeWidth: 2,
         circleStrokeColor: '#ffffff',
-        colorWaterMarker: '#4A4672', // 2592ff
-        colorNonWaterMarker: '#B04D5B', // ff2592
-        colorPolyFill: '#CF664F', // ff6c6c
-        colorRiver: '#4A4672', // 00bcff
-        colorTrack: '#B04D5B', // ff2592
-        paintPoly: { 'line-color': '#CF664F', 'line-width': 1, 'line-opacity':0.85 }, // ff6c6c
-        paintTrack: { 'line-color': '#B04D5B', 'line-width': 2, 'line-opacity':0.6}, // ff2592
-        paintRiversSm: { 'line-color': '#4A4672', 'line-width': 1, 'line-opacity': 0.6}, // 00bcff
-        paintRiversLg: { 'line-color': '#4A4672', 'line-width': 2, 'line-opacity': 1.0}, // 00bcff
-        legend: ['img', 'river', 'route'] //['aud', 'img', 'water', 'human', 'other', 'river', 'route']
+        colorWaterMarker: '#4A4672',
+        colorNonWaterMarker: '#B04D5B',
+        colorPolyFill: '#CF664F',
+        colorRiver: '#4A4672',
+        colorTrack: '#B04D5B',
+        paintPoly: { 'line-color': '#CF664F', 'line-width': 1, 'line-opacity':0.85 },
+        paintTrack: { 'line-color': '#B04D5B', 'line-width': 2, 'line-opacity':0.6},
+        paintRiversSm: { 'line-color': '#4A4672', 'line-width': 1, 'line-opacity': 0.6},
+        paintRiversLg: { 'line-color': '#4A4672', 'line-width': 2, 'line-opacity': 1.0},
+        legend: {'aud':false, 'img':true, 'water':true, 'human':false, 'other':false, 'river':true, 'route':true}
     }
 }
 

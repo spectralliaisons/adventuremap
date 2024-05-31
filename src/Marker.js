@@ -57,8 +57,8 @@ const Window = ({s3rsc, place, location, showLocations}) => {
   );
 };
 
-const Location = ({location, showLocations}) => {
-  if (!showLocations) return <div></div>
+const Location = ({location, visible}) => {
+  if (!visible) return <div></div>
   else {
     const lat = location.loc.lat.toFixed(4);
     const lng = location.loc.lng.toFixed(4);

@@ -32,8 +32,8 @@ const config = {
         center: [-119.509444, 37.229722],
         zoom: 5,
         attribution : `© Wes Jackson ${new Date().getFullYear()} ~ Love and water are never wasted; they are the efflux of our inner nature`,
-        showLocations: false, // true
-        geolocation: false,
+        showLocations: true,
+        geolocation: true,
         circleRadius: 6,
         circleStrokeWidth: 0,
         circleStrokeColor: '#ffffff',
@@ -46,7 +46,7 @@ const config = {
         paintTrack: { 'line-color': '#ff2592', 'line-width': 2, 'line-opacity':0.6},
         paintRiversSm: { 'line-color': '#00bcff', 'line-width': 1, 'line-opacity': 0.6},
         paintRiversLg: { 'line-color': '#00bcff', 'line-width': 2, 'line-opacity': 1.0},
-        legend: ['aud', 'img', 'water', 'human', 'other', 'river', 'route']
+        legend: {'aud':true, 'img':true, 'water':true, 'human':true, 'other':true, 'river':true, 'route':true}
     }
 }
 
