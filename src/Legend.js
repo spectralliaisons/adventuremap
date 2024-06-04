@@ -3,7 +3,7 @@ import './Legend.scss';
 
 const Legend = ({available, visible, colorRiver, colorTrack}) => {
     if (visible) {
-        const setVisibility = (which) => `item ${available[which] === undefined ? 'unavailable' : ''}`;
+        const setVisibility = (which) => `item ${available[which] === false ? 'unavailable' : ''}`;
         return (
             <div id="legend">
                 <div className={setVisibility("aud")}>

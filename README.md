@@ -98,11 +98,16 @@ If no `img` is specified but `link` specifies `src` and `destination`, then an i
 
 7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>. Historically, I used Google Maps API, which used kml instead of geojson and required kml to be hosted from a publicly-visible location. Not sure if this is true after the switch to Mapbox.
 
-8. Configure your site's settings by saving a copy of `src/custom/ConfigTemplate.js` as `src/custom/Config.js`. This file contains your `mapboxgl.accessToken`, s3 bucket url, and map settings and styles. You can customize styles by modifying a copy of `src/custom/overrides-template.scss` as `src/custom/overrides.scss`.
+8. Configure your site's settings by saving a copy of `src/custom/Config.js` as `src/custom/private/Config.js`. This file contains your `mapboxgl.accessToken`, s3 bucket url, and map settings and styles. You can customize styles by modifying a copy of `src/custom/overrides.scss` as `src/custom/private/overrides.scss`.
 
 9. View `public/index.html` at `localhost:3000` to see your new favorite map.
 
-<sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands). Always remember to never commit your AWS secret keys, you silly goose! E.g. to just push media files for a directory named Somewhere in `gps/s3/Somewhere`, run: `rake push:media place=Somewhere`
+<sup>1</sup> Available as rake tasks (run ```rake -T``` to see a list of commands).  See the top of the Rakefile for all environment variables needed to interface with S3 and CloudFront. E.g. to just push media files for a directory named Somewhere in `gps/s3/Somewhere`, run: `rake push:media place=Somewhere`
 
 ### Production build
+
+### Deploy to Github Pages
 `npm run deploy` (I follow steps for deploying to Github Pages in the [React deployment docs](https://create-react-app.dev/docs/deployment))
+
+### Deploy to S3
+`rake push:site` will build and push the site to the S3 bucket located at the environment variable `siteS3Path` and create an invalidation for CloudFront ID specified in the environment variable `siteCFID`.
