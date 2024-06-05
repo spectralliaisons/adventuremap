@@ -2,8 +2,12 @@ node_modules/*
 *.DS_Store
 gps/s3/*
 build/*
-src/custom/private/*
 gps/python/.ipynb_checkpoints/process_places-checkpoint.ipynb
 gps/python/__pycache__/*
 gps/python/process_places.html
 package-lock.json
+src/custom/*
+!src/custom/Config.js
+!src/custom/Config-template.js
+!src/custom/overrides.scss
+!src/custom/overrides-template.scss

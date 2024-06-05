@@ -98,7 +98,7 @@ If no `img` is specified but `link` specifies `src` and `destination`, then an i
 
 7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>. Historically, I used Google Maps API, which used kml instead of geojson and required kml to be hosted from a publicly-visible location. Not sure if this is true after the switch to Mapbox.
 
-8. Configure your site's settings by saving a copy of `src/custom/Config.js` as `src/custom/private/Config.js`. This file contains your `mapboxgl.accessToken`, s3 bucket url, and map settings and styles. You can customize styles by modifying a copy of `src/custom/overrides.scss` as `src/custom/private/overrides.scss`.
+8. Configure your site's settings by saving a copy of `src/custom/Config-template.js` as `src/custom/Config.js`. This file contains your `mapboxgl.accessToken`, s3 bucket url, and map settings and geojson display styles. You can customize the general site and map styles by modifying a copy of `src/custom/overrides-template.scss` as `src/custom/overrides.scss`. Any other files in the `src/custom` directory are gitignored so you can more easily swap between entirely separate data sources and styles.
 
 9. View `public/index.html` at `localhost:3000` to see your new favorite map.
 
