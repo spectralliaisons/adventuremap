@@ -1,10 +1,11 @@
 {
-  "name": "multimap",
+  "name": "multimap-2",
   "version": "2.1.0",
-  "homepage": "https://spectralliaisons.github.io/multimap",
   "private": true,
+  "author": "Wes Jackson",
+  "license": "MIT",
+  "email":"wes@wesmjackson.com",
   "dependencies": {
-    "gh-pages": "^3.2.3",
     "mapbox-gl": "^2.4.1",
     "material-icons": "^1.2.1",
     "react": "^17.0.2",
@@ -15,7 +16,6 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
@@ -27,7 +27,5 @@
   "browserslist": [
     "defaults",
     "not ie 11"
-  ],
-  "author": "Wesley Jackson",
-  "license": "MIT"
+  ]
 }
