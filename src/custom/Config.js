@@ -2,8 +2,8 @@ const config = {
     site: {
         title: "Rivers of CA"
     },
-    s3: {
-        bucketUrl : "https://d3w53aju7jg0.cloudfront.net"
+    assets: {
+        location : "https://d3w53aju7jg0.cloudfront.net"
     },
     map : {
         accessToken : "pk.eyJ1IjoiZWRvYXJkc2Nob29uZXIiLCJhIjoiY2x4MXY0OTRjMGJrNzJqb2FrNGd2cmQ0eSJ9.Sz_JwTjEDFAHVumFuaRNfA",

@@ -2,8 +2,8 @@ const config = {
     site: {
         title: "{{your page title}}"
     },
-    s3: {
-        bucketUrl : "{{url of the S3 bucket/CF distribution/etc for map resources}}"
+    assets: {
+        location : "{{url of the S3 bucket/CF distribution/etc for assets used to create map markers}}"
     },
     map : {
         accessToken : "{{mapbox access token}}",

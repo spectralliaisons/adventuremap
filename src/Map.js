@@ -5,14 +5,14 @@ import Menu from './Menu';
 import Legend from './Legend';
 import {paintMarker} from './Marker'
 import MapStyleControl from './MapStyleControl'
-import {s3} from './S3';
+import {assets} from './Assets';
 let _ = require('underscore');
 
 const hashToPlace = () => window.location.hash.split("#")[1];
 
 const Map = ({config}) => {
   mapboxgl.accessToken = config.map.accessToken;
-  const {s3rsc, loadPlace, fetchPlaces} = s3(config);
+  const {assetPath, loadPlace, fetchPlaces} = assets(config);
 
   const fetchPlacesRef = useRef(fetchPlaces);
   const map = useRef(null);
@@ -186,7 +186,7 @@ const Map = ({config}) => {
               const prev1 = prev0 || initialPlaces;
               return ({...prev1, [place]:({...prev1[place], loaded:true})})
             });
-            if (json != null) _.each(json.locations, paintMarker(s3rsc, map.current, place, setModalHtml, showLocationsRef.current));
+            if (json != null) _.each(json.locations, paintMarker(assetPath, map.current, place, setModalHtml, showLocationsRef.current));
           }
         }
         if (json == null)

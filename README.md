@@ -11,12 +11,15 @@ https://spectralliaisons.github.io/multimap/
 
 ## Dependencies
 
-### Amazon s3
-1. Create an Amazon AWS S3 bucket called "s3" and obtain your access and secret key.
-2. Install s3cmd: `brew install s3cmd`
-3. Maybe create environment vars in your bashrc/zshrc: S3_ACCESS_KEY and S3_SECRET_KEY or just specify them for rake commands for pushing to s3.
+### Amazon S3 & CloudFront
+Assets do not technically need to be hosted via Amazon S3 with CloudFront, though rake tasks (see `Rakefile`) are provided to facilitate working with Amazon CLI.
+
+1. Create an Amazon AWS S3 bucket that will host the geojson, images, audio files, and location json assets. You may optionally follow [these steps](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html) to use Amazon CloudFront with S3. You'll likely want to create another bucket to host the web client built.
+2. Install [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html) if you intend to use the rake tasks in `Rakefile` to upload assets. This file indicates the environment variables that specify the S3 bucket for the assets decribed in step 1 above, another S3 bucket for the website build, and associated CloudFront distributions for these buckets.
 
 ### Python
+The Python notebook `gps/python/process_places.ipynb` analyzes your assets and creates json files that tell the web client which map markers to create and what images, audio files, text, or links to display at certain locations.
+
 ```
 pip install notebook
 pip install Pillow
@@ -26,18 +29,22 @@ pip install numpy
 ```
 
 ### Node modules
-```
-npm install
-npm start
-```
+For building the web client.
 
-open http://localhost:3000/
+#### Setup
+`npm install`
+
+### Local build
+1. `npm start`
+2. open http://localhost:3000/
+
+Note that you'll need to upload assets in order for the map markers to work even for a local build (see "Amazon S3 & CloudFront" step 1 and step 7 below).
 
 ## Adding a track with images and optional audio:
 
 1. Create a directory for the place in `gps/s3/`. Copy `gps/_PlaceTemplate/` to use as a template.
 
-2. Add any geojson files you may have in `geojson/`. I convert kml files from my gps and [caltopo](https://caltopo.com/m/A912) to geojson using the VSCode Geo Data Viewer extension (randomfractalsinc.geo-data-viewer). Filename prefix indicates how the data will be rendered (see Map.js `addPoints()`):
+2. Add any geojson files you may have to `geojson/`. I convert kml files from my gps and [caltopo](https://caltopo.com/m/A912) to geojson using the VSCode Geo Data Viewer extension (randomfractalsinc.geo-data-viewer). Filename prefixes indicate how the data will be rendered (see Map.js `addPoints()`):
 - `river-`: blue line
 - `river-sm-`: thin blue line (no, not that one! -- e.g. to help differentiate river systems)
 - `track-`: pink line (in my case this indicates my travel via physical gps tracker)
@@ -45,13 +52,15 @@ open http://localhost:3000/
 - `waypoint-`: pink dot (I use this for manmade points of interest)
 - `ruin-`: pink dot
 
+These colors (and many other styles) can be customized in `src/custom/Config.js`, as described in point 8 below.
+
 ### e.g. differentiated river system
 ![an image examplar](./misc/screenshot3.png)
 
 ### e.g. differentiating water from archeological features. Note how cenotes form the rim of the Chicxulub impact crater!
 ![an image examplar](./misc/screenshot4.png)
 
-### geojson feature properties may include an HTML "description" property that will be displayed in a modal window when the feature is clicked; e.g. rendering information from [East Bay Hill People](https://eastbayhillpeople.com/map/).
+### geojson feature properties may include an HTML "description" property that will be displayed in a modal window when the feature is clicked; e.g. rendering data from [East Bay Hill People](https://eastbayhillpeople.com/map/).
 ![an image examplar](./misc/screenshot5.png)
 
 3. Add any images you may have in `imgOrig/`. Don't add anything to `imgErr/`, `imgLg/`, or `imgSm/`; these will be filled by a sript you'll run in a bit. If the python script finds GPS coordinates in the image, it will create a map marker on the map that, when clicked, will show the image, image name, and an audio file if one is found with the same name as this image. No locations will be included for images with the prefix `nomarker-` though they still will have large and small copies created--this is useful if you don't want to expose specific locations of images but still show the images in, say, the HTML description of a geojson feature.
@@ -92,11 +101,13 @@ open http://localhost:3000/
 }
 ```
 
-If no `img` is specified but `link` specifies `src` and `destination`, then an image will still be shown at the specified location. The image will be from the `src` url. Nothing happens if the user clicks the image.
+If no `img` is specified but `link` specifies `src` and `destination`, then an image will still be shown at the specified location. The image will be from the `src` url. When the user clicks the corresponding marker, a modal window will show the text, image, and a button that redirects the user to the link destination. If the user clicks the image in this window, nothing happens (whereas images displayed via `img` that are clicked open the full-sized image in a new browser tab).
+
+Note that combining `loc` and `link` allows you to show images at locations that aren't hosted e.g. via S3.
 
 6. Run the [Jupyter Notebook](http://jupyter.org/install.html) `gps/python/process_places.ipynb` <sup>1</sup>. This is the data file for placing images, audio, geojson on the map. If your directories are syntactically kosher, this python script will generate info.json files for every directory in gps/s3/.
 
-7. Upload `gps/s3/` to Amazon AWS (the url of the variable `origin` in gpstracker) and make the new place directory publicly visible <sup>1</sup>. Historically, I used Google Maps API, which used kml instead of geojson and required kml to be hosted from a publicly-visible location. Not sure if this is true after the switch to Mapbox.
+7. Upload `gps/s3/` to wherever you host your assets. You may need to ensure that these files are publicly visible. To troubleshoot the directory format, see `d` in `src/Assets.js`
 
 8. Configure your site's settings by saving a copy of `src/custom/Config-template.js` as `src/custom/Config.js`. This file contains your `mapboxgl.accessToken`, s3 bucket url, and map settings and geojson display styles. You can customize the general site and map styles by modifying a copy of `src/custom/overrides-template.scss` as `src/custom/overrides.scss`. Any other files in the `src/custom` directory are gitignored so you can more easily swap between entirely separate data sources and styles.
 

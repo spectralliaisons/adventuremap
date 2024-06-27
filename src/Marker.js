@@ -2,7 +2,7 @@ import ReactDomServer from 'react-dom/server'
 import mapboxgl from 'mapbox-gl';
 import 'material-icons/iconfont/material-icons.css';
 
-const paintMarker = (s3rsc, map, place, setModalHtml, showLocations) => location => {
+const paintMarker = (assetPath, map, place, setModalHtml, showLocations) => location => {
   const el = document.createElement('div');
 
   const popup = new mapboxgl.Popup({ 
@@ -18,7 +18,7 @@ const paintMarker = (s3rsc, map, place, setModalHtml, showLocations) => location
     .setPopup(popup)
     .addTo(map);
 
-  const html = ReactDomServer.renderToString(<Window s3rsc={s3rsc} place={place} location={location} showLocations={showLocations}/>);
+  const html = ReactDomServer.renderToString(<Window assetPath={assetPath} place={place} location={location} showLocations={showLocations}/>);
   popup.on('open', () => setModalHtml({loc, html:html}));
 };
 
@@ -33,13 +33,13 @@ const styledMarker = location => {
   return marker;
 };
 
-const Window = ({s3rsc, place, location, showLocations}) => {
+const Window = ({assetPath, place, location, showLocations}) => {
   const label = location.label || "";
   const linkImgSrc = location.link ? location.link.src : null;
   const linkDestination = location.link ? location.link.destination : null;
   const linkText = location.link ? location.link.text : null;
-  const imgDestination = location.img ? s3rsc(`${place}/imgLg/${location.img}`) : null;
-  const imgSrc = location.img ? s3rsc(`${place}/imgSm/${location.img}`) : linkImgSrc;
+  const imgDestination = location.img ? assetPath(`${place}/imgLg/${location.img}`) : null;
+  const imgSrc = location.img ? assetPath(`${place}/imgSm/${location.img}`) : linkImgSrc;
   const date = location.date ? location.date.split(" ")[0].replaceAll(":", ".") : null;
   return (
       <div>
@@ -51,7 +51,7 @@ const Window = ({s3rsc, place, location, showLocations}) => {
             <ExternalLink destination={linkDestination} text={linkText}/>
           </div>
         </div>
-        <Sound s3rsc={s3rsc} place={place} src={location.aud}/>
+        <Sound assetPath={assetPath} place={place} src={location.aud}/>
         <ExternalVideo src={location.video}/>
       </div>
   );
@@ -90,12 +90,12 @@ const ImageContent = ({destination, imgSrc, label, date}) => {
   }
 };
 
-const Sound = ({s3rsc, place, src}) => {
+const Sound = ({assetPath, place, src}) => {
   if (src == null) {
     return <div></div>
   }
   else {
-    const url = s3rsc(`${place}/aud/${src}`);
+    const url = assetPath(`${place}/aud/${src}`);
     return (
       <audio controls><source src={url} type="audio/mpeg"/>Your browser does not support audio!</audio>
     )

@@ -2,12 +2,12 @@ let _ = require('underscore');
 let _cache = {};
 let _filter_local_places = (p) => window.location.host === "localhost:3000" || !p.local;
 
-const s3 = ({s3}) => {
+const assets = (config) => {
 
-  const s3rsc = where => `${s3.bucketUrl}/gps/s3/${where}?rev=${(new Date()).getTime()}`;
+  const assetPath = where => `${config.assets.location}/gps/s3/${where}`;
 
   const fetchPlaces = () =>
-    _fetchJSON("all_rivers")
+    _fetchJSON("places")
       .then(({places}) => {
         const dat = _.chain(places)
           .filter(_filter_local_places)
@@ -24,7 +24,7 @@ const s3 = ({s3}) => {
         .then(json => {
             _cache[place] = json;
             _.each(json.layers, layer => 
-              fetch(s3rsc(`${place}/geojson/${layer}`))
+              fetch(assetPath(`${place}/geojson/${layer}`))
                 .then((res) => res.json())
                 .then(paintData(layer)));
             return Promise.resolve({json:json, paint:true});
@@ -36,7 +36,7 @@ const s3 = ({s3}) => {
   };
 
   const _fetchJSON = which =>
-    fetch(s3rsc(`${which}.json`))
+    fetch(assetPath(`${which}.json`))
       .then(res => {
         if (res.ok) {
           return(res.json());
@@ -46,7 +46,7 @@ const s3 = ({s3}) => {
         }
       });
   
-  return {s3rsc, fetchPlaces, loadPlace};
+  return {assetPath, fetchPlaces, loadPlace};
 };
 
-export {s3};
+export {assets};

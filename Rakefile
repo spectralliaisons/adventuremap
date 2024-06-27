@@ -56,7 +56,7 @@ namespace :push do
     desc "push all places' json and kml files to s3"
     task :info do
         
-        allPlacesJSON = "#{PUBLICPATH}all_rivers.json"
+        allPlacesJSON = "#{PUBLICPATH}places.json"
         sh %{aws s3 cp #{allPlacesJSON} #{ENV['rscS3Path']}#{allPlacesJSON}}
         
         places.each do |place|
