@@ -1,7 +1,7 @@
 # multimap
 
 ## See it in action
-https://spectralliaisons.github.io/multimap/
+[http://wesmjackson.com/#rivers](http://wesmjackson.com/#rivers)
 
 ## Overlay gps tracks on Mapbox with markers places where photos and audio were taken, and colorized points for other locations.
 ![an image examplar](./misc/screenshot1.png)
